@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PlacowkaOswiatowa.Domain.Models.Base
+namespace PlacowkaOswiatowaQuiz.Data.Models.Base
 {
     public class BaseDictionaryEntity<T> : BaseEntity<T>
     {

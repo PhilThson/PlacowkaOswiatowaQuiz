@@ -1,9 +1,8 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using PlacowkaOswiatowa.Domain.Models.Base;
+using PlacowkaOswiatowaQuiz.Data.Models.Base;
 
-namespace PlacowkaOswiatowa.Domain.Models
+namespace PlacowkaOswiatowaQuiz.Data.Models
 {
     public abstract class Osoba : BaseEntity<int>
     {

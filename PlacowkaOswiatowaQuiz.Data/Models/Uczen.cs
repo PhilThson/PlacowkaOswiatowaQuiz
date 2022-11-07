@@ -1,14 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using System.Collections.Generic;
 
-namespace PlacowkaOswiatowa.Domain.Models
+namespace PlacowkaOswiatowaQuiz.Data.Models
 {
     public class Uczen : Osoba
     {
         public Uczen()
         {
             UczenOceny = new HashSet<Ocena>();
+            UczenWyniki = new HashSet<Wynik>();
         }
 
         public int WychowawcaId { get; set; }
@@ -32,5 +32,7 @@ namespace PlacowkaOswiatowa.Domain.Models
         public virtual Adres Adres { get; set; }
 
         public virtual ICollection<Ocena> UczenOceny { get; set; }
+
+        public virtual ICollection<Wynik> UczenWyniki { get; set; }
     }
 }

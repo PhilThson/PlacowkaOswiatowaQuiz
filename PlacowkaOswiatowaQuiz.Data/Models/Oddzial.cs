@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using PlacowkaOswiatowa.Domain.Models.Base;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using PlacowkaOswiatowaQuiz.Data.Models.Base;
 
-namespace PlacowkaOswiatowa.Domain.Models
+namespace PlacowkaOswiatowaQuiz.Data.Models
 {
     public class Oddzial : BaseDictionaryEntity<byte>
     {

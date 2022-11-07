@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PlacowkaOswiatowa.Domain.Models
+namespace PlacowkaOswiatowaQuiz.Data.Models
 {
     public class Pracownik : Osoba
     {
         public Pracownik()
         {
             PracownikUczniowie = new HashSet<Uczen>();
-            PracownikUrlopy = new HashSet<Urlop>();
             PracownikOceny = new HashSet<Ocena>();
+            PracownikWyniki = new HashSet<Wynik>();
             PracownikPracownicyAdresy = new HashSet<PracownicyAdresy>();
             PracownikPrzedmiotyPracownicy = new HashSet<PrzedmiotyPracownicy>();
         }
@@ -52,8 +50,8 @@ namespace PlacowkaOswiatowa.Domain.Models
 
         public virtual Oddzial PracownikOddzial { get; set; }
         public virtual ICollection<Uczen> PracownikUczniowie { get; set; }
-        public virtual ICollection<Urlop> PracownikUrlopy { get; set; }
         public virtual ICollection<Ocena> PracownikOceny { get; set; }
+        public virtual ICollection<Wynik> PracownikWyniki { get; set; }
         public virtual ICollection<PracownicyAdresy> PracownikPracownicyAdresy 
         { get; set; }
         public virtual ICollection<PrzedmiotyPracownicy> PracownikPrzedmiotyPracownicy 

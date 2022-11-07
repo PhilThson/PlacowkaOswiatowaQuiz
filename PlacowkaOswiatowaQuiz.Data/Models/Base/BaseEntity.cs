@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PlacowkaOswiatowa.Domain.Models.Base
+namespace PlacowkaOswiatowaQuiz.Data.Models.Base
 {
     public abstract class BaseEntity<TKey>
     {
