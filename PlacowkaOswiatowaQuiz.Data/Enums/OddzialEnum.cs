@@ -1,0 +1,41 @@
+﻿namespace PlacowkaOswiatowaQuiz.Data.Enums
+{
+    public enum OddzialEnum
+    {
+        Biedronki,
+        Misie,
+        Malinki,
+        Żabki,
+        Kotki,
+        Papużki,
+        Wróbelki,
+        Duszki,
+        Delfinki,
+        Tygryski,
+        Jagódki,
+        PierwszaA,
+        PierwszaB,
+        PierwszaC,
+        DrugaA,
+        DrugaB,
+        DrugaC,
+        TrzeciaA,
+        TrzeciaB,
+        TrzeciaC,
+        CzwartaA,
+        CzwartaB,
+        CzwartaC,
+        PiataA,
+        PiataB,
+        PiataC,
+        SzostaA,
+        SzostaB,
+        SzostaC,
+        SiódmaA,
+        SiódmaB,
+        SiódmaC,
+        ÓsmaA,
+        ÓsmaB,
+        ÓsmaC
+    }
+}

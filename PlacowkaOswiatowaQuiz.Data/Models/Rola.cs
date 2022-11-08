@@ -1,7 +1,6 @@
-﻿using PlacowkaOswiatowa.Domain.Models.Base;
-using System.Collections.Generic;
+﻿using PlacowkaOswiatowaQuiz.Data.Models.Base;
 
-namespace PlacowkaOswiatowa.Domain.Models
+namespace PlacowkaOswiatowaQuiz.Data.Models
 {
     public class Rola : BaseDictionaryEntity<byte>
     {

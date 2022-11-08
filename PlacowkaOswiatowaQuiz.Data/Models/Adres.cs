@@ -1,6 +1,5 @@
 ﻿using PlacowkaOswiatowaQuiz.Data.Models.Base;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PlacowkaOswiatowaQuiz.Data.Models
 {
@@ -12,23 +11,11 @@ namespace PlacowkaOswiatowaQuiz.Data.Models
             AdresPracownicyAdresy = new HashSet<PracownicyAdresy>();
         }
 
-        public int PanstwoId { get; set; }
+        public string Panstwo { get; set; }
 
-        [ForeignKey(nameof(PanstwoId))]
-        [InverseProperty("PanstwoAdresy")]
-        public virtual Panstwo Panstwo { get; set; }
+        public string Miejscowosc { get; set; }
 
-        public int MiejscowoscId { get; set; }
-
-        [ForeignKey(nameof(MiejscowoscId))]
-        [InverseProperty("MiejscowoscAdresy")]
-        public virtual Miejscowosc Miejscowosc { get; set; }
-
-        public int? UlicaId { get; set; }
-
-        [ForeignKey(nameof(UlicaId))]
-        [InverseProperty("UlicaAdresy")]
-        public virtual Ulica Ulica { get; set; }
+        public string Ulica { get; set; }
 
         [MaxLength(10)]
         public string NumerDomu { get; set; }
@@ -59,7 +46,7 @@ namespace PlacowkaOswiatowaQuiz.Data.Models
         }
         public override int GetHashCode()
         {
-            return PanstwoId ^ MiejscowoscId ^ UlicaId.GetValueOrDefault() ^ NumerDomu.GetHashCode() ^ NumerMieszkania.GetHashCode();
+            return Panstwo.GetHashCode() ^ Miejscowosc.GetHashCode() ^ Ulica.GetHashCode() ^ NumerDomu.GetHashCode() ^ NumerMieszkania.GetHashCode();
         }
     }
 }

@@ -3,9 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlacowkaOswiatowaQuiz", "PlacowkaOswiatowaQuiz\PlacowkaOswiatowaQuiz.csproj", "{A7791AB7-EF73-4A5D-A165-DED420B25F9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlacowkaOswiatowaQuiz", "PlacowkaOswiatowaQuiz\PlacowkaOswiatowaQuiz.csproj", "{A7791AB7-EF73-4A5D-A165-DED420B25F9D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuizAPI", "QuizAPI\QuizAPI.csproj", "{3AB3CDC6-9F0F-4709-A604-37276242C48B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuizAPI", "QuizAPI\QuizAPI.csproj", "{3AB3CDC6-9F0F-4709-A604-37276242C48B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlacowkaOswiatowaQuiz.Data", "PlacowkaOswiatowaQuiz.Data\PlacowkaOswiatowaQuiz.Data.csproj", "{B43674B8-6D8E-439D-9CC2-E24591618606}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlacowkaOswiatowaQuiz.Infrastructure", "PlacowkaOswiatowaQuiz.Infrastructure\PlacowkaOswiatowaQuiz.Infrastructure.csproj", "{AF7F2E8C-A32A-4AB6-B05E-6C245B9B876E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +25,14 @@ Global
 		{3AB3CDC6-9F0F-4709-A604-37276242C48B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3AB3CDC6-9F0F-4709-A604-37276242C48B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3AB3CDC6-9F0F-4709-A604-37276242C48B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B43674B8-6D8E-439D-9CC2-E24591618606}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B43674B8-6D8E-439D-9CC2-E24591618606}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B43674B8-6D8E-439D-9CC2-E24591618606}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B43674B8-6D8E-439D-9CC2-E24591618606}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF7F2E8C-A32A-4AB6-B05E-6C245B9B876E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF7F2E8C-A32A-4AB6-B05E-6C245B9B876E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF7F2E8C-A32A-4AB6-B05E-6C245B9B876E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF7F2E8C-A32A-4AB6-B05E-6C245B9B876E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
