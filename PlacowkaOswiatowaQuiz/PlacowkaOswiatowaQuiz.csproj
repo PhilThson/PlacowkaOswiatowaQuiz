@@ -6,4 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\PlacowkaOswiatowaQuiz.Shared\PlacowkaOswiatowaQuiz.Shared.csproj" />
+  </ItemGroup>
+
 </Project>

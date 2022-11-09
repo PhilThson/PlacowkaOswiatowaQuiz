@@ -1,7 +1,12 @@
+using PlacowkaOswiatowaQuiz.Helpers.Options;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddSingleton(
+    builder.Configuration
+        .GetSection("QuizApiSettings").Get<QuizApiSettings>());
 
 var app = builder.Build();
 

@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PlacowkaOswiatowaQuiz.Data\PlacowkaOswiatowaQuiz.Data.csproj" />
+    <ProjectReference Include="..\PlacowkaOswiatowaQuiz.Infrastructure\PlacowkaOswiatowaQuiz.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

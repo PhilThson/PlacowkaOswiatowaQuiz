@@ -40,6 +40,9 @@ namespace PlacowkaOswiatowaQuiz.Data.Data
                 dbContext.Database.EnsureCreated();
                 if (dbContext.Database.GetAppliedMigrations().Count() < 1)
                 {
+                    if (dbContext.Pracownicy.Any() && dbContext.Uczniowie.Any())
+                        return;
+
                     dbContext.Etaty.AddRange(EtatySeed());
                     dbContext.ObszaryPytania.AddRange(ObszaryPytaniaSeed());
                     dbContext.SkaleTrudnosci.AddRange(SkaleTrudnosciSeed());

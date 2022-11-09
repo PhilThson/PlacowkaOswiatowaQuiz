@@ -896,6 +896,30 @@
         "runtime": {
           "bin/placeholder/PlacowkaOswiatowaQuiz.Data.dll": {}
         }
+      },
+      "PlacowkaOswiatowaQuiz.Infrastructure/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v6.0",
+        "dependencies": {
+          "PlacowkaOswiatowaQuiz.Data": "1.0.0",
+          "PlacowkaOswiatowaQuiz.Shared": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/PlacowkaOswiatowaQuiz.Infrastructure.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/PlacowkaOswiatowaQuiz.Infrastructure.dll": {}
+        }
+      },
+      "PlacowkaOswiatowaQuiz.Shared/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v6.0",
+        "compile": {
+          "bin/placeholder/PlacowkaOswiatowaQuiz.Shared.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/PlacowkaOswiatowaQuiz.Shared.dll": {}
+        }
       }
     }
   },
@@ -2266,6 +2290,16 @@
       "type": "project",
       "path": "../PlacowkaOswiatowaQuiz.Data/PlacowkaOswiatowaQuiz.Data.csproj",
       "msbuildProject": "../PlacowkaOswiatowaQuiz.Data/PlacowkaOswiatowaQuiz.Data.csproj"
+    },
+    "PlacowkaOswiatowaQuiz.Infrastructure/1.0.0": {
+      "type": "project",
+      "path": "../PlacowkaOswiatowaQuiz.Infrastructure/PlacowkaOswiatowaQuiz.Infrastructure.csproj",
+      "msbuildProject": "../PlacowkaOswiatowaQuiz.Infrastructure/PlacowkaOswiatowaQuiz.Infrastructure.csproj"
+    },
+    "PlacowkaOswiatowaQuiz.Shared/1.0.0": {
+      "type": "project",
+      "path": "../PlacowkaOswiatowaQuiz.Shared/PlacowkaOswiatowaQuiz.Shared.csproj",
+      "msbuildProject": "../PlacowkaOswiatowaQuiz.Shared/PlacowkaOswiatowaQuiz.Shared.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -2273,6 +2307,7 @@
       "Microsoft.EntityFrameworkCore.SqlServer >= 6.0.10",
       "Microsoft.EntityFrameworkCore.Tools >= 6.0.10",
       "PlacowkaOswiatowaQuiz.Data >= 1.0.0",
+      "PlacowkaOswiatowaQuiz.Infrastructure >= 1.0.0",
       "Swashbuckle.AspNetCore >= 6.2.3"
     ]
   },
@@ -2314,6 +2349,9 @@
           "projectReferences": {
             "E:\\FF\\Studia\\WSB_PAB\\PIAB\\Projekt\\PlacowkaOswiatowaQuiz\\PlacowkaOswiatowaQuiz.Data\\PlacowkaOswiatowaQuiz.Data.csproj": {
               "projectPath": "E:\\FF\\Studia\\WSB_PAB\\PIAB\\Projekt\\PlacowkaOswiatowaQuiz\\PlacowkaOswiatowaQuiz.Data\\PlacowkaOswiatowaQuiz.Data.csproj"
+            },
+            "E:\\FF\\Studia\\WSB_PAB\\PIAB\\Projekt\\PlacowkaOswiatowaQuiz\\PlacowkaOswiatowaQuiz.Infrastructure\\PlacowkaOswiatowaQuiz.Infrastructure.csproj": {
+              "projectPath": "E:\\FF\\Studia\\WSB_PAB\\PIAB\\Projekt\\PlacowkaOswiatowaQuiz\\PlacowkaOswiatowaQuiz.Infrastructure\\PlacowkaOswiatowaQuiz.Infrastructure.csproj"
             }
           }
         }

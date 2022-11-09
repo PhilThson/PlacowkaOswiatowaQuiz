@@ -1,11 +1,30 @@
 {
   "version": 3,
   "targets": {
-    "net6.0": {}
+    "net6.0": {
+      "PlacowkaOswiatowaQuiz.Shared/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v6.0",
+        "compile": {
+          "bin/placeholder/PlacowkaOswiatowaQuiz.Shared.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/PlacowkaOswiatowaQuiz.Shared.dll": {}
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "PlacowkaOswiatowaQuiz.Shared/1.0.0": {
+      "type": "project",
+      "path": "../PlacowkaOswiatowaQuiz.Shared/PlacowkaOswiatowaQuiz.Shared.csproj",
+      "msbuildProject": "../PlacowkaOswiatowaQuiz.Shared/PlacowkaOswiatowaQuiz.Shared.csproj"
+    }
+  },
   "projectFileDependencyGroups": {
-    "net6.0": []
+    "net6.0": [
+      "PlacowkaOswiatowaQuiz.Shared >= 1.0.0"
+    ]
   },
   "packageFolders": {
     "C:\\Users\\rzezn\\.nuget\\packages\\": {},
@@ -42,7 +61,11 @@
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "E:\\FF\\Studia\\WSB_PAB\\PIAB\\Projekt\\PlacowkaOswiatowaQuiz\\PlacowkaOswiatowaQuiz.Shared\\PlacowkaOswiatowaQuiz.Shared.csproj": {
+              "projectPath": "E:\\FF\\Studia\\WSB_PAB\\PIAB\\Projekt\\PlacowkaOswiatowaQuiz\\PlacowkaOswiatowaQuiz.Shared\\PlacowkaOswiatowaQuiz.Shared.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
