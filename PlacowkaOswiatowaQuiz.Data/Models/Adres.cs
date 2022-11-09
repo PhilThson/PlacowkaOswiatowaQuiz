@@ -11,17 +11,20 @@ namespace PlacowkaOswiatowaQuiz.Data.Models
             AdresPracownicyAdresy = new HashSet<PracownicyAdresy>();
         }
 
+        [MaxLength(64)]
         public string Panstwo { get; set; }
 
+        [MaxLength(128)]
         public string Miejscowosc { get; set; }
 
-        public string Ulica { get; set; }
+        [MaxLength(128)]
+        public string? Ulica { get; set; }
 
         [MaxLength(10)]
         public string NumerDomu { get; set; }
 
         [MaxLength(10)]
-        public string NumerMieszkania { get; set; }
+        public string? NumerMieszkania { get; set; }
 
         [MaxLength(10)]
         public string KodPocztowy { get; set; }
@@ -46,7 +49,8 @@ namespace PlacowkaOswiatowaQuiz.Data.Models
         }
         public override int GetHashCode()
         {
-            return Panstwo.GetHashCode() ^ Miejscowosc.GetHashCode() ^ Ulica.GetHashCode() ^ NumerDomu.GetHashCode() ^ NumerMieszkania.GetHashCode();
+            return Panstwo.GetHashCode() ^ Miejscowosc.GetHashCode() ^ NumerDomu.GetHashCode()
+                ^ KodPocztowy.GetHashCode();
         }
     }
 }

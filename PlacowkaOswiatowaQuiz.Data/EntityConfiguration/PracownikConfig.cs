@@ -11,7 +11,7 @@ namespace PlacowkaOswiatowaQuiz.Data.EntityConfiguration
             builder
                 .Property(p => p.Pensja)
                 .HasColumnType("money")
-                .HasPrecision(5, 2)
+                .HasPrecision(7, 2)
                 .IsRequired(true);
         }
     }

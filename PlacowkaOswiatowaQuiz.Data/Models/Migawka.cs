@@ -7,7 +7,7 @@ namespace PlacowkaOswiatowaQuiz.Data.Models
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime DataZmiany { get; set; }
-        public string Szczegoly { get; set; }
+        public string? Szczegoly { get; set; }
         public int UzytkownikId { get; set; }
 
         [ForeignKey(nameof(UzytkownikId))]

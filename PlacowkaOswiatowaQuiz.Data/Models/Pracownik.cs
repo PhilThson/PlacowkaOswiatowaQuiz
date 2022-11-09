@@ -25,18 +25,18 @@ namespace PlacowkaOswiatowaQuiz.Data.Models
         public double? Nadgodziny { get; set; }
 
         [Column(TypeName = "varchar(11)")]
-        public string NrTelefonu { get; set; }
+        public string? NrTelefonu { get; set; }
 
         [MaxLength(50)]
-        public string Email { get; set; }
+        public string? Email { get; set; }
 
-        public byte EtatId { get; set; }
+        public byte? EtatId { get; set; }
 
         [ForeignKey(nameof(EtatId))]
         [InverseProperty("EtatPracownicy")]
         public virtual Etat Etat { get; set; }
 
-        public byte StanowiskoId { get; set; }
+        public byte? StanowiskoId { get; set; }
 
         [ForeignKey(nameof(StanowiskoId))]
         [InverseProperty("StanowiskoPracownicy")]

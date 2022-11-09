@@ -11,7 +11,7 @@ namespace PlacowkaOswiatowaQuiz.Data.Models
         }
 
         [Column(TypeName = "char(3)")]
-        public string SkroconaNazwa { get; set; }
+        public string? SkroconaNazwa { get; set; }
 
         public virtual ICollection<PrzedmiotyPracownicy> PrzedmiotPrzedmiotyPracownicy 
         { get; set; }

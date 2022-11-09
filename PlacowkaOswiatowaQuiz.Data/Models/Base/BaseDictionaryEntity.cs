@@ -7,7 +7,8 @@ namespace PlacowkaOswiatowaQuiz.Data.Models.Base
         [Required]
         [MaxLength(50)]
         public string Nazwa { get; set; }
+
         [MaxLength(250)]
-        public string Opis { get; set; }
+        public string? Opis { get; set; }
     }
 }

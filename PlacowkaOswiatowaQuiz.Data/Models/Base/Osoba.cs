@@ -11,7 +11,7 @@ namespace PlacowkaOswiatowaQuiz.Data.Models
         public string Imie { get; set; }
 
         [MaxLength(20)]
-        public string DrugieImie { get; set; }
+        public string? DrugieImie { get; set; }
 
         [Required]
         [MaxLength(50)]

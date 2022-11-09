@@ -11,7 +11,7 @@ namespace PlacowkaOswiatowaQuiz.Data.Models
         }
 
         [MaxLength(128)]
-        public string NazwaRozszerzona { get; set; }
+        public string? NazwaRozszerzona { get; set; }
 
         public virtual ICollection<Pytanie> ObszarPytaniePytania { get; set; }
     }
