@@ -10,4 +10,8 @@
     <ProjectReference Include="..\PlacowkaOswiatowaQuiz.Shared\PlacowkaOswiatowaQuiz.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+    <Folder Include="Views\Uczen\" />
+  </ItemGroup>
 </Project>

@@ -14,9 +14,8 @@ namespace PlacowkaOswiatowaQuiz.Infrastructure.Services
             _dbContext = dbContext;
         }
 
-        public async Task<IEnumerable<PracownikViewModel>> GetAllEmployees()
-        {
-            return await _dbContext.Pracownicy.Select(p => new PracownikViewModel
+        public async Task<IEnumerable<PracownikViewModel>> GetAllEmployees() =>
+            await _dbContext.Pracownicy.Select(p => new PracownikViewModel
             {
                 Id = p.Id,
                 Imie = p.Imie,
@@ -30,6 +29,17 @@ namespace PlacowkaOswiatowaQuiz.Infrastructure.Services
                 DataZatrudnienia = p.DataZatrudnienia
             })
             .ToListAsync();
-        }
+
+        public async Task<IEnumerable<UczenViewModel>> GetAllStudents() =>
+            await _dbContext.Uczniowie.Select(u => new UczenViewModel
+            {
+                Id = u.Id,
+                Imie = u.Imie,
+                Nazwisko = u.Nazwisko,
+                DataUrodzenia = u.DataUrodzenia,
+                Pesel = u.Pesel,
+                Oddzial = u.Oddzial.Nazwa
+            })
+            .ToListAsync();
     }
 }

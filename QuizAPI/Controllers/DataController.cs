@@ -22,5 +22,13 @@ namespace QuizAPI.Controllers
 
             return employees;
         }
+
+        [HttpGet("uczniowie")]
+        public async Task<IEnumerable<UczenViewModel>> GetAllStudents()
+        {
+            var students = await _dataService.GetAllStudents();
+
+            return students;
+        }
     }
 }

@@ -5,5 +5,6 @@ namespace PlacowkaOswiatowaQuiz.Infrastructure.Interfaces
     public interface IDataService
     {
         Task<IEnumerable<PracownikViewModel>> GetAllEmployees();
+        Task<IEnumerable<UczenViewModel>> GetAllStudents();
     }
 }
