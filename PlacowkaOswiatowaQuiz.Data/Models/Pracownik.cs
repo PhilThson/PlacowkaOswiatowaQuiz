@@ -9,7 +9,7 @@ namespace PlacowkaOswiatowaQuiz.Data.Models
         {
             PracownikUczniowie = new HashSet<Uczen>();
             PracownikOceny = new HashSet<Ocena>();
-            PracownikWyniki = new HashSet<Wynik>();
+            PracownikDiagnozy = new HashSet<Diagnoza>();
             PracownikPracownicyAdresy = new HashSet<PracownicyAdresy>();
             PracownikPrzedmiotyPracownicy = new HashSet<PrzedmiotyPracownicy>();
         }
@@ -51,7 +51,7 @@ namespace PlacowkaOswiatowaQuiz.Data.Models
         public virtual Oddzial PracownikOddzial { get; set; }
         public virtual ICollection<Uczen> PracownikUczniowie { get; set; }
         public virtual ICollection<Ocena> PracownikOceny { get; set; }
-        public virtual ICollection<Wynik> PracownikWyniki { get; set; }
+        public virtual ICollection<Diagnoza> PracownikDiagnozy { get; set; }
         public virtual ICollection<PracownicyAdresy> PracownikPracownicyAdresy 
         { get; set; }
         public virtual ICollection<PrzedmiotyPracownicy> PracownikPrzedmiotyPracownicy 

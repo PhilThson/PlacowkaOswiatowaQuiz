@@ -12,12 +12,13 @@ namespace PlacowkaOswiatowaQuiz.Data.Data
         }
 
         public DbSet<Adres> Adresy { get; set; }
+        public DbSet<Diagnoza> Diagnozy { get; set; }
         public DbSet<Etat> Etaty { get; set; }
         public DbSet<Migawka> Migawki { get; set; }
-        public DbSet<ObszarPytania> ObszaryPytania { get; set; }
+        public DbSet<ObszarZestawuPytan> ObszaryZestawowPytan { get; set; }
         public DbSet<Ocena> Oceny { get; set; }
         public DbSet<Oddzial> Oddzialy { get; set; }
-        public DbSet<Odpowiedz> Odpowiedzi { get; set; }
+        public DbSet<OcenaZestawuPytan> OcenyZestawowPytan { get; set; }
         public DbSet<PracownicyAdresy> PracownicyAdresy { get; set; }
         public DbSet<Pracownik> Pracownicy { get; set; }
         public DbSet<Przedmiot> Przedmioty { get; set; }
@@ -29,6 +30,7 @@ namespace PlacowkaOswiatowaQuiz.Data.Data
         public DbSet<Uczen> Uczniowie { get; set; }
         public DbSet<Uzytkownik> Uzytkownicy { get; set; }
         public DbSet<Wynik> Wyniki { get; set; }
+        public DbSet<ZestawPytan> ZestawyPytan { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

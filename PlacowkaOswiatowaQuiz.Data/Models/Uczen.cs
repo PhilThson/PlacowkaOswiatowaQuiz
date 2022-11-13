@@ -8,7 +8,7 @@ namespace PlacowkaOswiatowaQuiz.Data.Models
         public Uczen()
         {
             UczenOceny = new HashSet<Ocena>();
-            UczenWyniki = new HashSet<Wynik>();
+            UczenDiagnozy = new HashSet<Diagnoza>();
         }
 
         public int WychowawcaId { get; set; }
@@ -25,14 +25,14 @@ namespace PlacowkaOswiatowaQuiz.Data.Models
         [InverseProperty("OddzialUczniowie")]
         public virtual Oddzial Oddzial { get; set; }
 
-        public int? AdresId { get; set; }
+        //public int? AdresId { get; set; }
 
-        [ForeignKey(nameof(AdresId))]
-        [InverseProperty("AdresUczniowie")]
-        public virtual Adres Adres { get; set; }
+        //[ForeignKey(nameof(AdresId))]
+        //[InverseProperty("AdresUczniowie")]
+        //public virtual Adres Adres { get; set; }
 
         public virtual ICollection<Ocena> UczenOceny { get; set; }
 
-        public virtual ICollection<Wynik> UczenWyniki { get; set; }
+        public virtual ICollection<Diagnoza> UczenDiagnozy { get; set; }
     }
 }

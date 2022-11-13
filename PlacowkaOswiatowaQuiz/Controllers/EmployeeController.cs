@@ -7,18 +7,18 @@ using PlacowkaOswiatowaQuiz.Shared.ViewModels;
 
 namespace PlacowkaOswiatowaQuiz.Models.Controllers
 {
-    public class PracownikController : Controller
+    public class EmployeeController : Controller
     {
         private readonly QuizApiSettings _apiSettings;
 
-        public PracownikController(QuizApiSettings apiSettings)
+        public EmployeeController(QuizApiSettings apiSettings)
         {
             _apiSettings = apiSettings;
         }
 
-        public async Task<IActionResult> WszyscyPracownicy()
+        public async Task<IActionResult> Index()
         {
-            var employees = new List<PracownikViewModel>();
+            var employees = new List<EmployeeViewModel>();
             using (var client = new HttpClient())
             {
                 var uri = new Uri(
@@ -29,7 +29,7 @@ namespace PlacowkaOswiatowaQuiz.Models.Controllers
                 var response = await client.GetAsync(uri);
 
                 employees = await response.Content
-                    .ReadFromJsonAsync<List<PracownikViewModel>>();
+                    .ReadFromJsonAsync<List<EmployeeViewModel>>();
             }
 
             return View(employees);

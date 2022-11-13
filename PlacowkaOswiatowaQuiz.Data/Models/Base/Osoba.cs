@@ -21,6 +21,9 @@ namespace PlacowkaOswiatowaQuiz.Data.Models
         [Column(TypeName = "date")]
         public DateTime? DataUrodzenia { get; set; }
 
+        [MaxLength(256)]
+        public string? MiejsceUrodzenia { get; set; }
+
         [Required]
         [MaxLength(11)]
         [Column(TypeName = "varchar(11)")]

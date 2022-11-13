@@ -2,7 +2,7 @@
 
 namespace PlacowkaOswiatowaQuiz.Data.Enums
 {
-    public enum ObszarPytaniaEnum
+    public enum ObszarZestawuPytanEnum
     {
         [Description("Pierwszy obszar")]
         PierwszyObszar,

@@ -3,6 +3,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PlacowkaOswiatowaQuiz.Data.Models
 {
+    /// <summary>
+    /// Klasa będzie służyła do logowania aktywności użytkowników
+    /// </summary>
     public class Migawka : BaseDictionaryEntity<long>
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]

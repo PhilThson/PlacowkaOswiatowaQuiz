@@ -4,13 +4,13 @@ using PlacowkaOswiatowaQuiz.Data.Models;
 
 namespace PlacowkaOswiatowaQuiz.Data.EntityConfiguration
 {
-    public class OdpowiedzConfig : IEntityTypeConfiguration<Odpowiedz>
+    public class OcenaZestawuPytanConfig : IEntityTypeConfiguration<OcenaZestawuPytan>
     {
-        public void Configure(EntityTypeBuilder<Odpowiedz> builder)
+        public void Configure(EntityTypeBuilder<OcenaZestawuPytan> builder)
         {
             builder
-                .HasOne(o => o.Pytanie)
-                .WithMany(p => p.PytanieOdpowiedzi)
+                .HasOne(o => o.ZestawPytan)
+                .WithMany(p => p.ZestawPytanOcena)
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }

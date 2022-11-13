@@ -1,34 +1,23 @@
-﻿using PlacowkaOswiatowaQuiz.Data.Models.Base;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using PlacowkaOswiatowaQuiz.Data.Models.Base;
 
 namespace PlacowkaOswiatowaQuiz.Data.Models
 {
-    public class Pytanie : BaseEntity<int>
-    {
-        public Pytanie()
-        {
-            PytanieOdpowiedzi = new HashSet<Odpowiedz>();
-            PytanieWyniki = new HashSet<Wynik>();
-        }
-
-        [MaxLength(1024)]
+	public class Pytanie : BaseEntity<int>
+	{
+        [MaxLength(2048)]
         public string Tresc { get; set; }
 
-        public byte ObszarPytaniaId { get; set; }
+		[MaxLength(2048)]
+		public string Opis { get; set; }
 
-        [ForeignKey(nameof(ObszarPytaniaId))]
-        [InverseProperty("ObszarPytaniePytania")]
-        public virtual ObszarPytania ObszarPytania { get; set; }
+		public int ZestawPytanId { get; set; }
 
-        public byte SkalaTrudnosciId { get; set; }
-
-        [ForeignKey(nameof(SkalaTrudnosciId))]
-        [InverseProperty("SkalaTrudnosciPytania")]
-        public virtual SkalaTrudnosci SkalaTrudnosci { get; set; }
-
-        public virtual ICollection<Odpowiedz> PytanieOdpowiedzi { get; set; }
-
-        public virtual ICollection<Wynik> PytanieWyniki { get; set; }
-    }
+		[ForeignKey(nameof(ZestawPytanId))]
+		[InverseProperty("ZestawPytanPytania")]
+		public virtual ZestawPytan ZestawPytan { get; set; }
+	}
 }
+

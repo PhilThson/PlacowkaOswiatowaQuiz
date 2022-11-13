@@ -6,9 +6,10 @@ namespace PlacowkaOswiatowaQuiz.Data.Models
     {
         public SkalaTrudnosci()
         {
-            SkalaTrudnosciPytania = new HashSet<Pytanie>();
+            SkalaTrudnosciZestawyPytan = new HashSet<ZestawPytan>();
         }
 
-        public virtual ICollection<Pytanie> SkalaTrudnosciPytania { get; set; }
+        public virtual ICollection<ZestawPytan> SkalaTrudnosciZestawyPytan
+        { get; set; }
     }
 }

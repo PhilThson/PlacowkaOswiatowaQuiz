@@ -1,41 +1,54 @@
-﻿namespace PlacowkaOswiatowaQuiz.Data.Enums
+﻿using System.ComponentModel;
+
+namespace PlacowkaOswiatowaQuiz.Data.Enums
 {
     public enum OddzialEnum
     {
+        [Description("Grupa Biedronki")]
         Biedronki,
+        [Description("Grupa Misie")]
         Misie,
+        [Description("Grupa Malinki")]
         Malinki,
+        [Description("Grupa Żabki")]
         Żabki,
+        [Description("Grupa Kotki")]
         Kotki,
+        [Description("Grupa Papużki")]
         Papużki,
+        [Description("Grupa Wróbelki")]
         Wróbelki,
-        Duszki,
-        Delfinki,
-        Tygryski,
-        Jagódki,
+        [Description("1A")]
         PierwszaA,
+        [Description("1B")]
         PierwszaB,
-        PierwszaC,
+        [Description("2A")]
         DrugaA,
+        [Description("2B")]
         DrugaB,
-        DrugaC,
+        [Description("3A")]
         TrzeciaA,
+        [Description("3B")]
         TrzeciaB,
-        TrzeciaC,
+        [Description("4A")]
         CzwartaA,
+        [Description("4B")]
         CzwartaB,
-        CzwartaC,
+        [Description("5A")]
         PiataA,
+        [Description("5B")]
         PiataB,
-        PiataC,
+        [Description("6A")]
         SzostaA,
+        [Description("6B")]
         SzostaB,
-        SzostaC,
+        [Description("7A")]
         SiódmaA,
+        [Description("7B")]
         SiódmaB,
-        SiódmaC,
+        [Description("8A")]
         ÓsmaA,
-        ÓsmaB,
-        ÓsmaC
+        [Description("8B")]
+        ÓsmaB
     }
 }

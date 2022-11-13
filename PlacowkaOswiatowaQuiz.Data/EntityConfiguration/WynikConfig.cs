@@ -9,23 +9,18 @@ namespace PlacowkaOswiatowaQuiz.Data.EntityConfiguration
         public void Configure(EntityTypeBuilder<Wynik> builder)
         {
             builder
-                .HasOne(w => w.Uczen)
-                .WithMany(u => u.UczenWyniki)
+                .HasOne(w => w.OcenaZestawuPytan)
+                .WithMany(o => o.OcenaZestawuPytanWyniki)
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder
-                .HasOne(w => w.Pracownik)
-                .WithMany(p => p.PracownikWyniki)
+                .HasOne(w => w.ZestawPytan)
+                .WithMany(p => p.ZestawPytanWyniki)
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder
-                .HasOne(w => w.Odpowiedz)
-                .WithMany(o => o.OdpowiedzWyniki)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            builder
-                .HasOne(w => w.Pytanie)
-                .WithMany(p => p.PytanieWyniki)
+                .HasOne(w => w.Diagnoza)
+                .WithMany(d => d.DiagnozaWyniki)
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }

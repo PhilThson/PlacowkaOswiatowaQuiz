@@ -1,0 +1,86 @@
+﻿@model IEnumerable<QuestionViewModel>
+
+<h1>Wszystkie pytania</h1>
+
+
+
+@*<ul>
+        @foreach (var customer in Model)
+        {
+            <li>
+                @Html.DisplayFor(item => customer.FirstName)
+                @Html.DisplayFor(item => customer.LastName)
+            </li>
+        }
+    </ul>*@
+<div>
+    <h6 class="display-4">Dodaj pytanie
+        <a class="btn btn-primary" asp-controller="Question" asp-action="Edit"/>
+    </h6>
+</div>
+
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Content)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Area)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Difficulty)
+            </th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var question in Model)
+            {
+                //string className = customer.IsSalaryOverLimit ? "table-warning" : "";
+
+            <tr>
+                <td>
+                    @Html.DisplayFor(item => question.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(item => question.Content)
+                </td>
+                <td>
+                    @Html.DisplayFor(item => question.Area)
+                </td>
+                <td>
+                    @Html.DisplayFor(item => question.Difficulty)
+                </td>
+                <td>
+                    <div>
+                        <a class="btn btn-primary" asp-controller="Customers" asp-action="Edit" asp-route-id="@question.Id">
+                            <i class="fa fa-pencil" aria-hidden="true"></i>
+                        </a>
+                        <a class="btn btn-danger" asp-controller="Customers" asp-action="Delete" asp-route-id="@question.Id">
+                            <i class="fa fa-trash" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+
+        }
+
+    </tbody>
+
+    @*<tfoot>
+        <tr>
+            <th scope="row">Totals</th>
+            <td>@Model.Count()</td>
+            <td></td>
+            <td></td>
+        </tr>
+    </tfoot>*@
+</table>
+
+
+Generated on @DateTime.Now

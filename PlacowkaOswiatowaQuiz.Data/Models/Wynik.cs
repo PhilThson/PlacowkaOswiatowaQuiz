@@ -1,33 +1,28 @@
 ﻿using PlacowkaOswiatowaQuiz.Data.Models.Base;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PlacowkaOswiatowaQuiz.Data.Models
 {
     public class Wynik : BaseEntity<long>
     {
-        public int UczenId { get; set; }
+        public int OcenaZestawuPytanId { get; set; }
 
-        [ForeignKey(nameof(UczenId))]
-        [InverseProperty("UczenWyniki")]
-        public virtual Uczen Uczen { get; set; }
+        [ForeignKey(nameof(OcenaZestawuPytanId))]
+        [InverseProperty("OcenaZestawuPytanWyniki")]
+        public virtual OcenaZestawuPytan OcenaZestawuPytan { get; set; }
 
-        public int PytanieId { get; set; }
+        [Range(1, 6)]
+        public byte PoziomOceny { get; set; }
 
-        [ForeignKey(nameof(PytanieId))]
-        [InverseProperty("PytanieWyniki")]
-        public virtual Pytanie Pytanie { get; set; }
+        public int DiagnozaId { get; set; }
 
-        public int OdpowiedzId { get; set; }
+        [ForeignKey(nameof(DiagnozaId))]
+        [InverseProperty("DiagnozaWyniki")]
+        public virtual Diagnoza Diagnoza { get; set; }
 
-        [ForeignKey(nameof(OdpowiedzId))]
-        [InverseProperty("OdpowiedzWyniki")]
-        public virtual Odpowiedz Odpowiedz { get; set; }
-
-        public int PracownikId { get; set; }
-
-        [ForeignKey(nameof(PracownikId))]
-        [InverseProperty("PracownikWyniki")]
-        public virtual Pracownik Pracownik { get; set; }
+        [MaxLength(2048)]
+        public string Notatki { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime DataCzasWpisu { get; set; }

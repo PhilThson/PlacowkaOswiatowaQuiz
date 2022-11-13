@@ -14,4 +14,10 @@
     <Folder Include="Controllers\" />
     <Folder Include="Views\Uczen\" />
   </ItemGroup>
+  <ItemGroup>
+    <None Remove="Newtonsoft.Json" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
 </Project>

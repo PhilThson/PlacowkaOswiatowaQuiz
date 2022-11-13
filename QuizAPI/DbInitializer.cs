@@ -11,7 +11,7 @@ namespace PlacowkaOswiatowaQuiz.Data.Data
         #region Private fields
         private static List<Adres> Adresy { get; set; }
         private static List<Etat> Etaty { get; set; }
-        private static List<ObszarPytania> ObszaryPytania { get; set; }
+        private static List<ObszarZestawuPytan> ObszaryZestawowPytan { get; set; }
         private static List<Ocena> Oceny { get; set; }
         private static List<Oddzial> Oddzialy { get; set; }
         private static List<PracownicyAdresy> PracownicyAdresy { get; set; }
@@ -44,7 +44,7 @@ namespace PlacowkaOswiatowaQuiz.Data.Data
                         return;
 
                     dbContext.Etaty.AddRange(EtatySeed());
-                    dbContext.ObszaryPytania.AddRange(ObszaryPytaniaSeed());
+                    dbContext.ObszaryZestawowPytan.AddRange(ObszaryZestawowPytanSeed());
                     dbContext.SkaleTrudnosci.AddRange(SkaleTrudnosciSeed());
                     dbContext.Przedmioty.AddRange(PrzedmiotySeed());
                     dbContext.Role.AddRange(RoleSeed());
@@ -92,17 +92,18 @@ namespace PlacowkaOswiatowaQuiz.Data.Data
             return Etaty;
         }
 
-        public static List<ObszarPytania> ObszaryPytaniaSeed()
+        public static List<ObszarZestawuPytan> ObszaryZestawowPytanSeed()
         {
-            var obszarPytaniaFaker = new Faker<ObszarPytania>()
+            var obszarZestawuPytanFaker = new Faker<ObszarZestawuPytan>()
                 .UseSeed(1212)
                 //.RuleFor(e => e.Id, f => (byte)(f.IndexFaker + 1))
-                .RuleFor(e => e.Nazwa, f => ((ObszarPytaniaEnum)f.IndexFaker).ToString())
-                .RuleFor(e => e.Opis, f => ((ObszarPytaniaEnum)f.IndexFaker).GetDescription())
+                .RuleFor(e => e.Nazwa, f => ((ObszarZestawuPytanEnum)f.IndexFaker).ToString())
+                .RuleFor(e => e.Opis, f => ((ObszarZestawuPytanEnum)f.IndexFaker).GetDescription())
                 .RuleFor(e => e.CzyAktywny, f => true);
 
-            ObszaryPytania = obszarPytaniaFaker.Generate(Enum.GetNames<ObszarPytaniaEnum>().Length);
-            return ObszaryPytania;
+            ObszaryZestawowPytan = obszarZestawuPytanFaker.Generate(
+                Enum.GetNames<ObszarZestawuPytanEnum>().Length);
+            return ObszaryZestawowPytan;
         }
 
         public static List<SkalaTrudnosci> SkaleTrudnosciSeed()
@@ -206,7 +207,8 @@ namespace PlacowkaOswiatowaQuiz.Data.Data
             var oddzialFaker = new Faker<Oddzial>()
                 .UseSeed(3344)
                 //.RuleFor(o => o.Id, f => (byte)(f.IndexFaker + 1))
-                .RuleFor(o => o.Nazwa, f => ((OddzialEnum)f.IndexFaker).ToString())
+                .RuleFor(o => o.Nazwa, f => ((OddzialEnum)f.IndexFaker).GetDescription())
+                .RuleFor(o => o.Opis, f => ((OddzialEnum)f.IndexFaker).ToString())
                 .RuleFor(o => o.PracownikId, f => i++)
                 .RuleFor(o => o.CzyAktywny, f => true);
 
@@ -216,7 +218,7 @@ namespace PlacowkaOswiatowaQuiz.Data.Data
 
         public static List<Uczen> UczniowieSeed(PlacowkaDbContext dbContext)
         {
-            var adresyIds = dbContext.Adresy.Select(s => s.Id).ToList();
+            //var adresyIds = dbContext.Adresy.Select(s => s.Id).ToList();
             var pracownicyIds = dbContext.Pracownicy.Select(s => s.Id).ToList();
             var oddzialyIds = dbContext.Oddzialy.Select(s => s.Id).ToList();
 
@@ -226,8 +228,9 @@ namespace PlacowkaOswiatowaQuiz.Data.Data
                 .RuleFor(u => u.Imie, f => f.Person.FirstName)
                 .RuleFor(u => u.Nazwisko, f => f.Person.LastName)
                 .RuleFor(u => u.DataUrodzenia, f => f.Date.PastOffset(15, DateTime.Now.AddYears(-3)).Date)
+                .RuleFor(u => u.MiejsceUrodzenia, f => f.Person.Address.City)
                 .RuleFor(u => u.Pesel, f => f.Random.ReplaceNumbers("##########"))
-                .RuleFor(u => u.AdresId, f => f.PickRandom(adresyIds))
+                //.RuleFor(u => u.AdresId, f => f.PickRandom(adresyIds))
                 .RuleFor(u => u.WychowawcaId, f => f.PickRandom(pracownicyIds))
                 .RuleFor(u => u.OddzialId, f => f.PickRandom(oddzialyIds));
 
