@@ -9,7 +9,7 @@ namespace PlacowkaOswiatowaQuiz.Data.Models
         public ZestawPytan()
         {
             ZestawPytanPytania = new HashSet<Pytanie>();
-            ZestawPytanOcena = new HashSet<OcenaZestawuPytan>();
+            ZestawPytanOceny = new HashSet<OcenaZestawuPytan>();
         }
 
         [MaxLength(2048)]
@@ -27,9 +27,15 @@ namespace PlacowkaOswiatowaQuiz.Data.Models
         [InverseProperty("SkalaTrudnosciZestawyPytan")]
         public virtual SkalaTrudnosci SkalaTrudnosci { get; set; }
 
+        public int? KartaPracyId { get; set; }
+
+        [ForeignKey(nameof(KartaPracyId))]
+        [InverseProperty("KartaPracyZestawPytan")]
+        public virtual KartaPracy KartaPracy { get; set; }
+
         public virtual ICollection<Pytanie> ZestawPytanPytania { get; set; }
 
-        public virtual ICollection<OcenaZestawuPytan> ZestawPytanOcena
+        public virtual ICollection<OcenaZestawuPytan> ZestawPytanOceny
         { get; set; }
     }
 }

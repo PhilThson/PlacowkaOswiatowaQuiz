@@ -10,7 +10,7 @@ namespace PlacowkaOswiatowaQuiz.Data.EntityConfiguration
         {
             builder
                 .HasOne(o => o.ZestawPytan)
-                .WithMany(p => p.ZestawPytanOcena)
+                .WithMany(p => p.ZestawPytanOceny)
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }

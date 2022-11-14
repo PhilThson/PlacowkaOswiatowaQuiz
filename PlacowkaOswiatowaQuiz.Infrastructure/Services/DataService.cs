@@ -44,42 +44,117 @@ namespace PlacowkaOswiatowaQuiz.Infrastructure.Services
                 })
                 .ToListAsync();
 
-        public async Task<IEnumerable<QuestionViewModel>> GetAllQuestions() =>
-            await _dbContext.Pytania.Select(p => new QuestionViewModel
+        public async Task<IEnumerable<QuestionsSetViewModel>> GetAllQuestionsSets() =>
+            await _dbContext.ZestawyPytan.Select(z => new QuestionsSetViewModel
             {
-                    Id = p.Id,
-                    Content = p.Tresc,
-                    Area = p.ObszarPytania.Nazwa,
-                    Difficulty = p.SkalaTrudnosci.Nazwa
-                })
-                .ToListAsync();
+                Id = z.Id,
+                SkillDescription = z.OpisUmiejetnosci,
+                Area = z.ObszarZestawuPytan.Nazwa,
+                Difficulty = z.SkalaTrudnosci.Nazwa,
+                Questions = new List<QuestionViewModel>
+                    (
+                        z.ZestawPytanPytania.Select(p => new QuestionViewModel
+                        {
+                            Content = p.Tresc,
+                            Description = p.Opis
+                        })
+                    ),
+                QuestionsSetRatings = z.ZestawPytanOceny
+                        .Select(o => o.OpisOceny).ToList(),
+                AttachmentFile = new AttachmentFileViewModel
+                {
+                    Id = z.KartaPracy.Id,
+                    Name = z.KartaPracy.Nazwa,
+                    Content = z.KartaPracy.Zawartosc,
+                    ContentType = z.KartaPracy.RodzajZawartosci,
+                    Size = z.KartaPracy.Rozmiar
+                }
+            })
+            .ToListAsync();
+
+        public async Task<QuestionsSetViewModel> GetQuestionsSetById(int id) =>
+            await _dbContext.ZestawyPytan
+            .Where(z => z.Id == id)
+            .Select(z => new QuestionsSetViewModel
+            {
+                Id = z.Id,
+                SkillDescription = z.OpisUmiejetnosci,
+                Area = z.ObszarZestawuPytan.Nazwa,
+                Difficulty = z.SkalaTrudnosci.Nazwa,
+                Questions = new List<QuestionViewModel>
+                (
+                    z.ZestawPytanPytania.Select(p => new QuestionViewModel
+                    {
+                        Content = p.Tresc,
+                        Description = p.Opis,
+                        QuestionsSetId = p.ZestawPytanId
+                    })
+                ),
+                QuestionsSetRatings = z.ZestawPytanOceny
+                    .Select(o => o.OpisOceny).ToList(),
+                AttachmentFile = new AttachmentFileViewModel
+                {
+                    Id = z.KartaPracy.Id,
+                    Name = z.KartaPracy.Nazwa,
+                    Content = z.KartaPracy.Zawartosc,
+                    ContentType = z.KartaPracy.RodzajZawartosci,
+                    Size = z.KartaPracy.Rozmiar
+                }
+            })
+            .FirstOrDefaultAsync()
+            ?? throw new DataNotFoundException();
+
+        public async Task<IEnumerable<QuestionViewModel>> GetAllQuestions() =>
+            await _dbContext.Pytania
+            .Select(p => new QuestionViewModel
+            {
+                Id = p.Id,
+                Content = p.Tresc,
+                Description = p.Opis,
+                QuestionsSetId = p.ZestawPytanId
+            })
+            .ToListAsync();
 
         public async Task<QuestionViewModel> GetQuestionById(int id) =>
             await _dbContext.Pytania
-                .Where(p => p.Id == id)
-                .Select(p => new QuestionViewModel
-                {
-                    Id = p.Id,
-                    Content = p.Tresc,
-                    Area = p.ObszarPytania.Nazwa,
-                    Difficulty = p.SkalaTrudnosci.Nazwa
-                })
-                .FirstOrDefaultAsync()
+            .Where(p => p.Id == id)
+            .Select(p => new QuestionViewModel
+            {
+                Id = p.Id,
+                Content = p.Tresc,
+                Description = p.Opis,
+                QuestionsSetId = p.ZestawPytanId
+            })
+            .FirstOrDefaultAsync()
             ?? throw new DataNotFoundException();
 
-        public async Task<Pytanie> AddQuestion(QuestionViewModel pytanieVM)
+        public async Task<Pytanie> AddQuestion(QuestionViewModel questionVM)
         {
             var question = new Pytanie
             {
-                Tresc = pytanieVM.Content,
-                ObszarPytaniaId = await GetObjectId<ObszarPytania, byte>(pytanieVM.Area),
-                SkalaTrudnosciId = await GetObjectId<SkalaTrudnosci, byte>(pytanieVM.Difficulty)
+                Tresc = questionVM.Content,
+                Opis = questionVM.Description,
+                ZestawPytanId = questionVM.QuestionsSetId.Value
             };
 
             await _dbContext.Pytania.AddAsync(question);
             await _dbContext.SaveChangesAsync();
 
             return question;
+        }
+
+        public async Task<ZestawPytan> AddQuestionsSet(
+            QuestionsSetViewModel questionsSetVM)
+        {
+            var questionsSet = new ZestawPytan
+            {
+                ObszarZestawuPytanId = await GetObjectId<ObszarZestawuPytan, byte>
+                    (questionsSetVM.Area),
+                SkalaTrudnosciId = await GetObjectId<SkalaTrudnosci, byte>
+                    (questionsSetVM.Difficulty)
+            };
+
+            return questionsSet;
         }
 
         private async Task<TKey> GetObjectId<T, TKey>(string name)

@@ -14,6 +14,7 @@ namespace PlacowkaOswiatowaQuiz.Data.Data
         public DbSet<Adres> Adresy { get; set; }
         public DbSet<Diagnoza> Diagnozy { get; set; }
         public DbSet<Etat> Etaty { get; set; }
+        public DbSet<KartaPracy> KartyPracy { get; set; }
         public DbSet<Migawka> Migawki { get; set; }
         public DbSet<ObszarZestawuPytan> ObszaryZestawowPytan { get; set; }
         public DbSet<Ocena> Oceny { get; set; }

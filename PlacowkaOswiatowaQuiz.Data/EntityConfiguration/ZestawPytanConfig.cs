@@ -18,6 +18,11 @@ namespace PlacowkaOswiatowaQuiz.Data.EntityConfiguration
                 .HasOne(z => z.SkalaTrudnosci)
                 .WithMany(s => s.SkalaTrudnosciZestawyPytan)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder
+                .HasOne(z => z.KartaPracy)
+                .WithOne(k => k.KartaPracyZestawPytan)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

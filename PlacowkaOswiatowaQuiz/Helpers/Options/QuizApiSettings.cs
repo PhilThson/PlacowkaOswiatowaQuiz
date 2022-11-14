@@ -7,6 +7,6 @@
         public string Employees { get; set; }
         public string Students { get; set; }
         public string Questions { get; set; }
-        public string Question { get; set; }
+        public string QuestionsSets { get; set; }
     }
 }

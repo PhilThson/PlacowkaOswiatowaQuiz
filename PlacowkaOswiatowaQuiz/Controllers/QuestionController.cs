@@ -53,7 +53,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 var uri = new Uri(QueryHelpers.AddQueryString(
                     $"{_apiSettings.Host}" + "/" +
                     $"{_apiSettings.MainController}" + "/" +
-                    $"{_apiSettings.Question}", "id", $"{id}"));
+                    $"{_apiSettings.Questions}", "id", $"{id}"));
 
                 var response = await client.GetAsync(uri);
 
@@ -80,7 +80,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 var uri = new Uri(
                     $"{_apiSettings.Host}" + "/" +
                     $"{_apiSettings.MainController}" + "/" +
-                    $"{_apiSettings.Question}");
+                    $"{_apiSettings.Questions}");
 
                 var response = await client.PostAsJsonAsync(uri, questionVM);
 

@@ -14,11 +14,6 @@ namespace PlacowkaOswiatowaQuiz.Data.EntityConfiguration
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder
-                .HasOne(w => w.ZestawPytan)
-                .WithMany(p => p.ZestawPytanWyniki)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            builder
                 .HasOne(w => w.Diagnoza)
                 .WithMany(d => d.DiagnozaWyniki)
                 .OnDelete(DeleteBehavior.NoAction);

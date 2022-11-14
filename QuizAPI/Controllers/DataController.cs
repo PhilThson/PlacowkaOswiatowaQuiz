@@ -16,6 +16,7 @@ namespace QuizAPI.Controllers
             _dataService = dataService;
         }
 
+        #region Pracownicy
         [HttpGet("pracownicy")]
         public async Task<IEnumerable<EmployeeViewModel>> GetAllEmployees()
         {
@@ -23,7 +24,9 @@ namespace QuizAPI.Controllers
 
             return employees;
         }
+        #endregion
 
+        #region Uczniowie
         [HttpGet("uczniowie")]
         public async Task<IEnumerable<UczenViewModel>> GetAllStudents()
         {
@@ -31,7 +34,9 @@ namespace QuizAPI.Controllers
 
             return students;
         }
+        #endregion
 
+        #region Pytania
         [HttpGet("pytania")]
         public async Task<IEnumerable<QuestionViewModel>> GetAllQuestions()
         {
@@ -40,7 +45,7 @@ namespace QuizAPI.Controllers
             return questions;
         }
 
-        [HttpGet("pytanie/{id}", Name = nameof(GetQuestionById))]
+        [HttpGet("pytania/{id}", Name = nameof(GetQuestionById))]
         public async Task<IActionResult> GetQuestionById([FromQuery] int id)
         {
             try
@@ -54,7 +59,7 @@ namespace QuizAPI.Controllers
             }
         }
 
-        [HttpPost("pytanie")]
+        [HttpPost("pytania")]
         public async Task<IActionResult> CreateQuestion(QuestionViewModel pytanieVM)
         {
             try
@@ -69,5 +74,30 @@ namespace QuizAPI.Controllers
                 return BadRequest();
             }
         }
+        #endregion
+
+        #region Zestawy pytań
+        [HttpGet("zestawyPytan")]
+        public async Task<IEnumerable<QuestionsSetViewModel>> GetAllQuestionsSets()
+        {
+            var questionsSets = await _dataService.GetAllQuestionsSets();
+
+            return questionsSets;
+        }
+
+        [HttpGet("zestawyPytan/{id}", Name = nameof(GetQuestionsSetById))]
+        public async Task<IActionResult> GetQuestionsSetById([FromQuery] int id)
+        {
+            try
+            {
+                var questionsSet = await _dataService.GetQuestionsSetById(id);
+                return Ok(questionsSet);
+            }
+            catch (DataNotFoundException e)
+            {
+                return NotFound();
+            }
+        }
+        #endregion
     }
 }

@@ -7,8 +7,12 @@ namespace PlacowkaOswiatowaQuiz.Infrastructure.Interfaces
     {
         Task<IEnumerable<EmployeeViewModel>> GetAllEmployees();
         Task<IEnumerable<UczenViewModel>> GetAllStudents();
+        Task<IEnumerable<QuestionsSetViewModel>> GetAllQuestionsSets();
+        Task<QuestionsSetViewModel> GetQuestionsSetById(int id);
         Task<IEnumerable<QuestionViewModel>> GetAllQuestions();
         Task<QuestionViewModel> GetQuestionById(int id);
-        Task<Pytanie> AddQuestion(QuestionViewModel pytanieVM);
+        Task<Pytanie> AddQuestion(QuestionViewModel questionVM);
+        Task<ZestawPytan> AddQuestionsSet(
+            QuestionsSetViewModel questionsSetVM);
     }
 }

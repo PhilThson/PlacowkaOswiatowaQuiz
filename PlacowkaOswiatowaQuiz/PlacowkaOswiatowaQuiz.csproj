@@ -13,9 +13,13 @@
   <ItemGroup>
     <Folder Include="Controllers\" />
     <Folder Include="Views\Uczen\" />
+    <Folder Include="Views\QuestionsSet\" />
+    <Folder Include="Views\UIComponents\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Newtonsoft.Json" />
+    <None Remove="Views\QuestionsSet\" />
+    <None Remove="Views\UIComponents\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />

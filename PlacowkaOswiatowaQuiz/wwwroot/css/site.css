@@ -16,3 +16,44 @@ html {
 body {
   margin-bottom: 60px;
 }
+.CustomColorTable {
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid #218838;
+}
+
+    .CustomColorTable td, #CustomColorTable th {
+        border: 1px solid #218838;
+        /*padding: 1px;*/
+        line-height: 20px;
+        padding-left: 5px;
+    }
+
+    .CustomColorTable th {
+        border: 1px solid #4CAF50;
+        padding-top: 1px;
+        padding-bottom: 1px;
+        text-align: left;
+        background-color: #218838;
+        color: white;
+        line-height: 30px;
+        padding-left: 5px;
+    }
+
+    .CustomColorTable tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    .CustomColorTable tr:hover {
+        background-color: #0094ff;
+        color: white;
+    }
+
+    .CustomColorTable a:hover {
+        color: #f2f2f2;
+    }
+
+    .CustomColorTable td, .CustomColorTable th {
+        font-size: 12px;
+    }

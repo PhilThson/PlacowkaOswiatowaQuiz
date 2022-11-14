@@ -14,11 +14,4 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Models\ZestawPytań" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Models\ZestawPytan.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
-  </ItemGroup>
 </Project>

@@ -17,7 +17,7 @@ namespace PlacowkaOswiatowaQuiz.Data.Models
         public int ZestawPytanId { get; set; }
 
         [ForeignKey(nameof(ZestawPytanId))]
-        [InverseProperty("ZestawPytanOcena")]
+        [InverseProperty("ZestawPytanOceny")]
         public virtual ZestawPytan ZestawPytan { get; set; }
 
         public virtual ICollection<Wynik> OcenaZestawuPytanWyniki { get; set; }
