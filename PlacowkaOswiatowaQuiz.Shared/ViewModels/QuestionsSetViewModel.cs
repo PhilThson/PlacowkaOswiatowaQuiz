@@ -1,14 +1,22 @@
 ﻿using System;
+using System.ComponentModel;
+
 namespace PlacowkaOswiatowaQuiz.Shared.ViewModels
 {
 	public class QuestionsSetViewModel
 	{
 		public int  Id { get; set; }
-		public string SkillDescription { get; set; }
-		public string Area { get; set; }
-		public string Difficulty { get; set; }
-		public List<string> QuestionsSetRatings { get; set; }
-		public List<QuestionViewModel> Questions { get; set; }
-		public AttachmentFileViewModel AttachmentFile { get; set; }
+        [DisplayName("Opis umiejętności")]
+        public string SkillDescription { get; set; }
+        [DisplayName("Obszar zestawu pytań")]
+        public string Area { get; set; }
+        [DisplayName("Skala trudności")]
+        public string Difficulty { get; set; }
+        [DisplayName("Oceny zestawu pytań")]
+        public string[] QuestionsSetRatings { get; set; }
+        [DisplayName("Pytania")]
+        public List<QuestionViewModel> Questions { get; set; }
+        [DisplayName("Dołączony plik - Karta pracy")]
+        public AttachmentFileViewModel AttachmentFile { get; set; }
     }
 }

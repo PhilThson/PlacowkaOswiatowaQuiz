@@ -1,0 +1,72 @@
+﻿@model QuestionsSetViewModel
+
+<div class="row">
+    <div class="col-md-12">
+        <table class="CustomColorTable">
+            <tr>
+                <th>@Html.DisplayNameFor(m => m.Id)</th>
+                <td>@Model.Id</td>
+            </tr>
+            <tr>
+                <th>@Html.DisplayNameFor(m => m.Area)</th>
+                <td>@Model.Area</td>
+            </tr>
+            <tr>
+                <th>@Html.DisplayNameFor(m => m.SkillDescription)</th>
+                <td>@Model.SkillDescription</td>
+            </tr>
+            <tr>
+                <th>@Html.DisplayNameFor(m => m.Difficulty)</th>
+                <td>@Model.Difficulty</td>
+            </tr>
+
+            <tr>
+                <th>@Html.DisplayNameFor(m => m.Questions)</th>
+                <td>
+                    @await Html.PartialAsync("_Questions", Model.Questions)
+                </td>
+            </tr>
+            <tr>
+                <th>@Html.DisplayNameFor(m => m.QuestionsSetRatings)</th>
+                <td>
+                    @await Html.PartialAsync("_Ratings", Model.QuestionsSetRatings)
+                </td>
+            </tr>
+            <tr>
+                <th>@Html.DisplayNameFor(m => m.AttachmentFile)</th>
+                <td>
+                    @await Html.PartialAsync("_Attachment", Model.AttachmentFile)
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+@*<table style="width:100%">
+    <tr>
+        <th>Firstname</th>
+        <th>Lastname</th>
+        <th>Age</th>
+    </tr>
+    <tr>
+        <td>Jill</td>
+        <td>Smith</td>
+        <td>50</td>
+    </tr>
+    <tr>
+        <td colspan="3">
+            <table style="width:100%">
+                <tr>
+                    <th>Firstname</th>
+                    <th>Lastname</th>
+                    <th>Age</th>
+                </tr>
+                <tr>
+                    <td>Jill</td>
+                    <td>Smith</td>
+                    <td>50</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>*@

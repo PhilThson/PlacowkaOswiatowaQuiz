@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -9,92 +10,109 @@ using Newtonsoft.Json;
 using PlacowkaOswiatowaQuiz.Helpers.Options;
 using PlacowkaOswiatowaQuiz.Shared.ViewModels;
 
-// For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace PlacowkaOswiatowaQuiz.Controllers
 {
     public class QuestionsSetController : Controller
     {
         private readonly QuizApiSettings _apiSettings;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public QuestionsSetController(QuizApiSettings apiSettings)
+        public QuestionsSetController(QuizApiSettings apiSettings,
+            IHttpClientFactory httpClientFactory)
         {
             _apiSettings = apiSettings;
+            _httpClientFactory = httpClientFactory;
         }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
             var questionsSets = new List<QuestionsSetViewModel>();
-            using (var client = new HttpClient())
-            {
-                var uri = new Uri(
-                    $"{_apiSettings.Host}" + "/" +
-                    $"{_apiSettings.MainController}" + "/" +
-                    $"{_apiSettings.QuestionsSets}");
 
-                var response = await client.GetAsync(uri);
+            var httpClient = _httpClientFactory.CreateClient(_apiSettings.ClientName);
 
-                questionsSets = await response.Content
-                    .ReadFromJsonAsync<List<QuestionsSetViewModel>>();
-            }
+            //var uri = new Uri($"{_apiSettings.QuestionsSets}");
+
+            var response = await httpClient.GetAsync(_apiSettings.QuestionsSets);
+
+            response.EnsureSuccessStatusCode();
+
+            questionsSets = await response.Content
+                .ReadFromJsonAsync<List<QuestionsSetViewModel>>();
 
             return View(questionsSets);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Details(int id)
         {
             var questionsSet = new QuestionsSetViewModel();
 
             if (id == default(int))
                 return View(questionsSet);
 
-            using (var client = new HttpClient())
-            {
-                var uri = new Uri(QueryHelpers.AddQueryString(
-                    $"{_apiSettings.Host}" + "/" +
-                    $"{_apiSettings.MainController}" + "/" +
-                    $"{_apiSettings.QuestionsSets}", "id", $"{id}"));
+            var httpClient = _httpClientFactory.CreateClient(_apiSettings.ClientName);
 
-                var response = await client.GetAsync(uri);
+            var response = await httpClient.GetAsync(
+                $"{_apiSettings.QuestionsSets}/{id}");
 
-                questionsSet = await response.Content
-                    .ReadFromJsonAsync<QuestionsSetViewModel>();
-            }
+            response.EnsureSuccessStatusCode();
+
+            questionsSet = await response.Content
+                .ReadFromJsonAsync<QuestionsSetViewModel>();
 
             return View(questionsSet);
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> Edit(QuestionViewModel questionVM)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest();
-        //    }
+        [HttpPost]
+        public async Task<IActionResult> Edit(QuestionsSetViewModel questionsSetVM)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
 
-        //    var json = JsonConvert.SerializeObject(questionVM);
-        //    var data = new StringContent(json, Encoding.UTF8, "application/json");
+            //var json = JsonConvert.SerializeObject(questionVM);
+            //var data = new StringContent(json, Encoding.UTF8, "application/json");
 
-        //    using (var client = new HttpClient())
-        //    {
-        //        var uri = new Uri(
-        //            $"{_apiSettings.Host}" + "/" +
-        //            $"{_apiSettings.MainController}" + "/" +
-        //            $"{_apiSettings.QuestionsSets}");
+            var httpClient = _httpClientFactory.CreateClient(_apiSettings.ClientName);
 
-        //        var response = await client.PostAsJsonAsync(uri, questionVM);
+            //var uri = new Uri(_apiSettings.QuestionsSets);
 
-        //        if (!response.IsSuccessStatusCode)
-        //        {
-        //            //Dodanie informacji (ViewBag) że operacja się nie powiodła
-        //            return View(questionVM);
-        //        }
-        //    }
+            var response = await httpClient.PostAsJsonAsync(_apiSettings.QuestionsSets,
+                questionsSetVM);
 
-        //    return RedirectToAction(nameof(Index));
-        //}
+            //response.EnsureSuccessStatusCode();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                //Dodanie informacji (ViewBag) że operacja się nie powiodła
+                return View(questionsSetVM);
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DownloadAttachment([FromQuery] int attachmentId)
+        {
+            var attachment = new AttachmentFileViewModel();
+
+            if (attachmentId == default(int))
+                return NotFound();
+
+            var httpClient = _httpClientFactory.CreateClient(_apiSettings.ClientName);
+
+            var response = await httpClient.GetAsync(
+                $"{_apiSettings.Attachments}/{attachmentId}");
+
+            response.EnsureSuccessStatusCode();
+
+            attachment = await response.Content
+                .ReadFromJsonAsync<AttachmentFileViewModel>();
+
+            return File(attachment.Content, "application/octet-stream", attachment.Name);
+        }
     }
 }
 

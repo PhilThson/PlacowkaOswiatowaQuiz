@@ -2,19 +2,26 @@ using PlacowkaOswiatowaQuiz.Helpers.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddSingleton(
     builder.Configuration
         .GetSection("QuizApiSettings").Get<QuizApiSettings>());
+builder.Services.AddHttpClient(
+    builder.Configuration.GetValue<string>("QuizApiSettings:ClientName"),
+    (provider, client) =>
+    {
+        var apiSettings = provider.GetRequiredService<QuizApiSettings>();
+        client.BaseAddress = new Uri(apiSettings.Host + '/' +
+            apiSettings.MainController + '/');
+        client.Timeout = TimeSpan.FromSeconds(10);
+        client.DefaultRequestHeaders.Clear();
+    });
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 

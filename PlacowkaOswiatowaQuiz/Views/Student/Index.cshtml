@@ -1,5 +1,4 @@
-﻿@using PlacowkaOswiatowaQuiz.Shared.ViewModels
-@model IEnumerable<UczenViewModel>
+﻿@model IEnumerable<StudentViewModel>
 
 <div class="row pb-3">
     @foreach (var uczen in Model)
@@ -9,11 +8,11 @@
                 <div class="col-12 p-1" style="border:1px solid #008cba; border-radius:5px;">
                     <div>
                         <div class="pl-1">
-                            <p class="card-title h5 text-primary">@uczen.Imie @uczen.Nazwisko</p>
-                            <p class="card-title text-info">z oddziału <b>@uczen.Oddzial</b></p>
+                            <p class="card-title h5 text-primary">@uczen.FirstName @uczen.LastName</p>
+                            <p class="card-title text-info">z oddziału <b>@uczen.Branch</b></p>
                         </div>
                         <div class="pl-1">
-                            <p>Data urodzenia: <b>@uczen.DataUrodzenia.Value.ToString("yyyy-MM-dd")</b></p>
+                            <p>Data urodzenia: <b>@uczen.DateOfBirth.Value.ToString("yyyy-MM-dd")</b></p>
                         </div>
                     </div>
                 </div>

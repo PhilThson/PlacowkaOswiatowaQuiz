@@ -28,7 +28,7 @@ namespace QuizAPI.Controllers
 
         #region Uczniowie
         [HttpGet("uczniowie")]
-        public async Task<IEnumerable<UczenViewModel>> GetAllStudents()
+        public async Task<IEnumerable<StudentViewModel>> GetAllStudents()
         {
             var students = await _dataService.GetAllStudents();
 
@@ -86,12 +86,28 @@ namespace QuizAPI.Controllers
         }
 
         [HttpGet("zestawyPytan/{id}", Name = nameof(GetQuestionsSetById))]
-        public async Task<IActionResult> GetQuestionsSetById([FromQuery] int id)
+        public async Task<IActionResult> GetQuestionsSetById([FromRoute] int id)
         {
             try
             {
                 var questionsSet = await _dataService.GetQuestionsSetById(id);
                 return Ok(questionsSet);
+            }
+            catch (DataNotFoundException e)
+            {
+                return NotFound();
+            }
+        }
+        #endregion
+
+        #region Karty pracy
+        [HttpGet("kartyPracy/{id}", Name = nameof(GetAttachmentById))]
+        public async Task<IActionResult> GetAttachmentById([FromRoute] int id)
+        {
+            try
+            {
+                var attachment = await _dataService.GetAttachmentById(id);
+                return Ok(attachment);
             }
             catch (DataNotFoundException e)
             {

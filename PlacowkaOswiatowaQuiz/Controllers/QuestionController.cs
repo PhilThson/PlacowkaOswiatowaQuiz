@@ -14,28 +14,28 @@ namespace PlacowkaOswiatowaQuiz.Controllers
     public class QuestionController : Controller
     {
         private readonly QuizApiSettings _apiSettings;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public QuestionController(QuizApiSettings apiSettings)
+        public QuestionController(QuizApiSettings apiSettings,
+            IHttpClientFactory httpClientFactory)
         {
             _apiSettings = apiSettings;
+            _httpClientFactory = httpClientFactory;
         }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
             var questions = new List<QuestionViewModel>();
-            using (var client = new HttpClient())
-            {
-                var uri = new Uri(
-                    $"{_apiSettings.Host}" + "/" +
-                    $"{_apiSettings.MainController}" + "/" +
-                    $"{_apiSettings.Questions}");
 
-                var response = await client.GetAsync(uri);
+            var httpClient = _httpClientFactory.CreateClient(_apiSettings.ClientName);
 
-                questions = await response.Content
-                    .ReadFromJsonAsync<List<QuestionViewModel>>();
-            }
+            var response = await httpClient.GetAsync(_apiSettings.Questions);
+
+            response.EnsureSuccessStatusCode();
+
+            questions = await response.Content
+                .ReadFromJsonAsync<List<QuestionViewModel>>();
 
             return View(questions);
         }
@@ -48,18 +48,15 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             if (id == default(int))
                 return View(question);
 
-            using (var client = new HttpClient())
-            {
-                var uri = new Uri(QueryHelpers.AddQueryString(
-                    $"{_apiSettings.Host}" + "/" +
-                    $"{_apiSettings.MainController}" + "/" +
-                    $"{_apiSettings.Questions}", "id", $"{id}"));
+            var httpClient = _httpClientFactory.CreateClient(_apiSettings.ClientName);
 
-                var response = await client.GetAsync(uri);
+            var response = await httpClient.GetAsync(
+                $"{_apiSettings.Questions}/{id}");
 
-                question = await response.Content
-                    .ReadFromJsonAsync<QuestionViewModel>();
-            }
+            response.EnsureSuccessStatusCode();
+
+            question = await response.Content
+                .ReadFromJsonAsync<QuestionViewModel>();
 
             return View(question);
         }
@@ -72,23 +69,20 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 return BadRequest();
             }
 
-            var json = JsonConvert.SerializeObject(questionVM);
-            var data = new StringContent(json, Encoding.UTF8, "application/json");
+            //var json = JsonConvert.SerializeObject(questionVM);
+            //var data = new StringContent(json, Encoding.UTF8, "application/json");
 
-            using (var client = new HttpClient())
+            var httpClient = _httpClientFactory.CreateClient(_apiSettings.ClientName);
+
+            var response = await httpClient.PostAsJsonAsync(_apiSettings.Questions,
+                questionVM);
+
+            //response.EnsureSuccessStatusCode();
+
+            if (!response.IsSuccessStatusCode)
             {
-                var uri = new Uri(
-                    $"{_apiSettings.Host}" + "/" +
-                    $"{_apiSettings.MainController}" + "/" +
-                    $"{_apiSettings.Questions}");
-
-                var response = await client.PostAsJsonAsync(uri, questionVM);
-
-                if (!response.IsSuccessStatusCode)
-                {
-                    //Dodanie informacji (ViewBag) że operacja się nie powiodła
-                    return View(questionVM);
-                }
+                //Dodanie informacji (ViewBag) że operacja się nie powiodła
+                return View(questionVM);
             }
 
             return RedirectToAction(nameof(Index));

@@ -36,7 +36,7 @@ namespace PlacowkaOswiatowaQuiz.Data.Data
                 {
                     throw new Exception("Nie udało się zainicjować DbContext'u");
                 }
-
+                //TODO tworzyć migrację a potem seed i zmienić sprawdzenia
                 dbContext.Database.EnsureCreated();
                 if (dbContext.Database.GetAppliedMigrations().Count() < 1)
                 {

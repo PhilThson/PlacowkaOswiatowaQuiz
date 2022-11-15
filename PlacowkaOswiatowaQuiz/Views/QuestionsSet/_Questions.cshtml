@@ -1,0 +1,42 @@
+﻿@model IEnumerable<QuestionViewModel>
+
+<div>
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(m => m.Id)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(m => m.Content)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(m => m.Description)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(m => m.QuestionsSetId)
+                </th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var question in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(item => question.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(item => question.Content)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(item => question.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(item => question.QuestionsSetId)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -18,31 +18,31 @@ namespace PlacowkaOswiatowaQuiz.Infrastructure.Services
 
         public async Task<IEnumerable<EmployeeViewModel>> GetAllEmployees() =>
             await _dbContext.Pracownicy.Select(p => new EmployeeViewModel
-                {
-                    Id = p.Id,
-                    FirstName = p.Imie,
-                    LastName = p.Nazwisko,
-                    DateOfBirth = p.DataUrodzenia,
-                    PersonalNumber = p.Pesel,
-                    Salary = p.Pensja,
-                    Email = p.Email,
-                    Job = p.Etat.Nazwa,
-                    Position = p.Stanowisko.Nazwa,
-                    DateOfEmployment = p.DataZatrudnienia
-                })
-                .ToListAsync();
+            {
+                Id = p.Id,
+                FirstName = p.Imie,
+                LastName = p.Nazwisko,
+                DateOfBirth = p.DataUrodzenia,
+                PersonalNumber = p.Pesel,
+                Salary = p.Pensja,
+                Email = p.Email,
+                Job = p.Etat.Nazwa,
+                Position = p.Stanowisko.Nazwa,
+                DateOfEmployment = p.DataZatrudnienia
+            })
+            .ToListAsync();
 
-        public async Task<IEnumerable<UczenViewModel>> GetAllStudents() =>
-            await _dbContext.Uczniowie.Select(u => new UczenViewModel
-                {
-                    Id = u.Id,
-                    Imie = u.Imie,
-                    Nazwisko = u.Nazwisko,
-                    DataUrodzenia = u.DataUrodzenia,
-                    Pesel = u.Pesel,
-                    Oddzial = u.Oddzial.Nazwa
-                })
-                .ToListAsync();
+        public async Task<IEnumerable<StudentViewModel>> GetAllStudents() =>
+            await _dbContext.Uczniowie.Select(u => new StudentViewModel
+            {
+                Id = u.Id,
+                FirstName = u.Imie,
+                LastName = u.Nazwisko,
+                DateOfBirth = u.DataUrodzenia,
+                PersonalNumber = u.Pesel,
+                Branch = u.Oddzial.Nazwa
+            })
+            .ToListAsync();
 
         public async Task<IEnumerable<QuestionsSetViewModel>> GetAllQuestionsSets() =>
             await _dbContext.ZestawyPytan.Select(z => new QuestionsSetViewModel
@@ -55,17 +55,18 @@ namespace PlacowkaOswiatowaQuiz.Infrastructure.Services
                     (
                         z.ZestawPytanPytania.Select(p => new QuestionViewModel
                         {
+                            Id = p.Id,
                             Content = p.Tresc,
-                            Description = p.Opis
+                            Description = p.Opis,
+                            QuestionsSetId = p.ZestawPytanId
                         })
                     ),
                 QuestionsSetRatings = z.ZestawPytanOceny
-                        .Select(o => o.OpisOceny).ToList(),
+                        .Select(o => o.OpisOceny).ToArray(),
                 AttachmentFile = new AttachmentFileViewModel
                 {
                     Id = z.KartaPracy.Id,
                     Name = z.KartaPracy.Nazwa,
-                    Content = z.KartaPracy.Zawartosc,
                     ContentType = z.KartaPracy.RodzajZawartosci,
                     Size = z.KartaPracy.Rozmiar
                 }
@@ -85,18 +86,18 @@ namespace PlacowkaOswiatowaQuiz.Infrastructure.Services
                 (
                     z.ZestawPytanPytania.Select(p => new QuestionViewModel
                     {
+                        Id = p.Id,
                         Content = p.Tresc,
                         Description = p.Opis,
                         QuestionsSetId = p.ZestawPytanId
                     })
                 ),
                 QuestionsSetRatings = z.ZestawPytanOceny
-                    .Select(o => o.OpisOceny).ToList(),
+                    .Select(o => o.OpisOceny).ToArray(),
                 AttachmentFile = new AttachmentFileViewModel
                 {
                     Id = z.KartaPracy.Id,
                     Name = z.KartaPracy.Nazwa,
-                    Content = z.KartaPracy.Zawartosc,
                     ContentType = z.KartaPracy.RodzajZawartosci,
                     Size = z.KartaPracy.Rozmiar
                 }
@@ -127,6 +128,21 @@ namespace PlacowkaOswiatowaQuiz.Infrastructure.Services
             })
             .FirstOrDefaultAsync()
             ?? throw new DataNotFoundException();
+
+        public async Task<AttachmentFileViewModel> GetAttachmentById(int id) =>
+            await _dbContext.KartyPracy
+            .Where(k => k.Id == id)
+            .Select(k => new AttachmentFileViewModel
+            {
+                Id = k.Id,
+                Name = k.Nazwa,
+                Content = k.Zawartosc,
+                ContentType = k.RodzajZawartosci,
+                Size = k.Rozmiar
+            })
+            .FirstOrDefaultAsync()
+            ?? throw new DataNotFoundException();
+
 
         public async Task<Pytanie> AddQuestion(QuestionViewModel questionVM)
         {

@@ -1,17 +1,20 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Options;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using PlacowkaOswiatowaQuiz.Helpers.Options;
 using PlacowkaOswiatowaQuiz.Shared.ViewModels;
 
-namespace PlacowkaOswiatowaQuiz.Models.Controllers
+namespace PlacowkaOswiatowaQuiz.Controllers
 {
-    public class EmployeeController : Controller
+    public class StudentController : Controller
     {
         private readonly QuizApiSettings _apiSettings;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public EmployeeController(QuizApiSettings apiSettings,
+        public StudentController(QuizApiSettings apiSettings,
             IHttpClientFactory httpClientFactory)
         {
             _apiSettings = apiSettings;
@@ -20,20 +23,21 @@ namespace PlacowkaOswiatowaQuiz.Models.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var employees = new List<EmployeeViewModel>();
+            var students = new List<StudentViewModel>();
 
             var httpClient = _httpClientFactory.CreateClient(_apiSettings.ClientName);
 
-            var uri = new Uri(_apiSettings.Employees);
+            var uri = new Uri(_apiSettings.Students);
 
             var response = await httpClient.GetAsync(uri);
 
             response.EnsureSuccessStatusCode();
 
-            employees = await response.Content
-                .ReadFromJsonAsync<List<EmployeeViewModel>>();
+            students = await response.Content
+                .ReadFromJsonAsync<List<StudentViewModel>>();
 
-            return View(employees);
+            return View(students);
         }
     }
 }
+
