@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PlacowkaOswiatowaQuiz.Data\PlacowkaOswiatowaQuiz.Data.csproj" />
     <ProjectReference Include="..\PlacowkaOswiatowaQuiz.Shared\PlacowkaOswiatowaQuiz.Shared.csproj" />
   </ItemGroup>
 

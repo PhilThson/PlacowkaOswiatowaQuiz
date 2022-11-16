@@ -58,6 +58,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             question = await response.Content
                 .ReadFromJsonAsync<QuestionViewModel>();
 
+            //return PartialView("Edit", question);
             return View(question);
         }
 
@@ -73,18 +74,25 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             //var data = new StringContent(json, Encoding.UTF8, "application/json");
 
             var httpClient = _httpClientFactory.CreateClient(_apiSettings.ClientName);
+            var response = new HttpResponseMessage();
 
-            var response = await httpClient.PostAsJsonAsync(_apiSettings.Questions,
-                questionVM);
+            if (!questionVM.Id.HasValue)
+                response = await httpClient.PostAsJsonAsync(_apiSettings.Questions,
+                    questionVM);
+            else
+                response = await httpClient.PutAsJsonAsync(_apiSettings.Questions,
+                    questionVM);
 
             //response.EnsureSuccessStatusCode();
 
             if (!response.IsSuccessStatusCode)
             {
                 //Dodanie informacji (ViewBag) że operacja się nie powiodła
+                TempData["errorAlert"] = "Nieudana próba edycji pytania";
                 return View(questionVM);
             }
 
+            TempData["successAlert"] = "Poprawnie zaktualizowano/dodano pytanie";
             return RedirectToAction(nameof(Index));
         }
     }

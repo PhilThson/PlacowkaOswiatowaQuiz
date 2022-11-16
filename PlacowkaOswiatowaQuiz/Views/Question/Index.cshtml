@@ -1,25 +1,24 @@
 ﻿@model IEnumerable<QuestionViewModel>
 
-<h1>Wszystkie pytania</h1>
-
-
-
-@*<ul>
-        @foreach (var customer in Model)
-        {
-            <li>
-                @Html.DisplayFor(item => customer.FirstName)
-                @Html.DisplayFor(item => customer.LastName)
-            </li>
-        }
-    </ul>*@
-<div>
-    <h6 class="display-4">Dodaj pytanie
-        <a class="btn btn-primary" asp-controller="Question" asp-action="Edit"/>
-    </h6>
+<div class="panel-heading">
+    <div class="row">
+        <div class="col-md-7">
+            <h5><b>Lista pytań</b></h5>
+        </div>
+        <div class="col-md-12">
+            @*<button class="btn btn-sm btn-info" onclick="AddEdit(0)">Dodaj nowe pytanie</button>*@
+            <a class="btn btn-sm btn-info" asp-controller="Question" asp-action="Edit">
+                Dodaj pytanie
+            </a>
+        </div>
+    </div>
 </div>
-<div>
-    <table class="table table-striped table-hover">
+<div id="divAlertArea">
+    <partial name="~/Views/UIComponents/_bootstrapAlert.cshtml" />
+</div>
+
+<div class="panel-body scroll panel-height">
+    <table class="table">
         <thead>
             <tr>
                 <th>
@@ -34,6 +33,8 @@
                 <th>
                     @Html.DisplayNameFor(model => model.QuestionsSetId)
                 </th>
+                <th></th>
+                <th></th>
             </tr>
         </thead>
 
@@ -58,11 +59,12 @@
                     </td>
                     <td>
                         <div>
-                            <a class="btn btn-primary" asp-controller="Customers" asp-action="Edit" asp-route-id="@question.Id">
-                                <i class="fa fa-pencil" aria-hidden="true"></i>
+                            <a class="btn btn-sm btn-info" asp-controller="Question" asp-action="Edit" asp-route-id="@question.Id">
+                                Edytuj
                             </a>
-                            <a class="btn btn-danger" asp-controller="Customers" asp-action="Delete" asp-route-id="@question.Id">
-                                <i class="fa fa-trash" aria-hidden="true"></i>
+                            @*<a href='#' class="btn btn-sm btn-info" onclick="Edit(@question.Id)">Edytuj</a>*@
+                            <a class="btn btn-sm btn-danger" asp-controller="Question" asp-action="Delete" asp-route-id="@question.Id">
+                                Usuń
                             </a>
                         </div>
                     </td>
@@ -71,17 +73,17 @@
             }
 
         </tbody>
-
-        @*<tfoot>
-                <tr>
-                    <th scope="row">Totals</th>
-                    <td>@Model.Count()</td>
-                    <td></td>
-                    <td></td>
-                </tr>
-            </tfoot>*@
     </table>
 </div>
 
+@*<script>
+    $(document).ready(function () {
+        var Edit = function (id) {
+            var url = "/Question/Edit/" + id;
+            $('#titleBigModal').html("Edytuj pytanie");
+            loadBigModal(url);
+        };
+    });
+</script>*@
 
 Generated on @DateTime.Now

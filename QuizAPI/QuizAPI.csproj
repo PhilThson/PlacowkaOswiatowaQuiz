@@ -17,11 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PlacowkaOswiatowaQuiz.Data\PlacowkaOswiatowaQuiz.Data.csproj" />
-    <ProjectReference Include="..\PlacowkaOswiatowaQuiz.Infrastructure\PlacowkaOswiatowaQuiz.Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Remove="Newtonsoft.Json" />
   </ItemGroup>
 </Project>

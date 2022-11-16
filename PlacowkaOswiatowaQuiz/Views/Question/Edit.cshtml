@@ -5,47 +5,20 @@
 <form method="post">
     <input type="hidden" asp-for="Id" />
 
-    <div class="form-group">
+    <div class="form-group col-12 col-md-6">
         <label for="Content">Treść pytania:</label>
         <input type="text" id="Content" name="Content" value="@Model.Content" />
     </div>
-
-    <div class="form-row">
-
-        <div class="form-group">
-            <label asp-for="Description">Opis pytania:</label>
-            <input asp-for="Description" />
-            <span asp-validation-for="Description" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="QuestionsSetId">Numer Zestawu pytań</label>
-            <input asp-for="QuestionsSetId" />
-            <span asp-validation-for="QuestionsSetId" class="text-danger"></span>
-        </div>
-
+    <div class="form-group">
+        <label asp-for="Description">Opis pytania:</label>
+        <input asp-for="Description" />
+        <span asp-validation-for="Description" class="text-danger"></span>
     </div>
-
-    @*<div class="form-row">
-
-        <div class="form-group col-4">
-            <label asp-for="Salary">Salary</label>
-            <input asp-for="Salary" />
-        </div>
-
-        <div class="form-group col-6">
-            <label asp-for="Gender">Gender</label>
-            <select asp-for="Gender" asp-items="@Html.GetEnumSelectList<Domain.Gender>()">
-            </select>
-        </div>
-
-        <div class="form-group col-2">
-            <label asp-for="IsRemoved">Removed</label>
-            <input asp-for="IsRemoved" />
-        </div>
-
-    </div>*@
-
+    <div class="form-group">
+        <label asp-for="QuestionsSetId">Numer zestawu pytań:</label>
+        <input asp-for="QuestionsSetId" />
+        <span asp-validation-for="QuestionsSetId" class="text-danger"></span>
+    </div>
     <div>
         <button class="btn btn-success btn-block" type="submit">Zapisz</button>
     </div>

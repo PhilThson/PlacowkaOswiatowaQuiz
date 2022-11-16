@@ -13,9 +13,7 @@
                 <th>
                     @Html.DisplayNameFor(m => m.Description)
                 </th>
-                <th>
-                    @Html.DisplayNameFor(m => m.QuestionsSetId)
-                </th>
+                <th></th>
             </tr>
         </thead>
 
@@ -33,7 +31,10 @@
                         @Html.DisplayFor(item => question.Description)
                     </td>
                     <td>
-                        @Html.DisplayFor(item => question.QuestionsSetId)
+                        <a class="btn btn-sm btn-info" asp-controller="Question" asp-action="Edit"
+                           asp-route-id="@question.Id">
+                            Edytuj
+                        </a>
                     </td>
                 </tr>
             }

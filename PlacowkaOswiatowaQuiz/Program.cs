@@ -13,7 +13,7 @@ builder.Services.AddHttpClient(
         var apiSettings = provider.GetRequiredService<QuizApiSettings>();
         client.BaseAddress = new Uri(apiSettings.Host + '/' +
             apiSettings.MainController + '/');
-        client.Timeout = TimeSpan.FromSeconds(10);
+        client.Timeout = TimeSpan.FromSeconds(30);
         client.DefaultRequestHeaders.Clear();
     });
 
