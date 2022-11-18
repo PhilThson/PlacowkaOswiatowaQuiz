@@ -21,18 +21,10 @@
     <table class="table">
         <thead>
             <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Id)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Content)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Description)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.QuestionsSetId)
-                </th>
+                <th>@Html.DisplayNameFor(model => model.Id)</th>
+                <th>@Html.DisplayNameFor(model => model.Content)</th>
+                <th>@Html.DisplayNameFor(model => model.Description)</th>
+                <th>@Html.DisplayNameFor(model => model.QuestionsSetId)</th>
                 <th></th>
                 <th></th>
             </tr>
@@ -45,18 +37,10 @@
                 //string className = customer.IsSalaryOverLimit ? "table-warning" : "";
 
                 <tr>
-                    <td>
-                        @Html.DisplayFor(item => question.Id)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(item => question.Content)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(item => question.Description)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(item => question.QuestionsSetId)
-                    </td>
+                    <td>@Html.DisplayFor(item => question.Id)</td>
+                    <td>@Html.DisplayFor(item => question.Content)</td>
+                    <td>@Html.DisplayFor(item => question.Description)</td>
+                    <td>@Html.DisplayFor(item => question.QuestionsSetId)</td>
                     <td>
                         <div>
                             <a class="btn btn-sm btn-info" asp-controller="Question" asp-action="Edit" asp-route-id="@question.Id">

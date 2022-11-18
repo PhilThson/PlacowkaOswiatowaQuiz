@@ -11,6 +11,7 @@
         public string QuestionsSets { get; set; }
         public string Areas { get; set; }
         public string Difficulties { get; set; }
+        public string Ratings { get; set; }
         public string Attachments { get; set; }
     }
 }

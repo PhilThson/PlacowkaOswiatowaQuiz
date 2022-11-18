@@ -113,6 +113,20 @@ namespace PlacowkaOswiatowaQuiz.Controllers
 
             return File(attachment.Content, "application/octet-stream", attachment.Name);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> EditRating(RatingViewModel ratingVM)
+        {
+            if (!ModelState.IsValid)
+                return RedirectToAction(nameof(Index));
+
+            var httpClient = _httpClientFactory.CreateClient(_apiSettings.ClientName);
+            var response = await httpClient.PutAsJsonAsync(_apiSettings.Ratings,
+                ratingVM);
+
+            response.EnsureSuccessStatusCode();
+            return RedirectToAction(nameof(Details), new { id = ratingVM.QuestionsSetId });
+        }
     }
 }
 

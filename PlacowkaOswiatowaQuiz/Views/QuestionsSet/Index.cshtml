@@ -7,7 +7,7 @@
                 <button class="btn btn-sm btn-info" onclick="AddEdit(0)">Dodaj nowy</button>
             </div>
             <div class="col-md-7">
-                <h5><b>Lista Zestawów pytań</b></h5>
+                <h4><b>Lista Zestawów pytań</b></h4>
             </div>
         </div>
     </div>
@@ -31,30 +31,18 @@
                 @foreach (var item in Model)
                 {
                     <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Id)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.SkillDescription)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Area)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Difficulty)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.AttachmentFile.Name)
-                        </td>
+                        <td>@Html.DisplayFor(modelItem => item.Id)</td>
+                        <td>@Html.DisplayFor(modelItem => item.SkillDescription)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Area)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Difficulty)</td>
+                        <td>@Html.DisplayFor(modelItem => item.AttachmentFile.Name)</td>
                         <td>
                             <a class="btn btn-sm btn-info" asp-controller="QuestionsSet" asp-action="Details" asp-route-id="@item.Id">
                                 Szczegóły
                             </a>
                             @*<a href='#' class="btn btn-sm btn-info" onclick="Details(@item.Id)">Szczegóły</a>*@
                         </td>
-                        <td>
-                            <a class="btn btn-sm btn-danger" onclick="Delete(@item.Id)">Delete</a>
-                        </td>
+                        <td><a class="btn btn-sm btn-danger" onclick="Delete(@item.Id)">Delete</a></td>
                     </tr>
                 }
             </tbody>
