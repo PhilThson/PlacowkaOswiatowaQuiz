@@ -1,0 +1,24 @@
+﻿@model AreaViewModel
+
+<form asp-action="EditArea" method="post">
+    <fieldset>
+        <legend>Edycja obszaru zestawu pytań</legend>
+        <input type="hidden" asp-for="@Model.Id" />
+        <div class="mb-3">
+            <label asp-for="@Model.Name" class="form-label"></label>
+            <input type="text" asp-for="@Model.Name" class="form-control">
+            <span asp-validation-for="@Model.Name" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="@Model.ExtendedName" class="form-label"></label>
+            <input type="text" asp-for="@Model.ExtendedName" class="form-control">
+            <span asp-validation-for="@Model.ExtendedName" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="@Model.Description" class="form-label"></label>
+            <input type="text" asp-for="@Model.Description" class="form-control">
+            <span asp-validation-for="@Model.Description" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg form-control">Zapisz</button>
+    </fieldset>
+</form>

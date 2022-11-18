@@ -1,5 +1,8 @@
 ﻿@model QuestionsSetViewModel
 
+<div id="divAlertArea">
+    <partial name="~/Views/UIComponents/_bootstrapAlert.cshtml" />
+</div>
 <div class="row">
     <div class="col-md-12">
         <table class="CustomColorTable">
@@ -9,11 +12,39 @@
             </tr>
             <tr>
                 <th>@Html.DisplayNameFor(m => m.Area)</th>
-                <td>@Model.Area</td>
+                <td>
+                    @Model.Area
+                    <form id="areaForm" asp-action="Edit">
+                        <label for="areasDropdown"><b>Obszary:</b></label>
+                        <select class="form-control" id="areasDropdown" name="areaDropdown"></select>
+                        <button class="btn btn-info btn-sm" type="submit">
+                            Zapisz
+                        </button>
+                    </form>
+
+                    @*<form class="d-flex">
+            <input class="form-control me-sm-0" type="text" value="@Model.Area">
+            <a class="btn btn-secondary my-sm-0" asp-controller="Question" asp-action="Edit"
+                asp-route-id="@Model.Id">Edytuj</a>
+        </form>*@
+                    @*<label for="disabledSelect" class="form-label">Disabled select menu</label>
+        <select id="disabledSelect" class="form-select">
+            <option>Disabled select</option>
+        </select>*@
+                </td>
             </tr>
             <tr>
                 <th>@Html.DisplayNameFor(m => m.SkillDescription)</th>
-                <td>@Model.SkillDescription</td>
+                <td>
+                    <form class="d-flex" method="post" asp-action="EditSkill" asp-controller="QuestionsSet">
+                        <input type="hidden" asp-for="@Model.Id" />
+                        <input asp-for="@Model.SkillDescription" class="form-control me-sm-0" type="text"
+                                value="@Model.SkillDescription" name="skill">
+                        <button class="btn btn-info btn-sm" type="submit">
+                            Zapisz
+                        </button>
+                    </form>
+                </td>
             </tr>
             <tr>
                 <th>@Html.DisplayNameFor(m => m.Difficulty)</th>
@@ -42,25 +73,20 @@
     </div>
 </div>
 
-@*<script type="text/javascript">
-    var frm = $('#contactForm1');
-
-    frm.submit(function (e) {
-
-            e.preventDefault();
-
+<script type="text/javascript">
+    $(document).ready(function () {
         $.ajax({
-            type: frm.attr('method'),
-            url: frm.attr('action'),
-            data: frm.serialize(),
+            type: "GET",
+            url: "/Dictionary/GetAreas",
+            data: "{}",
             success: function (data) {
-            console.log('Submission was successful.');
                 console.log(data);
-            },
-            error: function (data) {
-            console.log('An error occurred.');
-                console.log(data);
-            },
+                var s = '<option value="-1">Proszę wybrać obszar</option>';
+                for (var i = 0; i < data.length; i++) {
+                    s += '<option value="' + data[i].id + '">' + data[i].name + '</option>';
+                }
+                $("#areasDropdown").html(s);
+            }
         });
-    });
-</script>*@
+    }); 
+</script>

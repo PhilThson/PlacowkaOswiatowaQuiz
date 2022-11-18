@@ -1,7 +1,8 @@
 ﻿@if (TempData["successAlert"] != null)
 {
-    <div class="alert btn-primary">
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert"
+                aria-label="Close"></button>
         <p>@TempData["successAlert"]</p>
     </div>
 }
@@ -9,17 +10,27 @@
 
 @if (TempData["errorAlert"] != null)
 {
-    <div class="alert btn-primary">
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert"
+                aria-label="Close"></button>
         <p>@TempData["errorAlert"]</p>
     </div>
 }
 
+@if (TempData["infoAlert"] != null)
+{
+    <div class="alert alert-primary alert-dismissible fade show" role="alert">
+        <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert"
+                aria-label="Close"></button>
+        <p>@TempData["infoAlert"]</p>
+    </div>
+}
+
 @*<script>
-    $(document).ready(function () {
-        setTimeout(function () {
-            //$('#submit-errors').hide();
-            $(".alert").alert('close');
-        }, 5000);
-});
-</script>*@
+        $(document).ready(function () {
+            setTimeout(function () {
+                //$('#submit-errors').hide();
+                $(".alert").alert('close');
+            }, 5000);
+    });
+    </script>*@

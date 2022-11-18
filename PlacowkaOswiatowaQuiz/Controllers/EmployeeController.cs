@@ -24,9 +24,7 @@ namespace PlacowkaOswiatowaQuiz.Models.Controllers
 
             var httpClient = _httpClientFactory.CreateClient(_apiSettings.ClientName);
 
-            var uri = new Uri(_apiSettings.Employees);
-
-            var response = await httpClient.GetAsync(uri);
+            var response = await httpClient.GetAsync(_apiSettings.Employees);
 
             response.EnsureSuccessStatusCode();
 

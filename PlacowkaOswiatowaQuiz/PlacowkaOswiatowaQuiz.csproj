@@ -6,6 +6,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\PlacowkaOswiatowaQuiz.Shared\PlacowkaOswiatowaQuiz.Shared.csproj" />
   </ItemGroup>
@@ -14,13 +17,19 @@
     <Folder Include="Controllers\" />
     <Folder Include="Views\QuestionsSet\" />
     <Folder Include="Views\UIComponents\" />
+    <Folder Include="Views\Dictionary\" />
+    <Folder Include="wwwroot\lib\sweetalert\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Newtonsoft.Json" />
     <None Remove="Views\QuestionsSet\" />
     <None Remove="Views\UIComponents\" />
+    <None Remove="Views\Dictionary\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="wwwroot\lib\sweetalert\" />
   </ItemGroup>
 </Project>

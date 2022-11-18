@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/PlacowkaOswiatowaQuiz.styles.css" asp-append-version="true" />
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/sweetalert/sweetalert.min.js"></script>
+    <script src="~/lib/sweetalert/sweetalert2.js"></script>
 </head>
 <body>
     <header>
@@ -30,13 +32,21 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Employee" asp-action="Index">Pracownicy</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Uczen" asp-action="Index">Uczniowie</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Student" asp-action="Index">Uczniowie</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Question" asp-action="Index">Pytania</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="QuestionsSet" asp-action="Index">Zestawy pytań</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true"
+                               aria-expanded="false">Dane słownikowe</a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" asp-area="" asp-controller="Dictionary" asp-action="IndexArea">Obszary</a>
+                                <a class="dropdown-item" asp-area="" asp-controller="Dictionary" asp-action="IndexDifficulty">Skale trudności</a>
+                            </div>
                         </li>
                     </ul>
                 </div>

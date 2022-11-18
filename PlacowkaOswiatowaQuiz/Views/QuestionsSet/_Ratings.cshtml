@@ -1,34 +1,30 @@
 ﻿@model IEnumerable<RatingViewModel>
-<table width="100%">
-    <tbody>
+@*<table width="100%">
+    <tbody>*@
         @for (int i = 0; i < Model.Count(); i++)
         {
-            <tr>
-                <td>
-                    <div class="row g-3 align-items-center">
-                        <form asp-controller="QuestionsSet" asp-action="EditRating" method="post">
-                            <table width="100%">
+            @*<tr>
+                <td>*@
+                    <div class="row g-3 align-items-center form-floating">
+                        <form asp-controller="QuestionsSet" asp-action="EditRating" method="post" class="d-flex">
+                            @*<table width="100%">
                                 <tr>
-                                    <td class="col-mb-11">
+                                    <td class="col-mb-11">*@
                                         <input type="hidden" asp-for="@Model.ElementAt(i).Id" value="@Model.ElementAt(i).Id" />
                                         <input type="hidden" asp-for="@Model.ElementAt(i).QuestionsSetId" value="@Model.ElementAt(i).QuestionsSetId" />
-                                        <div>
                                             <input asp-for="@Model.ElementAt(i).RatingDescription" class="form-control" />
                                             <span asp-validation-for="@Model.ElementAt(i).RatingDescription" class="text-danger"></span>
-                                        </div>
-                                    </td>
+                                    @*</td>
 
-                                    <td class="col-mb-1">
-                                        <div>
+                                    <td class="col-mb-1">*@
                                             <button class="btn btn-sm btn-success btn-block" type="submit">Zapisz</button>
-                                        </div>
-                                    </td>
+                                    @*</td>
                                 </tr>
-                            </table>
+                            </table>*@
                         </form>
                     </div>
-                </td>
-            </tr>
+                @*</td>
+            </tr>*@
         }
-    </tbody>
-</table>
+    @*</tbody>
+</table>*@

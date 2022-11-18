@@ -83,8 +83,6 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 response = await httpClient.PutAsJsonAsync(_apiSettings.Questions,
                     questionVM);
 
-            //response.EnsureSuccessStatusCode();
-
             if (!response.IsSuccessStatusCode)
             {
                 //Dodanie informacji (ViewBag) że operacja się nie powiodła

@@ -8,7 +8,7 @@ namespace PlacowkaOswiatowaQuiz.Shared.ViewModels
 	{
         public byte Id { get; set; }
         [Required]
-        [MaxLength(512)]
+        [MaxLength(512, ErrorMessage = "Nazwa może mieć maksymalnie 512 znaków")]
         [DisplayName("Nazwa")]
         public string Name { get; set; }
         [MaxLength(1024)]

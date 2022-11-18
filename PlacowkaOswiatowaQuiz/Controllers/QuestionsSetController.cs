@@ -24,6 +24,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             _httpClientFactory = httpClientFactory;
         }
 
+        #region QuestionsSet
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -71,17 +72,12 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             {
                 return BadRequest();
             }
-
             //var json = JsonConvert.SerializeObject(questionVM);
             //var data = new StringContent(json, Encoding.UTF8, "application/json");
 
             var httpClient = _httpClientFactory.CreateClient(_apiSettings.ClientName);
-
-            //var uri = new Uri(_apiSettings.QuestionsSets);
-
             var response = await httpClient.PostAsJsonAsync(_apiSettings.QuestionsSets,
                 questionsSetVM);
-
             //response.EnsureSuccessStatusCode();
 
             if (!response.IsSuccessStatusCode)
@@ -92,28 +88,9 @@ namespace PlacowkaOswiatowaQuiz.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+        #endregion
 
-        [HttpGet]
-        public async Task<IActionResult> DownloadAttachment([FromQuery] int attachmentId)
-        {
-            var attachment = new AttachmentFileViewModel();
-
-            if (attachmentId == default(int))
-                return NotFound();
-
-            var httpClient = _httpClientFactory.CreateClient(_apiSettings.ClientName);
-
-            var response = await httpClient.GetAsync(
-                $"{_apiSettings.Attachments}/{attachmentId}");
-
-            response.EnsureSuccessStatusCode();
-
-            attachment = await response.Content
-                .ReadFromJsonAsync<AttachmentFileViewModel>();
-
-            return File(attachment.Content, "application/octet-stream", attachment.Name);
-        }
-
+        #region Ratings
         [HttpPost]
         public async Task<IActionResult> EditRating(RatingViewModel ratingVM)
         {
@@ -125,8 +102,59 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 ratingVM);
 
             response.EnsureSuccessStatusCode();
+
             return RedirectToAction(nameof(Details), new { id = ratingVM.QuestionsSetId });
+            //ew. renderować tylko partial view, tylko trzeba pobrać kolekcję
+            //ocen do zestawu pytań
+            //return PartialView("_Ratings", )
         }
+        #endregion
+
+        #region Skill
+        [HttpPost]
+        public async Task<IActionResult> EditSkill(int id, string skill)
+        {
+            if (!ModelState.IsValid || skill.Length == 0)
+                return RedirectToAction(nameof(Details), new {id = id});
+
+            var httpClient = _httpClientFactory.CreateClient(_apiSettings.ClientName);
+            var response = await httpClient.PatchAsync(
+                $"{_apiSettings.QuestionsSets}/{id}?skill={skill}", null);
+            var updated = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+                TempData["errorAlert"] = "Nieudana próba edycji umiejętności";
+            else if (updated == skill)
+                TempData["infoAlert"] = "Nie dokonano zmian";
+            else
+                TempData["successAlert"] = "Poprawnie zaktualizowano umiejętności";
+
+            return RedirectToAction(nameof(Details), new { id = id });
+        }
+        #endregion
+
+        #region QuestionsSet Area
+        [HttpPost]
+        public async Task<IActionResult> EditArea(int id, byte areaId)
+        {
+            if (!ModelState.IsValid || areaId == default(byte))
+                return RedirectToAction(nameof(Details), new { id = id });
+
+            var httpClient = _httpClientFactory.CreateClient(_apiSettings.ClientName);
+            var response = await httpClient.PatchAsync(
+                $"{_apiSettings.QuestionsSets}/{id}?skill={skill}", null);
+            var updated = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+                TempData["errorAlert"] = "Nieudana próba edycji obszaru zestawu pytań";
+            //if (updated == skill)
+            //    TempData["infoAlert"] = "Nie dokonano zmian";
+            else
+                TempData["successAlert"] = "Poprawnie zaktualizowano obszar zestawu pytań";
+
+            return RedirectToAction(nameof(Details), new { id = id });
+        }
+        #endregion
     }
 }
 
