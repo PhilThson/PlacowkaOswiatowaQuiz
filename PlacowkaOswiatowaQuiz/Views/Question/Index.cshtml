@@ -6,15 +6,16 @@
             <h5><b>Lista pytań</b></h5>
         </div>
         <div class="col-md-12">
-            @*<button class="btn btn-sm btn-info" onclick="AddEdit(0)">Dodaj nowe pytanie</button>*@
-            <a class="btn btn-sm btn-info" asp-controller="Question" asp-action="Edit">
-                Dodaj pytanie
-            </a>
+            <div id="divAlertArea">
+                <partial name="~/Views/UIComponents/_bootstrapAlert.cshtml" />
+            </div>
+            <div class="d-flex justify-content-md-end">
+                <a class="btn btn-primary" asp-controller="Question" asp-action="Edit">
+                    Dodaj pytanie
+                </a>
+            </div>
         </div>
     </div>
-</div>
-<div id="divAlertArea">
-    <partial name="~/Views/UIComponents/_bootstrapAlert.cshtml" />
 </div>
 
 <div class="panel-body scroll panel-height">
@@ -60,14 +61,4 @@
     </table>
 </div>
 
-@*<script>
-    $(document).ready(function () {
-        var Edit = function (id) {
-            var url = "/Question/Edit/" + id;
-            $('#titleBigModal').html("Edytuj pytanie");
-            loadBigModal(url);
-        };
-    });
-</script>*@
-
-Generated on @DateTime.Now
+@*Generated on @DateTime.Now*@

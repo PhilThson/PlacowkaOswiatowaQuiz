@@ -6,16 +6,16 @@ namespace PlacowkaOswiatowaQuiz.Shared.ViewModels
 {
 	public class QuestionViewModel
 	{
-        public int? Id { get; set; }
+        public int Id { get; set; }
         [Required]
         [MaxLength(2048)]
-        [DisplayName("Treść")]
+        [DisplayName("Treść pytania")]
         public string Content { get; set; }
         [Required]
         [MaxLength(2048)]
-        [DisplayName("Opis")]
+        [DisplayName("Opis pytania")]
         public string Description { get; set; }
-        [DisplayName("Id zestawu pytań")]
+        [DisplayName("Zestaw pytań")]
         public int QuestionsSetId { get; set; }
     }
 }

@@ -67,7 +67,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         {
             if(!ModelState.IsValid)
             {
-                return BadRequest();
+                return View(questionVM);
             }
 
             //var json = JsonConvert.SerializeObject(questionVM);
@@ -76,7 +76,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             var httpClient = _httpClientFactory.CreateClient(_apiSettings.ClientName);
             var response = new HttpResponseMessage();
 
-            if (!questionVM.Id.HasValue)
+            if (questionVM.Id == default(int))
                 response = await httpClient.PostAsJsonAsync(_apiSettings.Questions,
                     questionVM);
             else
@@ -85,8 +85,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
 
             if (!response.IsSuccessStatusCode)
             {
-                //Dodanie informacji (ViewBag) że operacja się nie powiodła
-                TempData["errorAlert"] = "Nieudana próba edycji pytania";
+                TempData["errorAlert"] = "Nieudana próba edycji/utworzenia pytania";
                 return View(questionVM);
             }
 

@@ -7,7 +7,7 @@ namespace PlacowkaOswiatowaQuiz.Shared.ViewModels
 	public class AreaViewModel
 	{
         public byte Id { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Obszar musi posiadać nazwę")]
         [MaxLength(512, ErrorMessage = "Nazwa może mieć maksymalnie 512 znaków")]
         [DisplayName("Nazwa skrócona")]
         public string Name { get; set; }

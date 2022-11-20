@@ -1,4 +1,4 @@
-﻿@model AttachmentFileViewModel
+﻿@model IEnumerable<AttachmentViewModel>
 
 <div class="panel-body scroll panel-height">
     <table class="CustomColorTable" border="0">
@@ -12,16 +12,19 @@
             </tr>
         </thead>
         <tbody>
+            @foreach (var attachment in Model)
+            {
             <tr>
-                <td>@Html.DisplayFor(m => m.Id)</td>
-                <td id="FileName">@Html.DisplayFor(m => m.Name)</td>
-                <td>@Html.DisplayFor(m => m.ContentType)</td>
-                <td>@Html.DisplayFor(m => m.Size)</td>
+                <td>@Html.DisplayFor(m => attachment.Id)</td>
+                <td id="FileName">@Html.DisplayFor(m => attachment.Name)</td>
+                <td>@Html.DisplayFor(m => attachment.ContentType)</td>
+                <td>@Html.DisplayFor(m => attachment.Size)</td>
                 <td>
                     <a href="#" class="btn btn-info btn-sm"
-                       onclick="Download('@Model.Id');">Pobierz</a>
+                       onclick="Download('@attachment.Id');">Pobierz</a>
                 </td>
             </tr>
+            }
         </tbody>
     </table>
 </div>
@@ -41,12 +44,12 @@
     }
 </style>
 
-<script>
+@*<script>
     var Download = function (id) {
         var url = "/Attachment/Download?attachmentId=" + id;
         //var fileName = $("[name='FileName']");
+
         var fileName = $('#FileName').text();
-        console.log(fileName);
         $.ajax({
             url: url,
             cache: false,
@@ -86,4 +89,5 @@
             }
         });
     };
-</script>
+</script>*@
+<script src="~/js/ManageAttachment.js"></script>

@@ -30,6 +30,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             response.EnsureSuccessStatusCode();
             areas = await response.Content
                 .ReadFromJsonAsync<List<AreaViewModel>>();
+
             return Ok(areas);
         }
 
@@ -86,6 +87,18 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         #endregion
 
         #region Difficulty
+        public async Task<IActionResult> GetDifficulties()
+        {
+            var difficulties = new List<DifficultyViewModel>();
+            var httpClient = _httpClientFactory.CreateClient(_apiSettings.ClientName);
+            var response = await httpClient.GetAsync(_apiSettings.Difficulties);
+            response.EnsureSuccessStatusCode();
+            difficulties = await response.Content
+                .ReadFromJsonAsync<List<DifficultyViewModel>>();
+
+            return Ok(difficulties);
+        }
+
         public async Task<IActionResult> IndexDifficulty()
         {
             var difficulties = new List<DifficultyViewModel>();

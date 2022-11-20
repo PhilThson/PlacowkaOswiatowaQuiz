@@ -57,7 +57,7 @@
         <main role="main" class="pb-3">
             @RenderBody()
 
-            <partial name="~/Views/UIComponents/_BigModal.cshtml" />
+            @*<partial name="~/Views/UIComponents/_BigModal.cshtml" />*@
         </main>
     </div>
 
@@ -69,6 +69,7 @@
     @*<script src="~/lib/jquery/dist/jquery.min.js"></script>*@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
