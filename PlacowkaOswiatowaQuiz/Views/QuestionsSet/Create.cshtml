@@ -38,6 +38,15 @@
     <div class="row mb-3 form-group">
         <label asp-for="@Model.QuestionsSetRatings" class="col-form-label"></label>
         <div id="Ratings" class="container-flex">
+            @if(Model?.QuestionsSetRatings.Count() > 0)
+             {
+                    @for(int i = 0; i < Model.QuestionsSetRatings.Count(); i++)
+                    {
+                        <input type="text" class="form-control mb-2"
+                               name="QuestionsSetRatings[@i]"
+                               value="@Model.QuestionsSetRatings[i]"/>
+                    }
+             }
         </div>
         <div class="d-grid gap-2 col-4">
             <button class="btn btn-sm btn-primary" type="button" onclick="addRating()">
@@ -60,8 +69,10 @@
 </form>
 
 <script src="~/js/FetchDictionaryData.js"></script>
-<script>var i = 0;
-    function addRating() {
+<script>
+    var i = $("#Ratings").children().length;
+    var addRating = function() {
+        
         if (i >= 6) {
             Swal.fire({
                 title: 'Nie można dodać więcej ocen',

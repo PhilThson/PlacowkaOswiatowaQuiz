@@ -57,6 +57,10 @@
                 <th>@Html.DisplayNameFor(m => m.Questions)</th>
                 <td>
                     @await Html.PartialAsync("_Questions", Model.Questions)
+                    <div class="d-flex justify-content-md-end">
+                        <a asp-controller="Question" asp-action="Edit" class="btn btn-sm btn-info"
+                           asp-route-questionsSetId="@Model.Id">Dodaj pytanie</a>
+                    </div>
                 </td>
             </tr>
             <tr>

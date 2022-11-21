@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
 using PlacowkaOswiatowaQuiz.Helpers.Options;
@@ -41,9 +42,12 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Edit(int id, int questionsSetId)
         {
-            var question = new QuestionViewModel();
+            var question = new QuestionViewModel
+            {
+                QuestionsSetId = questionsSetId
+            };
 
             if (id == default(int))
                 return View(question);
@@ -65,13 +69,12 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(QuestionViewModel questionVM)
         {
-            if(!ModelState.IsValid)
-            {
+            if (questionVM.QuestionsSetId == default(int))
+                ModelState.AddModelError(string.Empty,
+                    "Należy wskazać w skład którego zestawu wejdzie pytanie");
+            
+            if (!ModelState.IsValid)
                 return View(questionVM);
-            }
-
-            //var json = JsonConvert.SerializeObject(questionVM);
-            //var data = new StringContent(json, Encoding.UTF8, "application/json");
 
             var httpClient = _httpClientFactory.CreateClient(_apiSettings.ClientName);
             var response = new HttpResponseMessage();

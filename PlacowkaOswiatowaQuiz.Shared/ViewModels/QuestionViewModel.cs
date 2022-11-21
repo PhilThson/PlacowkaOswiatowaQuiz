@@ -7,11 +7,11 @@ namespace PlacowkaOswiatowaQuiz.Shared.ViewModels
 	public class QuestionViewModel
 	{
         public int Id { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Treść pytania jest wymagana")]
         [MaxLength(2048)]
         [DisplayName("Treść pytania")]
         public string Content { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Opis pytania jest wymagany")]
         [MaxLength(2048)]
         [DisplayName("Opis pytania")]
         public string Description { get; set; }

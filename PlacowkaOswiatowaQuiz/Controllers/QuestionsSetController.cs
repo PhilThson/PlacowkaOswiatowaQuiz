@@ -76,6 +76,17 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateQuestionsSetViewModel questionsSetVM)
         {
+            var ratings = questionsSetVM.QuestionsSetRatings
+                    .Where(r => r != null).ToList();
+            if(ratings.Count < 3)
+                if (ModelState.ContainsKey("QuestionsSetRatings[0]"))
+                {
+                    ModelState["QuestionsSetRatings[0]"].ValidationState =
+                        ModelValidationState.Invalid;
+                    ModelState.AddModelError(string.Empty,
+                        "Należy podać minimum 3 oceny zestawu pytań");
+                }
+
             if (!ModelState.IsValid)
             {
                 return View(questionsSetVM);
@@ -87,7 +98,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 AreaId = questionsSetVM.AreaId.GetValueOrDefault(),
                 DifficultyId = questionsSetVM.DifficultyId.GetValueOrDefault(),
                 Questions = questionsSetVM.Questions ?? new List<QuestionViewModel>(),
-                QuestionsSetRatings = questionsSetVM.QuestionsSetRatings
+                QuestionsSetRatings = ratings
             };
 
             if (questionsSetVM.AttachmentFiles?.Count() > 0)
@@ -97,7 +108,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 {
                     files.Add(new AttachmentFileViewModel
                     {
-                        Name = file.Name,
+                        Name = file.FileName,
                         Content = await GetBytes(file),
                         Size = file.Length,
                         ContentType = file.ContentType

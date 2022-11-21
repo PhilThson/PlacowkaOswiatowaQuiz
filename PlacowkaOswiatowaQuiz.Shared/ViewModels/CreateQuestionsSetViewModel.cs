@@ -20,7 +20,7 @@ namespace PlacowkaOswiatowaQuiz.Shared.ViewModels
         [Required(ErrorMessage = "Oceny zestawu pytań są wymagane")]
         [DisplayName("Oceny zestawu pytań")]
         [MaxLength(1024)]
-        public IEnumerable<string> QuestionsSetRatings { get; set; }
+        public IList<string> QuestionsSetRatings { get; set; }
         [DisplayName("Pytania")]
         public IEnumerable<QuestionViewModel>? Questions { get; set; }
         [DisplayName("Dołączone pliki - Karty pracy")]
