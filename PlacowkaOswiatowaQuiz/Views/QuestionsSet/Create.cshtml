@@ -20,7 +20,7 @@
     <div class="row mb-3 form-group">
         <label asp-for="@Model.DifficultyId" class="control-label"></label>
         <div class="col-sm-8">
-            <select asp-for="@Model.DifficultyId" class="form-control" id="difficultiesDropdown"
+            <select asp-for="@Model.DifficultyId" class="form-select" id="difficultiesDropdown"
                     currentDifficultyId="@Model?.DifficultyId">
                 <option disabled selected>Wybierz skalę trudności...</option>
             </select>
@@ -29,7 +29,7 @@
     <div class="row mb-3 form-group">
         <label asp-for="@Model.AreaId" class="control-label"></label>
         <div class="col-sm-8">
-            <select asp-for="@Model.AreaId" class="form-control" id="areasDropdown"
+            <select asp-for="@Model.AreaId" class="form-select" id="areasDropdown"
                     currentAreaId="@Model?.AreaId">
                 <option disabled selected>Wybierz obszar...</option>
             </select>
