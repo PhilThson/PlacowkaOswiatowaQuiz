@@ -14,14 +14,17 @@ namespace PlacowkaOswiatowaQuiz.Controllers
 {
     public class QuestionController : Controller
     {
+        private readonly QuizApiUrl _apiUrl;
         private readonly QuizApiSettings _apiSettings;
         private readonly IHttpClientFactory _httpClientFactory;
 
         public QuestionController(QuizApiSettings apiSettings,
-            IHttpClientFactory httpClientFactory)
+            IHttpClientFactory httpClientFactory,
+            QuizApiUrl apiUrl)
         {
             _apiSettings = apiSettings;
             _httpClientFactory = httpClientFactory;
+            _apiUrl = apiUrl;
         }
 
         [HttpGet]
@@ -29,7 +32,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         {
             var questions = new List<QuestionViewModel>();
 
-            var httpClient = _httpClientFactory.CreateClient(_apiSettings.ClientName);
+            var httpClient = _httpClientFactory.CreateClient(_apiUrl.ClientName);
 
             var response = await httpClient.GetAsync(_apiSettings.Questions);
 
@@ -52,7 +55,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             if (id == default(int))
                 return View(question);
 
-            var httpClient = _httpClientFactory.CreateClient(_apiSettings.ClientName);
+            var httpClient = _httpClientFactory.CreateClient(_apiUrl.ClientName);
 
             var response = await httpClient.GetAsync(
                 $"{_apiSettings.Questions}/{id}");
@@ -76,7 +79,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             if (!ModelState.IsValid)
                 return View(questionVM);
 
-            var httpClient = _httpClientFactory.CreateClient(_apiSettings.ClientName);
+            var httpClient = _httpClientFactory.CreateClient(_apiUrl.ClientName);
             var response = new HttpResponseMessage();
 
             if (questionVM.Id == default(int))
@@ -88,7 +91,9 @@ namespace PlacowkaOswiatowaQuiz.Controllers
 
             if (!response.IsSuccessStatusCode)
             {
-                TempData["errorAlert"] = "Nieudana próba edycji/utworzenia pytania";
+                var responseMessage = await response.Content.ReadAsStringAsync();
+                TempData["errorAlert"] = "Nieudana próba edycji/utworzenia pytania." +
+                    $"Odpowiedź serwera: '{responseMessage}'";
                 return View(questionVM);
             }
 
@@ -97,4 +102,3 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         }
     }
 }
-

@@ -1,0 +1,117 @@
+﻿@model CreateDiagnosisViewModel
+
+<fieldset class="border p-2">
+    <legend class="w-auto">
+        <b>Nowy formularz diagnozy</b>
+    </legend>
+    <div id="divAlertArea">
+        <partial name="~/Views/UIComponents/_bootstrapAlert.cshtml" />
+    </div>
+    <div asp-validation-summary="All" class="text-danger container-flex md-2 mb-3">
+        <span>Popraw następujące błędy i spróbuj ponownie:</span>
+    </div>
+    <form method="post" asp-controller="Diagnosis" asp-action="Create">
+        <div class="container-fluid">
+            <div class="row mb-3">
+                <label asp-for="@Model.SchoolYear" class="col-sm-2 form-label"></label>
+                <div class="col-sm-8">
+                    <input asp-for="@Model.SchoolYear" type="text" class="form-control"
+                           placeholder="np.: 2022/2023">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label asp-for="@Model.EmployeeId" class="col-sm-2 col-form-label"></label>
+                <div class="col-sm-10">
+                    <select asp-for="@Model.EmployeeId" class="form-control" id="employeeDropdown"
+                            currentEmployeeId="@Model?.EmployeeId">
+                        <option disabled selected>Wybierz prowadzącego nauczyciela...</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label asp-for="@Model.StudentId" class="col-sm-2 col-form-label"></label>
+                <div class="col-sm-10">
+                    <select asp-for="@Model.StudentId" class="form-control" id="studentDropdown"
+                            currentStudentId="@Model?.StudentId">
+                        <option disabled selected>Wybierz ucznia...</option>
+                    </select>
+                </div>
+            </div>
+            <div class="d-grid gap-2 col-6 mx-auto">
+                <button class="btn btn-success" type="submit">Utwórz</button>
+                <a class="btn btn-outline-secondary" type="button" asp-controller="Diagnosis"
+                   asp-action="Index">Powrót do listy</a>
+            </div>
+        </div>
+    </form>
+</fieldset>
+
+<script>
+    $(document).ready(function () {
+        var currentEmployeeId = $("#employeeDropdown").attr('currentEmployeeId');
+        $.ajax({
+            type: "GET",
+            url: "/Employee/GetAllEmployees",
+            data: "{}",
+            success: function (data) {
+                $.each(data, function (i, employee) {
+                    if (employee.id != currentEmployeeId)
+                        $("#employeeDropdown").append(
+                            "<option value=" + employee.id + ">" +
+                            employee.firstName + ' ' + employee.lastName + "</option>");
+                    else
+                        $("#employeeDropdown").append(
+                            "<option selected value=" + employee.id + ">" +
+                            employee.firstName + ' ' + employee.lastName + "</option>");
+                });
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        var currentStudentId = $("#studentDropdown").attr('currentStudentId');
+        $.ajax({
+            type: "GET",
+            url: "/Student/GetAllStudents",
+            data: "{}",
+            success: function (data) {
+                $.each(data, function (i, student) {
+                    if (student.id != currentStudentId)
+                        $("#studentDropdown").append(
+                            "<option value=" + student.id + ">" +
+                            student.firstName + ' ' + student.lastName + "</option>");
+                    else
+                        $("#studentDropdown").append(
+                            "<option selected value=" + student.id + ">" +
+                            student.firstName + ' ' + student.lastName + "</option>");
+                });
+            }
+        });
+    });
+
+</script>
+
+<style>
+    fieldset {
+        font-family: sans-serif;
+        border: 3px solid #1F497D;
+        background: #ddd;
+        border-radius: 5px;
+        padding: 15px;
+    }
+
+        fieldset legend {
+            background: #1F497D;
+            color: #fff;
+            padding: 5px 10px 10px 20px;
+            font-size: 15px;
+            border-radius: 5px;
+            box-shadow: 0 0 0 5px #ddd;
+            margin-left: 1px;
+            margin-right: 10px;
+        }
+
+    .validation-summary-valid {
+        display: none;
+    }
+</style>

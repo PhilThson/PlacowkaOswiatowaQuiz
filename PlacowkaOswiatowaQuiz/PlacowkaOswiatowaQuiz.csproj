@@ -13,7 +13,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PlacowkaOswiatowaQuiz.Shared\PlacowkaOswiatowaQuiz.Shared.csproj" />
+    <ProjectReference Include="..\PlacowkaOswiatowaQuiz.Shared\PlacowkaOswiatowaQuiz.Shared.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
   </ItemGroup>
 
   <ItemGroup>
@@ -22,12 +24,18 @@
     <Folder Include="Views\UIComponents\" />
     <Folder Include="Views\Dictionary\" />
     <Folder Include="wwwroot\lib\sweetalert\" />
+    <Folder Include="Views\Diagnosis\" />
+    <Folder Include="Services\" />
+    <Folder Include="Interfaces\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Newtonsoft.Json" />
     <None Remove="Views\QuestionsSet\" />
     <None Remove="Views\UIComponents\" />
     <None Remove="Views\Dictionary\" />
+    <None Remove="Views\Diagnosis\" />
+    <None Remove="Services\" />
+    <None Remove="Interfaces\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />

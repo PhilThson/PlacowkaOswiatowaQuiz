@@ -1,0 +1,67 @@
+﻿@model IEnumerable<DiagnosisViewModel>
+
+<div class="panel panel-hash">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-md-7">
+                <h4><b>Lista utworzonych diagnóz</b></h4>
+            </div>
+            <div id="divAlertArea">
+                <partial name="~/Views/UIComponents/_bootstrapAlert.cshtml" />
+            </div>
+            <div class="d-flex justify-content-md-end">
+                <a class="btn btn-primary" asp-controller="Diagnosis" asp-action="Create">
+                    Utwórz nowy formularz
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body scroll panel-height">
+        <table class="CustomColorTable" border="1">
+            <thead>
+                <tr>
+                    <th>@Html.DisplayNameFor(m => m.Id)</th>
+                    <th>@Html.DisplayNameFor(m => m.Employee)</th>
+                    <th>@Html.DisplayNameFor(m => m.Student)</th>
+                    <th>@Html.DisplayNameFor(m => m.SchoolYear)</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.Id)</td>
+                        <td>@item.Employee.FirstName @item.Employee.LastName</td>
+                        <td>@item.Student.FirstName @item.Student.LastName</td>
+                        <td>@Html.DisplayFor(modelItem => item.SchoolYear)</td>
+                        <td>
+                            <a class="btn btn-sm btn-info" asp-controller="Diagnosis" asp-action="Details"
+                               asp-route-id="@item.Id">
+                                Szczegóły
+                            </a>
+                            @*<a href='#' class="btn btn-sm btn-info" onclick="Details(@item.Id)">Szczegóły</a>*@
+                        </td>
+                        <td><a class="btn btn-sm btn-danger" onclick="Delete(@item.Id)">Usuń</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .panel-heading {
+        padding: 0px 0px 0px 5px;
+    }
+
+    .panel-body {
+        padding: 5px;
+    }
+
+    .h4 {
+        margin-top: 1px;
+        margin-bottom: 1px;
+    }
+</style>

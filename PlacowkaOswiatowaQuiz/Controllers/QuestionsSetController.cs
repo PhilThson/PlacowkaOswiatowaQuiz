@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
 using PlacowkaOswiatowaQuiz.Helpers.Options;
+using PlacowkaOswiatowaQuiz.Interfaces;
 using PlacowkaOswiatowaQuiz.Shared.DTOs;
 using PlacowkaOswiatowaQuiz.Shared.ViewModels;
 
@@ -16,14 +17,20 @@ namespace PlacowkaOswiatowaQuiz.Controllers
 {
     public class QuestionsSetController : Controller
     {
+        private readonly QuizApiUrl _apiUrl;
         private readonly QuizApiSettings _apiSettings;
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IQuestionsSetService _service;
 
         public QuestionsSetController(QuizApiSettings apiSettings,
-            IHttpClientFactory httpClientFactory)
+            IHttpClientFactory httpClientFactory,
+            QuizApiUrl apiUrl,
+            IQuestionsSetService service)
         {
             _apiSettings = apiSettings;
             _httpClientFactory = httpClientFactory;
+            _apiUrl = apiUrl;
+            _service = service;
         }
 
         #region QuestionsSet
@@ -31,25 +38,30 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         public async Task<IActionResult> Index()
         {
             var questionsSets = new List<QuestionsSetViewModel>();
-            var httpClient = _httpClientFactory.CreateClient(_apiSettings.ClientName);
-            var response = await httpClient.GetAsync(_apiSettings.QuestionsSets);
-            response.EnsureSuccessStatusCode();
-            questionsSets = await response.Content
-                .ReadFromJsonAsync<List<QuestionsSetViewModel>>();
-
-            return View(questionsSets);
+            try
+            {
+                questionsSets = await _service.GetAllQuestionsSets();
+                return View(questionsSets);
+            }
+            catch(HttpRequestException e)
+            {
+                TempData["errorAlert"] = $"Nie udało się pobrać wszystkich" +
+                    $"zestawów pytań. \nOdpowiedź serwera: '{e.Message}'";
+                return View(questionsSets);
+            }
         }
 
         public async Task<IActionResult> GetAllQuestionsSets()
         {
-            var questionsSets = new List<QuestionsSetViewModel>();
-            var httpClient = _httpClientFactory.CreateClient(_apiSettings.ClientName);
-            var response = await httpClient.GetAsync(_apiSettings.QuestionsSets);
-            response.EnsureSuccessStatusCode();
-            questionsSets = await response.Content
-                .ReadFromJsonAsync<List<QuestionsSetViewModel>>();
-
-            return Ok(questionsSets);
+            try
+            {
+                var questionsSets = await _service.GetAllQuestionsSets();
+                return Ok(questionsSets);
+            }
+            catch(HttpRequestException e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpGet]
@@ -58,14 +70,17 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             var questionsSet = new QuestionsSetViewModel();
             if (id == default(int))
                 return View(questionsSet);
-            var httpClient = _httpClientFactory.CreateClient(_apiSettings.ClientName);
-            var response = await httpClient.GetAsync(
-                $"{_apiSettings.QuestionsSets}/{id}");
-            response.EnsureSuccessStatusCode();
-            questionsSet = await response.Content
-                .ReadFromJsonAsync<QuestionsSetViewModel>();
-
-            return View(questionsSet);
+            try
+            {
+                questionsSet = await _service.GetQuestionsSetById(id);
+                return View(questionsSet);
+            }
+            catch(HttpRequestException e)
+            {
+                TempData["errorAlert"] = $"Nie udało się pobrać zestawu pytań." +
+                    $"\nOdpowiedź serwera: '{e.Message}'";
+                return View(questionsSet);
+            }
         }
 
         public IActionResult Create()
@@ -79,13 +94,8 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             var ratings = questionsSetVM.QuestionsSetRatings
                     .Where(r => r != null).ToList();
             if(ratings.Count < 3)
-                if (ModelState.ContainsKey("QuestionsSetRatings[0]"))
-                {
-                    ModelState["QuestionsSetRatings[0]"].ValidationState =
-                        ModelValidationState.Invalid;
                     ModelState.AddModelError(string.Empty,
                         "Należy podać minimum 3 oceny zestawu pytań");
-                }
 
             if (!ModelState.IsValid)
             {
@@ -117,13 +127,15 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 createQuestionSetDto.AttachmentFiles = files;
             }
 
-            var httpClient = _httpClientFactory.CreateClient(_apiSettings.ClientName);
+            var httpClient = _httpClientFactory.CreateClient(_apiUrl.ClientName);
             var response = await httpClient.PostAsJsonAsync(_apiSettings.QuestionsSets,
                 createQuestionSetDto);
 
             if (!response.IsSuccessStatusCode)
             {
-                TempData["errorAlert"] = "Nie udało się utworzyć zestawu pytań";
+                var responseMessage = await response.Content.ReadAsStringAsync();
+                TempData["errorAlert"] = $"Nie udało się utworzyć zestawu pytań." +
+                    $"\nOdpowiedź serwera: '{responseMessage}'";
                 return View(questionsSetVM);
             }
             TempData["successAlert"] = "Poprawnie utworzono zestaw pytań";
@@ -145,12 +157,16 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             if (!ModelState.IsValid)
                 return RedirectToAction(nameof(Index));
 
-            var httpClient = _httpClientFactory.CreateClient(_apiSettings.ClientName);
+            var httpClient = _httpClientFactory.CreateClient(_apiUrl.ClientName);
             var response = await httpClient.PutAsJsonAsync(_apiSettings.Ratings,
                 ratingVM);
 
             if (!response.IsSuccessStatusCode)
-                TempData["errorAlert"] = "Nieudana próba edycji oceny";
+            {
+                var responseMessage = await response.Content.ReadAsStringAsync();
+                TempData["errorAlert"] = "Nieudana próba edycji oceny." +
+                    $"Odpowiedź serwera: '{responseMessage}";
+            }
             else
                 TempData["successAlert"] = "Poprawnie zaktualizowano ocenę";
 
@@ -165,13 +181,17 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             if (!ModelState.IsValid || skill.Length == 0)
                 return RedirectToAction(nameof(Details), new {id = id});
 
-            var httpClient = _httpClientFactory.CreateClient(_apiSettings.ClientName);
+            var httpClient = _httpClientFactory.CreateClient(_apiUrl.ClientName);
             var response = await httpClient.PatchAsync(
                 $"{_apiSettings.QuestionsSets}/{id}/skill?skill={skill}", null);
             var updated = await response.Content.ReadAsStringAsync();
 
             if (!response.IsSuccessStatusCode)
-                TempData["errorAlert"] = "Nieudana próba edycji umiejętności";
+            {
+                var responseMessage = await response.Content.ReadAsStringAsync();
+                TempData["errorAlert"] = "Nieudana próba edycji umiejętności." +
+                    $"Odpowiedź serwera: '{responseMessage}";
+            }
             else
                 TempData["successAlert"] = "Poprawnie zaktualizowano umiejętności";
 
@@ -195,12 +215,16 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 return RedirectToAction(nameof(Details), new { id = id });
             }
 
-            var httpClient = _httpClientFactory.CreateClient(_apiSettings.ClientName);
+            var httpClient = _httpClientFactory.CreateClient(_apiUrl.ClientName);
             var response = await httpClient.PatchAsync(
                 $"{_apiSettings.QuestionsSets}/{id}/area?areaId={requestedAreaId}", null);
 
             if (!response.IsSuccessStatusCode)
-                TempData["errorAlert"] = "Nieudana próba edycji obszaru zestawu pytań";
+            {
+                var responseMessage = await response.Content.ReadAsStringAsync();
+                TempData["errorAlert"] = "Nieudana próba edycji obszaru zestawu pytań." +
+                    $"Odpowiedź serwera: '{responseMessage}";
+            }
             else
                 TempData["successAlert"] = "Poprawnie zaktualizowano obszar zestawu pytań";
 
@@ -224,13 +248,17 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 return RedirectToAction(nameof(Details), new { id = id });
             }    
 
-            var httpClient = _httpClientFactory.CreateClient(_apiSettings.ClientName);
+            var httpClient = _httpClientFactory.CreateClient(_apiUrl.ClientName);
             var response = await httpClient.PatchAsync(
                 $"{_apiSettings.QuestionsSets}/{id}/difficulty?difficultyId={requestedDifficultyId}",
                 null);
 
             if (!response.IsSuccessStatusCode)
-                TempData["errorAlert"] = "Nieudana próba zmiany skali trudności";
+            {
+                var responseMessage = await response.Content.ReadAsStringAsync();
+                TempData["errorAlert"] = "Nieudana próba zmiany skali trudności." +
+                    $"Odpowiedź serwera: '{responseMessage}";
+            }
             else
                 TempData["successAlert"] = "Poprawnie zaktualizowano skalę trudności";
 

@@ -1,17 +1,25 @@
 using PlacowkaOswiatowaQuiz.Helpers.Options;
+using PlacowkaOswiatowaQuiz.Interfaces;
+using PlacowkaOswiatowaQuiz.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
-builder.Services.AddSingleton(
-    builder.Configuration
+builder.Services.AddScoped<IQuestionsSetService, QuestionsSetService>();
+builder.Services.AddScoped<IDiagnosisService, DiagnosisService>();
+
+builder.Services.AddSingleton(builder.Configuration
         .GetSection("QuizApiSettings").Get<QuizApiSettings>());
+builder.Services.AddSingleton(builder.Configuration
+        .GetSection("QuizApiUrl").Get<QuizApiUrl>());
+
 builder.Services.AddHttpClient(
-    builder.Configuration.GetValue<string>("QuizApiSettings:ClientName"),
+    builder.Configuration.GetValue<string>("QuizApiUrl:ClientName"),
     (provider, client) =>
     {
         var apiSettings = provider.GetRequiredService<QuizApiSettings>();
-        client.BaseAddress = new Uri(apiSettings.Host + '/' +
+        var apiUrl = provider.GetRequiredService<QuizApiUrl>();
+        client.BaseAddress = new Uri(apiUrl.Host + '/' +
             apiSettings.MainController + '/');
         client.Timeout = TimeSpan.FromSeconds(30);
         client.DefaultRequestHeaders.Clear();
