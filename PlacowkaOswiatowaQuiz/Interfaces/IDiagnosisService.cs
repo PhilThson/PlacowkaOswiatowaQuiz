@@ -7,7 +7,12 @@ namespace PlacowkaOswiatowaQuiz.Interfaces
 	{
         Task<List<DiagnosisViewModel>> GetAllDiagnosis();
         Task<DiagnosisViewModel> GetDiagnosisById(int id);
-        Task CreateDiagnosis(CreateDiagnosisViewModel diagnosisVM);
+        Task<DiagnosisViewModel> CreateDiagnosis(
+            CreateDiagnosisViewModel diagnosisVM);
+        Task CreateResult(ResultViewModel resultVM);
+        Task<ResultViewModel> GetResultById(int id);
+        Task<ResultViewModel> GetResultByDiagnosisQuestionsSetIds(
+            int diagnosisId, int questionsSetId);
     }
 }
 

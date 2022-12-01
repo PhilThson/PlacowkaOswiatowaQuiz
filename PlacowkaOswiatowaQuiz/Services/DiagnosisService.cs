@@ -37,7 +37,8 @@ namespace PlacowkaOswiatowaQuiz.Services
             return await response.Content.ReadFromJsonAsync<DiagnosisViewModel>();
         }
 
-        public async Task CreateDiagnosis(CreateDiagnosisViewModel diagnosisVM)
+        public async Task<DiagnosisViewModel> CreateDiagnosis(
+            CreateDiagnosisViewModel diagnosisVM)
         {
             var createDiagnosis = new CreateDiagnosisDto
             {
@@ -50,6 +51,45 @@ namespace PlacowkaOswiatowaQuiz.Services
             var response = await httpClient.PostAsJsonAsync(_apiSettings.Diagnosis,
                 createDiagnosis);
             response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<DiagnosisViewModel>();
+        }
+
+        public async Task CreateResult(ResultViewModel resultVM)
+        {
+            var createResultDto = new CreateResultDto
+            {
+                DiagnosisId = resultVM.DiagnosisId,
+                RatingId = resultVM.QuestionsSetRating.Id,
+                RatingLevel = resultVM.RatingLevel.Value,
+                Notes = resultVM.Notes
+            };
+
+            var httpClient = _httpClientFactory.CreateClient(_apiUrl.ClientName);
+            var response = await httpClient.PostAsJsonAsync(_apiSettings.Results,
+                createResultDto);
+            response.EnsureSuccessStatusCode();
+        }
+
+        public async Task<ResultViewModel> GetResultById(int id)
+        {
+            var httpClient = _httpClientFactory.CreateClient(_apiUrl.ClientName);
+            var response = await httpClient.GetAsync($"{_apiSettings.Results}/{id}");
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<ResultViewModel>();
+        }
+
+        public async Task<ResultViewModel> GetResultByDiagnosisQuestionsSetIds(
+            int diagnosisId, int questionsSetId)
+        {
+            var httpClient = _httpClientFactory.CreateClient(_apiUrl.ClientName);
+            var response = await httpClient.GetAsync(
+                $"{_apiSettings.Results}?diagnosisId={diagnosisId}" +
+                $"&questionsSetId={questionsSetId}");
+
+            if (!response.IsSuccessStatusCode)
+                return new ResultViewModel() { DiagnosisId = diagnosisId };
+
+            return await response.Content.ReadFromJsonAsync<ResultViewModel>();
         }
     }
 }

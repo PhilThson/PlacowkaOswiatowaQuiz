@@ -35,6 +35,15 @@ namespace PlacowkaOswiatowaQuiz.Services
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<QuestionsSetViewModel>();
         }
+
+        public async Task<List<RatingViewModel>> GetRatingsByQuestionsSetId(int id)
+        {
+            var httpClient = _httpClientFactory.CreateClient(_apiUrl.ClientName);
+            var response = await httpClient.GetAsync(
+                $"{_apiSettings.Ratings}?questionsSetId={id}");
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<List<RatingViewModel>>();
+        }
     }
 }
 

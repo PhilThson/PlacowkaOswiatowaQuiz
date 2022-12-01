@@ -7,6 +7,7 @@ namespace PlacowkaOswiatowaQuiz.Interfaces
 	{
         Task<List<QuestionsSetViewModel>> GetAllQuestionsSets();
         Task<QuestionsSetViewModel> GetQuestionsSetById(int id);
+        Task<List<RatingViewModel>> GetRatingsByQuestionsSetId(int id);
     }
 }
 

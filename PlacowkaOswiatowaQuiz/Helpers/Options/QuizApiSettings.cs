@@ -12,5 +12,6 @@
         public string Ratings { get; set; }
         public string Attachments { get; set; }
         public string Diagnosis { get; set; }
+        public string Results { get; set; }
     }
 }

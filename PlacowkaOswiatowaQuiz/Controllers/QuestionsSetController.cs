@@ -98,10 +98,8 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                         "Należy podać minimum 3 oceny zestawu pytań");
 
             if (!ModelState.IsValid)
-            {
                 return View(questionsSetVM);
-            }
-
+            
             var createQuestionSetDto = new CreateQuestionsSetDto
             {
                 SkillDescription = questionsSetVM.SkillDescription,
@@ -151,6 +149,20 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         #endregion
 
         #region Ratings
+        public async Task<List<RatingViewModel>> GetQuestionsSetRatings(int questionsSetId)
+        {
+            try
+            {
+                return await _service.GetRatingsByQuestionsSetId(questionsSetId);
+            }
+            catch(HttpRequestException e)
+            {
+                TempData["errorAlert"] = "Błąd podczas pobierania ocen zestawu pytań." +
+                    $"Odpowiedź serwera: '{e.Message}";
+                return new List<RatingViewModel>();
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> EditRating(RatingViewModel ratingVM)
         {

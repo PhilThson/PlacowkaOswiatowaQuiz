@@ -1,0 +1,83 @@
+﻿@model DiagnosisViewModel
+
+<fieldset>
+    <legend class="w-auto">
+        <b>Diagnoza nr: </b>
+    </legend>
+    <div id="divAlertArea">
+        <partial name="~/Views/UIComponents/_bootstrapAlert.cshtml" />
+    </div>
+    <div class="container-fluid">
+        <div class="row mb-3">
+            @Html.DisplayNameFor(m => m.SchoolYear)
+            <label class="col-sm-6 control-label">@Model.SchoolYear</label>
+        </div>
+        <div class="row mb-3">
+            @Html.DisplayNameFor(m => m.Employee)
+            <label class="col-sm-6 control-label">
+                @Model.Employee.FirstName @Model.Employee.LastName
+            </label>
+        </div>
+        <div class="row mb-3">
+            @Html.DisplayNameFor(m => m.Student)
+            <label asp-for="@Model.Student" class="col-sm-6 control-label">
+                @Model.Student.FirstName @Model.Student.LastName
+            </label>
+        </div>
+        @*<partial  name="_QuesionsSet.cshtml" />*@
+        <div class="row" id="partialQuestionsSet">
+
+        </div>
+        
+        <br />
+        @*<partial name="_Result.cshtml" />*@
+        <div class="row" id="partialResult">
+
+        </div>
+
+        <div class="d-grid gap-2 d-md-flex col-6 mx-auto justify-content-between">
+            <button class="btn btn-secondary me-md-2" type="button">Następny zestaw pytań</button>
+            <button class="btn btn-secondary" type="button">Poprzedni zestaw pytań</button>
+        </div>
+    </div>
+</fieldset>
+
+<script>
+    //$('#divpopup').load('/shared/_ProductCategory’);
+    var currentQuestionsSetId = @Model.QuestionsSetsIds[0];
+    console.log(currentQuestionsSetId);
+
+    $('#partialQuestionsSet').load("/Diagnosis/questionsSetPartial?questionsSetid=" +
+        + currentQuestionsSetId);
+
+    //$('#partialQuestionsSet').load("/diagnosis/questionsSetPartial", {questionSetid: $("#Id").val()});
+
+    $('#partialResult').load("/Diagnosis/resultPartial?diagnosisId=" +
+        @Model.Id + "&questionsSetId=" + currentQuestionsSetId);
+
+</script>
+
+<style>
+    fieldset {
+        font-family: sans-serif;
+        border: 3px solid #1F497D;
+        background: #ddd;
+        border-radius: 5px;
+        padding: 15px;
+    }
+
+        fieldset legend {
+            background: #1F497D;
+            color: #fff;
+            padding: 5px 10px 10px 20px;
+            font-size: 15px;
+            border-radius: 5px;
+            box-shadow: 0 0 0 5px #ddd;
+            margin-left: 1px;
+            margin-right: 10px;
+        }
+
+    .validation-summary-valid {
+        display: none;
+    }
+</style>

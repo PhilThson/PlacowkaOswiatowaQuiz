@@ -7,7 +7,7 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["PlacowkaOswiatowaQuiz/PlacowkaOswiatowaQuiz.csproj", "PlacowkaOswiatowaQuiz/"]
 COPY ["PlacowkaOswiatowaQuiz.Shared/PlacowkaOswiatowaQuiz.Shared.csproj", "PlacowkaOswiatowaQuiz.Shared/"]
-RUN dotnet restore "PlacowkaOswiatowaQuiz/PlacowkaOswiatowaQuiz.csproj"
+RUN dotnet restore "PlacowkaOswiatowaQuiz/PlacowkaOswiatowaQuiz.csproj" -v
 COPY . .
 WORKDIR "/src/PlacowkaOswiatowaQuiz"
 RUN dotnet build "PlacowkaOswiatowaQuiz.csproj" -c Release -o /app/build

@@ -1,30 +1,16 @@
 ﻿@model IEnumerable<RatingViewModel>
-@*<table width="100%">
-    <tbody>*@
-        @for (int i = 0; i < Model.Count(); i++)
-        {
-            @*<tr>
-                <td>*@
-                    <div class="row g-3 align-items-center form-floating">
-                        <form asp-controller="QuestionsSet" asp-action="EditRating" method="post" class="d-flex">
-                            @*<table width="100%">
-                                <tr>
-                                    <td class="col-mb-11">*@
-                                        <input type="hidden" asp-for="@Model.ElementAt(i).Id" value="@Model.ElementAt(i).Id" />
-                                        <input type="hidden" asp-for="@Model.ElementAt(i).QuestionsSetId" value="@Model.ElementAt(i).QuestionsSetId" />
-                                            <input asp-for="@Model.ElementAt(i).RatingDescription" class="form-control" />
-                                            <span asp-validation-for="@Model.ElementAt(i).RatingDescription" class="text-danger"></span>
-                                    @*</td>
 
-                                    <td class="col-mb-1">*@
-                                            <button class="btn btn-sm btn-success btn-block" type="submit">Zapisz</button>
-                                    @*</td>
-                                </tr>
-                            </table>*@
-                        </form>
-                    </div>
-                @*</td>
-            </tr>*@
-        }
-    @*</tbody>
-</table>*@
+@for (int i = 0; i < Model.Count(); i++)
+{
+    <div class="row g-3 align-items-center form-floating">
+        <form asp-controller="QuestionsSet" asp-action="EditRating" method="post" class="d-flex">
+            <input type="hidden" asp-for="@Model.ElementAt(i).Id" value="@Model.ElementAt(i).Id" />
+            <input type="hidden" asp-for="@Model.ElementAt(i).QuestionsSetId" value="@Model.ElementAt(i).QuestionsSetId" />
+            <input asp-for="@Model.ElementAt(i).RatingDescription" class="form-control" />
+            <span asp-validation-for="@Model.ElementAt(i).RatingDescription" class="text-danger"></span>
+
+            <button class="btn btn-sm btn-success btn-block" type="submit">Zapisz</button>
+
+        </form>
+    </div>
+}

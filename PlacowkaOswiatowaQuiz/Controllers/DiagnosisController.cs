@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using PlacowkaOswiatowaQuiz.Interfaces;
 using PlacowkaOswiatowaQuiz.Shared.ViewModels;
 
@@ -21,12 +22,14 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             _diagnosisService = diagnosisService;
         }
 
+        #region Lista wszystkich utworzonych formularzy
         public async Task<IActionResult> Index()
         {
             var diagnosis = new List<DiagnosisViewModel>();
             try
             {
                 diagnosis = await _diagnosisService.GetAllDiagnosis();
+
                 return View(diagnosis);
             }
             catch (HttpRequestException e)
@@ -36,16 +39,92 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 return View(diagnosis);
             }
         }
+        #endregion
 
-        public async Task<IActionResult> GetNextQuestionsSet(int id)
+        #region Zapis wyniku wybranej oceny zestawu pytań
+        [HttpPost]
+        public async Task<PartialViewResult> SaveResult(ResultViewModel resultVM)
         {
-            //Pobranie pełnego zestawu pytań i wyświetlenie PartialView
-            var questionsSet = await _questionsSetService.GetQuestionsSetById(id);
+            if (ModelState.ContainsKey("QuestionsSetRating.RatingDescription"))
+            {
+                ModelState["QuestionsSetRating.RatingDescription"].Errors.Clear();
+                ModelState["QuestionsSetRating.RatingDescription"].ValidationState =
+                    ModelValidationState.Valid;
+            }
 
-            return View(questionsSet);
-            //return PartialView()
+            if (!ModelState.IsValid)
+                return PartialView("_Result", resultVM);
+
+            try
+            {
+                await _diagnosisService.CreateResult(resultVM);
+                TempData["successAlert"] = $"Poprawnie zapisno ocenę.";
+                return PartialView("_Result", resultVM);
+            }
+            catch (HttpRequestException e)
+            {
+                TempData["errorAlert"] = $"Nie udało się zapisać oceny" +
+                    $"\nOdpowiedź serwera: '{e.Message}'";
+                return PartialView("_Result", resultVM);
+            }
+        }
+        #endregion
+
+        #region Wyświetlanie formularza diagnozy
+        public async Task<IActionResult> Diagnosis([FromQuery] int diagnosisId)
+        {
+            //Można założyć, że zawsze wszystkie zestawy pytań mają zostać zadane
+            var diagnosis = new DiagnosisViewModel();
+            var questionsSets = new List<QuestionsSetViewModel>();
+            try
+            {
+                diagnosis = await _diagnosisService.GetDiagnosisById(diagnosisId);
+                questionsSets = await _questionsSetService.GetAllQuestionsSets();
+                diagnosis.QuestionsSetsIds = questionsSets.Select(qs => qs.Id).ToList();
+                return View(diagnosis);
+            }
+            catch (HttpRequestException e)
+            {
+                TempData["errorAlert"] = $"Nie udało się pobrać formularza diagnozy" +
+                    $"\nOdpowiedź serwera: '{e.Message}'";
+                return View(diagnosis);
+            }
         }
 
+        public async Task<IActionResult> QuestionsSetPartial([FromQuery] int questionsSetId)
+        {
+            //Pobranie zestawu pytań do wyświetlenia
+            //var questionsSet = await _questionsSetService.GetQuestionsSetById(questionsSetId);
+            try
+            {
+                var questionsSet = await _questionsSetService.GetQuestionsSetById(questionsSetId);
+                return PartialView("_QuestionsSet", questionsSet);
+            }
+            catch (HttpRequestException e)
+            {
+                TempData["errorAlert"] = $"Nie udało się pobrać zestawu pytań." +
+                    $"\nOdpowiedź serwera: '{e.Message}'";
+                return PartialView(null);
+            }
+        }
+
+        public async Task<IActionResult> ResultPartial([FromQuery] int diagnosisId,
+            [FromQuery] int questionsSetId)
+        {
+            var result = await _diagnosisService.GetResultByDiagnosisQuestionsSetIds(
+                    diagnosisId, questionsSetId);
+            //TODO: Poprawić, bo przy obenej implementacji na widoku już jest cały zestaw pytań
+            //wraz z listą możliwych odpowiedzi, a poniżej jest dociągany jeszcze raz, bo jest
+            //potrzebny do modelu z rezultatem
+            //Może poprostu dociągać asynchronicznie tylko zestaw odpowiedzy po Id zestawu pytań
+            //Narazie powyższe rozwiązanie (wykorzystanie ajax'u)
+            ViewData["questionsSetId"] = questionsSetId;
+
+            return PartialView("_Result", result);
+        }
+        #endregion
+
+        #region Tworzenie formularza diagnozy
         public IActionResult Create()
         {
             return View();
@@ -59,9 +138,9 @@ namespace PlacowkaOswiatowaQuiz.Controllers
 
             try
             {
-                await _diagnosisService.CreateDiagnosis(diagnosisVM);
+                var createdDiagnosis = await _diagnosisService.CreateDiagnosis(diagnosisVM);
                 //Tutaj przekierowanie odrazu do formualrza (1 zestaw pytań)
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Diagnosis), new { diagnosisId = createdDiagnosis.Id});
             }
             catch (HttpRequestException e)
             {
@@ -70,6 +149,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 return View(diagnosisVM);
             }
         }
+        #endregion
     }
 }
 
