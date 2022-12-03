@@ -2,7 +2,7 @@
 
 <fieldset>
     <legend class="w-auto">
-        <b>Diagnoza nr: </b>
+        <b>Diagnoza nr: @Model.Id</b>
     </legend>
     <div id="divAlertArea">
         <partial name="~/Views/UIComponents/_bootstrapAlert.cshtml" />
@@ -29,36 +29,79 @@
         <br />
         <div class="row" id="partialResult">
         </div>
-        <div class="d-grid gap-2 d-md-flex col-6 mx-auto justify-content-between">
-            <button class="btn btn-secondary me-md-2" type="button">Następny zestaw pytań</button>
-            <button class="btn btn-secondary" type="button">Poprzedni zestaw pytań</button>
+        <div class="container overflow-hidden text-center mt-3">
+            @*<div class="d-grid d-flex gap-2 justify-content-between mx-auto">*@
+            <div class="row g-2">
+                <div class="col">
+                    <button class="btn btn-secondary me-md-2" type="button" id="previousQS">
+                        Poprzedni zestaw pytań
+                    </button>
+                </div>
+                <div class="col">
+                    <button class="btn btn-secondary ms-md-3" type="button" id="nextQS">
+                        Następny zestaw pytań
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <a asp-action="Details" asp-route-diagnosisId="@Model.Id"
+                   class="btn btn-outline-primary" type="button">
+                    Zakończ diagnozę
+                </a>
+            </div>
         </div>
     </div>
 </fieldset>
 
+<script src="~/js/LoadDiagnosisPartials.js"></script>
 <script>
-    var currentQuestionsSetId = @Model.QuestionsSetsIds[0];
+    //Załadowanie strony (pierwsze)
 
-    $('#partialQuestionsSet').load("/Diagnosis/questionsSetPartial?questionsSetid=" +
-        + currentQuestionsSetId, function () {
-            //jako callback do załadowania zestawu pytań, jest ładowany widok
-            //zapisu wyniku/oceny, który pobiera oceny danego zestawu pytań
-            //z wyrenderowanego przez widok częściowy _QuestionsSet drzewa DOM
-            //stąd te dwie operacje wykonują się sekwencyjnie
+    $(document).ready(function () {
+        var requestedQuestionsSetId = @Model.QuestionsSetsIds.First();
+        $('#previousQS').prop('disabled', true);
+        loadDiagnosisPartials(requestedQuestionsSetId, @Model.Id);
+    });
 
-            $('#partialResult').load("/Diagnosis/resultPartial?diagnosisId=" +
-                @Model.Id + "&questionsSetId=" + currentQuestionsSetId);
-        });
+
+    $("#previousQS").on("click", function () {
+        $('#nextQS').prop('disabled', false);
+        $('#previousQS').prop('disabled', false);
+        var currentQuestionsSetId = $('#questionsSetId').val();
+        var requestedQuestionsSetId = currentQuestionsSetId - 1;
+        if (requestedQuestionsSetId == @Model.QuestionsSetsIds.First()) {
+            $('#previousQS').prop('disabled', true);
+        }
+        if (requestedQuestionsSetId == @Model.QuestionsSetsIds.Last()) {
+            $('#nextQS').prop('disabled', true);
+        }
+        loadDiagnosisPartials(requestedQuestionsSetId, @Model.Id);
+    });
+
+    $("#nextQS").on("click", function () {
+        $('#nextQS').prop('disabled', false);
+        $('#previousQS').prop('disabled', false);
+        var currentQuestionsSetId = $('#questionsSetId').val();
+        var requestedQuestionsSetId = +currentQuestionsSetId + +1;
+        if (requestedQuestionsSetId == @Model.QuestionsSetsIds.First()) {
+            $('#previousQS').prop('disabled', true);
+        }
+        if (requestedQuestionsSetId == @Model.QuestionsSetsIds.Last()) {
+            $('#nextQS').prop('disabled', true);
+        }
+        loadDiagnosisPartials(requestedQuestionsSetId, @Model.Id);
+    });
 </script>
 
 <style>
-    @*TODO: Dostosować ten nagłówek*@
     fieldset {
         font-family: sans-serif;
         border: 3px solid #1F497D;
-        background: #ddd;
         border-radius: 5px;
         padding: 15px;
+        background-color: #ddd;
     }
 
         fieldset legend {

@@ -1,60 +1,91 @@
 ﻿@model QuestionsSetViewModel
 
 <br />
-<div class="container">
-    <div id="divAlertArea">
-        <partial name="~/Views/UIComponents/_bootstrapAlert.cshtml" />
-    </div>
-    <input hidden id="questionsSetId" value="@Model.Id" />
-    <div id="questionsSetRatings" style="visibility:hidden">
-        @foreach (var rating in Model.QuestionsSetRatings)
-        {
-            <input hidden id="@rating.Id" name="questionsSetRating" value="@rating.RatingDescription"/>
-        }
-    </div>
-    <div class="container rounded p-2">
-        <div class="row">
-            <div class="col-12 col-lg-6 pb-4">
-                <h4 class="d-flex justify-content-between align-items-center mb-3">
-                    Zestaw pytań:
-                </h4>
-                <div class="row my-1">
-                    <div class="col-3">
-                        <label>Name</label>
+<fieldset class="p-2">
+    <legend class="w-auto">
+        <b>Zestaw pytań</b>
+    </legend>
+    <div class="container">
+        <div id="divAlertArea">
+            <partial name="~/Views/UIComponents/_bootstrapAlert.cshtml" />
+        </div>
+        <input hidden id="questionsSetId" value="@Model.Id" />
+        <div id="questionsSetRatings" style="visibility:hidden">
+            @foreach (var rating in Model.QuestionsSetRatings)
+            {
+                <input hidden id="@rating.Id" name="questionsSetRating" value="@rating.RatingDescription" />
+            }
+        </div>
+        <div class="container rounded p-2">
+            <div class="row">
+                <div class="col-12 col-lg-6 pb-4">
+                    @*<h4 class="d-flex justify-content-between align-items-center mb-3">
+                            Zestaw pytań:
+                        </h4>*@
+                    <div class="row my-1">
+                        <div class="col-6">
+                            <b>@Html.DisplayNameFor(m => m.SkillDescription)</b>
+                        </div>
+                        <div class="col-9">
+                            <p class="font-italic text-center">@Html.DisplayFor(m => m.SkillDescription)</p>
+                        </div>
                     </div>
-                    <div class="col-9">
-                        <input placeholder="Nazwa" class="form-control" />
-                        <span class="text-danger"></span>
+                    <div class="row my-1">
+                        <div class="col-6">
+                            <b>@Html.DisplayNameFor(m => m.Area)</b>
+                        </div>
+                        <div class="col-9">
+                            <p class="text-center font-weight-light">@Html.DisplayFor(m => m.Area.Description)</p>
+                        </div>
+                    </div>
+                    <div class="row my-1">
+                        <div class="col-6">
+                            <b>@Html.DisplayNameFor(m => m.Difficulty)</b>
+                        </div>
+                        <div class="col-9">
+                            <p class="text-center font-italic">@Html.DisplayFor(m => m.Difficulty.Description)</p>
+                        </div>
                     </div>
                 </div>
-                <div class="row my-1">
-                    <div class="col-3">
-                        <label>Phone</label>
-                    </div>
-                    <div class="col-9">
-                        <input placeholder="Telefon" class="form-control" />
-                        <span class="text-danger"></span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-lg-5 offset-lg-1">
-                <h4 class="d-flex justify-content-between align-items-center mb-3">
-                    <span class="text">Pytania:</span>
-                </h4>
-                <ul class="list-group mb-3">
-                    @foreach (var question in Model.Questions)
-                    {
-                        <li class="list-group-item d-flex justify-content-between">
-                            <div>
-                                <input type="radio" name="isAnswered" value="" />
-                                <h6 class="my-0">@question.Content</h6>
+                <div class="col-12 col-lg-5 offset-lg-1">
+                    <h4 class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text">Pytania:</span>
+                    </h4>
+                    <ul class="list-group mb-3">
+                        @foreach (var question in Model.Questions)
+                        {
+                            <li class="list-group-item d-flex justify-content-between">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="isAnswered" value="is-answered" />
+                                        @question.Content
+                                    </label>
+                                </div>
                                 <small class="text-muted">@question.Description</small>
-                            </div>
-                        </li>
-                    }
-                </ul>
+                            </li>
+                        }
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
-</div>
+</fieldset>
 
+<style>
+    legend {
+        border: 3px solid #1F497D;
+        border-radius: 5px;
+        float: none;
+        padding: inherit;
+    }
+
+    fieldset legend {
+        background: #1F497D;
+        color: #fff;
+        padding: 5px 10px 10px 15px;
+        font-size: 15px;
+        border-radius: 5px;
+        margin-left: 1px;
+        margin-right: 10px;
+    }
+</style>

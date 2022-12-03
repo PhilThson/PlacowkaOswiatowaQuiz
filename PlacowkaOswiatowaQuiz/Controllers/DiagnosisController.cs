@@ -29,7 +29,6 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             try
             {
                 diagnosis = await _diagnosisService.GetAllDiagnosis();
-
                 return View(diagnosis);
             }
             catch (HttpRequestException e)
@@ -140,6 +139,24 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 TempData["errorAlert"] = $"Nie udało się utworzyć formularza diagnozy." +
                     $"\nOdpowiedź serwera: '{e.Message}'";
                 return View(diagnosisVM);
+            }
+        }
+        #endregion
+
+        #region Podsumowanie/szczegóły formularza diagnozy
+        public async Task<IActionResult> Details([FromRoute] int diagnosisId)
+        {
+            var diagnosis = new DiagnosisViewModel();
+            try
+            {
+                diagnosis = await _diagnosisService.GetDiagnosisById(diagnosisId);
+                return View(diagnosis);
+            }
+            catch(HttpRequestException e)
+            {
+                TempData["errorAlert"] = "Nie udało się utworzyć formularza diagnozy o " +
+                    $"podanym identyfikatorze {diagnosisId}. Odpowiedź serwera: '{e.Message}'";
+                return View(diagnosis);
             }
         }
         #endregion
