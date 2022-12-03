@@ -24,17 +24,11 @@
                 @Model.Student.FirstName @Model.Student.LastName
             </label>
         </div>
-        @*<partial  name="_QuesionsSet.cshtml" />*@
         <div class="row" id="partialQuestionsSet">
-
         </div>
-        
         <br />
-        @*<partial name="_Result.cshtml" />*@
         <div class="row" id="partialResult">
-
         </div>
-
         <div class="d-grid gap-2 d-md-flex col-6 mx-auto justify-content-between">
             <button class="btn btn-secondary me-md-2" type="button">Następny zestaw pytań</button>
             <button class="btn btn-secondary" type="button">Poprzedni zestaw pytań</button>
@@ -43,21 +37,22 @@
 </fieldset>
 
 <script>
-    //$('#divpopup').load('/shared/_ProductCategory’);
     var currentQuestionsSetId = @Model.QuestionsSetsIds[0];
-    console.log(currentQuestionsSetId);
 
     $('#partialQuestionsSet').load("/Diagnosis/questionsSetPartial?questionsSetid=" +
-        + currentQuestionsSetId);
+        + currentQuestionsSetId, function () {
+            //jako callback do załadowania zestawu pytań, jest ładowany widok
+            //zapisu wyniku/oceny, który pobiera oceny danego zestawu pytań
+            //z wyrenderowanego przez widok częściowy _QuestionsSet drzewa DOM
+            //stąd te dwie operacje wykonują się sekwencyjnie
 
-    //$('#partialQuestionsSet').load("/diagnosis/questionsSetPartial", {questionSetid: $("#Id").val()});
-
-    $('#partialResult').load("/Diagnosis/resultPartial?diagnosisId=" +
-        @Model.Id + "&questionsSetId=" + currentQuestionsSetId);
-
+            $('#partialResult').load("/Diagnosis/resultPartial?diagnosisId=" +
+                @Model.Id + "&questionsSetId=" + currentQuestionsSetId);
+        });
 </script>
 
 <style>
+    @*TODO: Dostosować ten nagłówek*@
     fieldset {
         font-family: sans-serif;
         border: 3px solid #1F497D;
@@ -69,10 +64,9 @@
         fieldset legend {
             background: #1F497D;
             color: #fff;
-            padding: 5px 10px 10px 20px;
+            padding: 5px 10px 10px 15px;
             font-size: 15px;
             border-radius: 5px;
-            box-shadow: 0 0 0 5px #ddd;
             margin-left: 1px;
             margin-right: 10px;
         }

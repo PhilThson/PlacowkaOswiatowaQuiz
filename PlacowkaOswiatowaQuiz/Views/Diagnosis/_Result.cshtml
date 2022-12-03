@@ -3,13 +3,6 @@
 <form method="post" asp-controller="Diagnosis" asp-action="SaveResult" id="partialResultForm">
     <input type="hidden" asp-for="@Model.DiagnosisId"/>
     <div class="container-fluid">
-        @*@Html.LabelFor(m => m.QuestionsSetRating,
-        htmlAttributes: new { @class = "control-label col-md-10" })*@
-        @*<div class="col-md-10">
-        @Html.DropDownListFor(m => Model.Result.QuestionsSetRating.Id,
-            new SelectList(Model.QuestionsSetRatings, "Id", "RatingDescription"),
-            htmlAttributes: new { @class = "form-control form-control-lg" })
-        @Html.ValidationMessageFor(m => m.Result.QuestionsSetRating, "", new { @class = "text-danger" })*@
         <div class="row mb-3 form-group">
             <label asp-for="@Model.QuestionsSetRating" class="form-label col-md-10"></label>
             <div class="col-sm-8">
@@ -17,6 +10,7 @@
                         currentRatingId="@Model.QuestionsSetRating?.Id">
                     <option disabled selected>Wybierz ocenę...</option>
                 </select>
+                @Html.ValidationMessageFor(m => m.QuestionsSetRating, "", new { @class = "text-danger" })
             </div>
         </div>
         <div class="row mb-3 form-group">
@@ -40,7 +34,6 @@
             <partial name="~/Views/UIComponents/_bootstrapAlert.cshtml" />
         </div>
         <div class="d-grid col-4 mx-auto">
-            @*<button class="btn btn-success" type="submit">zapisz</button>*@
             <a class="btn btn-success" id="saveResult">Zapisz</a>
         </div>
     </div>
@@ -49,33 +42,33 @@
 <script>
     $(document).ready(function () {
         var currentRatingId = $("#ratingsDropdown").attr('currentRatingId');
-        $.ajax({
-            type: "GET",
-            url: "/QuestionsSet/GetQuestionsSetRatings?questionsSetId=" +
-                @ViewData["questionsSetId"],
-            data: "{}",
-            success: function (data) {
-                $.each(data, function (i, rating) {
-                    if (rating.id != currentRatingId)
-                        $("#ratingsDropdown").append(
-                            "<option value=" + rating.id + ">" +
-                            rating.ratingDescription + "</option>");
-                    else
-                        $("#ratingsDropdown").append(
-                            "<option selected value=" + rating.id + ">" +
-                            rating.ratingDescription + "</option>");
-                });
-            }
-        });
+
+        $('input[name="questionsSetRating"]')
+            .each(function (i, rating) {
+                if (rating.id != currentRatingId)
+                    $("#ratingsDropdown").append(
+                        "<option value=" + rating.id + ">" +
+                        rating.value + "</option>");
+                else
+                    $("#ratingsDropdown").append(
+                        "<option selected value=" + rating.id + ">" +
+                        rating.value + "</option>");
+            });
     });
 
     $("#saveResult").click(function () {
         $.ajax({
+            type: "POST",
             url: "/Diagnosis/SaveResult",
-            type: "post",
-            data: $("form").serialize(),
-            success: function (result) {
-                $("#partialResult").html(result);
+            data: $("form").serialize()
+        })
+        .done(function (result, status) {
+            $("#partialResult").html(result);
+            //TODO: coś szwankuje z tymi tosterami
+            console.log('@TempData["saveSuccess"]');
+            let isSuccess = @((TempData["saveSuccess"] != null).ToString().ToLower());
+            if (isSuccess) {
+                toastr.success('Poprawnie zapisano ocenę');
             }
         });
     })

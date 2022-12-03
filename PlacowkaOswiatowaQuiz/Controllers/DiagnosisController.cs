@@ -47,6 +47,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         {
             if (ModelState.ContainsKey("QuestionsSetRating.RatingDescription"))
             {
+                //Manualne usunięcie walidacji niewykorzystywanej właściwości ViewModel'u
                 ModelState["QuestionsSetRating.RatingDescription"].Errors.Clear();
                 ModelState["QuestionsSetRating.RatingDescription"].ValidationState =
                     ModelValidationState.Valid;
@@ -58,7 +59,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             try
             {
                 await _diagnosisService.CreateResult(resultVM);
-                TempData["successAlert"] = $"Poprawnie zapisno ocenę.";
+                TempData["saveSuccess"] = "Poprawnie zapisno ocenę.";
                 return PartialView("_Result", resultVM);
             }
             catch (HttpRequestException e)
@@ -93,8 +94,6 @@ namespace PlacowkaOswiatowaQuiz.Controllers
 
         public async Task<IActionResult> QuestionsSetPartial([FromQuery] int questionsSetId)
         {
-            //Pobranie zestawu pytań do wyświetlenia
-            //var questionsSet = await _questionsSetService.GetQuestionsSetById(questionsSetId);
             try
             {
                 var questionsSet = await _questionsSetService.GetQuestionsSetById(questionsSetId);
@@ -113,12 +112,6 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         {
             var result = await _diagnosisService.GetResultByDiagnosisQuestionsSetIds(
                     diagnosisId, questionsSetId);
-            //TODO: Poprawić, bo przy obenej implementacji na widoku już jest cały zestaw pytań
-            //wraz z listą możliwych odpowiedzi, a poniżej jest dociągany jeszcze raz, bo jest
-            //potrzebny do modelu z rezultatem
-            //Może poprostu dociągać asynchronicznie tylko zestaw odpowiedzy po Id zestawu pytań
-            //Narazie powyższe rozwiązanie (wykorzystanie ajax'u)
-            ViewData["questionsSetId"] = questionsSetId;
 
             return PartialView("_Result", result);
         }
@@ -139,7 +132,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             try
             {
                 var createdDiagnosis = await _diagnosisService.CreateDiagnosis(diagnosisVM);
-                //Tutaj przekierowanie odrazu do formualrza (1 zestaw pytań)
+                //Po utworzeniu diagnozy, przekierowanie do formualrza (1 zestaw pytań)
                 return RedirectToAction(nameof(Diagnosis), new { diagnosisId = createdDiagnosis.Id});
             }
             catch (HttpRequestException e)
