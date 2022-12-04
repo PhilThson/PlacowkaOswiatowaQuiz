@@ -75,12 +75,13 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         {
             //Można założyć, że zawsze wszystkie zestawy pytań mają zostać zadane
             var diagnosis = new DiagnosisViewModel();
-            var questionsSets = new List<QuestionsSetViewModel>();
+            //var questionsSets = new List<QuestionsSetViewModel>();
             try
             {
-                diagnosis = await _diagnosisService.GetDiagnosisById(diagnosisId);
-                questionsSets = await _questionsSetService.GetAllQuestionsSets();
-                diagnosis.QuestionsSetsIds = questionsSets.Select(qs => qs.Id).ToList();
+                diagnosis = await Map(diagnosisId);
+                //diagnosis = await _diagnosisService.GetDiagnosisById(diagnosisId);
+                //questionsSets = await _questionsSetService.GetAllQuestionsSets();
+                //diagnosis.QuestionsSetsIds = questionsSets.Select(qs => qs.Id).ToList();
                 return View(diagnosis);
             }
             catch (HttpRequestException e)
@@ -144,20 +145,41 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         #endregion
 
         #region Podsumowanie/szczegóły formularza diagnozy
+        [HttpGet("Diagnosis/Details/{diagnosisId}")]
         public async Task<IActionResult> Details([FromRoute] int diagnosisId)
         {
-            var diagnosis = new DiagnosisViewModel();
+            var diagnosisSummary = new DiagnosisSummaryViewModel();
             try
             {
-                diagnosis = await _diagnosisService.GetDiagnosisById(diagnosisId);
-                return View(diagnosis);
+                diagnosisSummary = await Map(diagnosisId);
+                return View(diagnosisSummary);
             }
             catch(HttpRequestException e)
             {
-                TempData["errorAlert"] = "Nie udało się utworzyć formularza diagnozy o " +
+                TempData["errorAlert"] = "Nie udało się pobrać formularza diagnozy o " +
                     $"podanym identyfikatorze {diagnosisId}. Odpowiedź serwera: '{e.Message}'";
-                return View(diagnosis);
+                return View(diagnosisSummary);
             }
+        }
+        #endregion
+
+        #region Metody prywatne
+        private async Task<DiagnosisSummaryViewModel> Map(int diagnosisId)
+        {
+            var diagnosis = await _diagnosisService.GetDiagnosisById(diagnosisId);
+            var questionsSets = await _questionsSetService.GetAllQuestionsSets();
+
+            return new DiagnosisSummaryViewModel
+            {
+                Id = diagnosis.Id,
+                SchoolYear = diagnosis.SchoolYear,
+                Student = diagnosis.Student,
+                Employee = diagnosis.Employee,
+                Results = diagnosis.Results,
+                QuestionsSetsIds = questionsSets.Select(qs => qs.Id).ToList(),
+                QuestionsSetsSkillDescriptions =
+                    questionsSets.Select(qs => qs.SkillDescription).ToList()
+            };
         }
         #endregion
     }

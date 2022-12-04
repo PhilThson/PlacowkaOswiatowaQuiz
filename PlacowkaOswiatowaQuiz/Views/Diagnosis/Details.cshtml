@@ -1,3 +1,56 @@
-﻿@model DiagnosisViewModel
+﻿@model DiagnosisSummaryViewModel
 
-Tutaj będzie podsumowanie/szczegóły formularza diagnozy
+<div class="heading">
+    <h4><b>Podsumowanie formularza diagnozy o numerze: @Model.Id</b></h4>
+</div>
+<div id="divAlertArea">
+    <partial name="~/Views/UIComponents/_bootstrapAlert.cshtml" />
+</div>
+<br/>
+<div class="container-fluid">
+    <div class="row mb-3 mt-3">
+        <p class="fs-5 fw-bold">
+            @Html.DisplayNameFor(m => m.SchoolYear)
+        </p>
+        <label class="col-sm-6 control-label">@Model.SchoolYear</label>
+    </div>
+    <div class="row mb-3">
+        <p class="fs-5 fw-bold">
+            @Html.DisplayNameFor(m => m.Employee)
+        </p>
+        <label class="col-sm-6 control-label">
+            @Model.Employee?.FirstName @Model.Employee?.LastName
+        </label>
+    </div>
+    <div class="row mb-3">
+        <p class="fs-5 fw-bold">
+            @Html.DisplayNameFor(m => m.Student)
+        </p>
+        <label class="col-sm-6 control-label">
+            @Model.Student?.FirstName @Model.Student?.LastName
+        </label>
+    </div>
+</div>
+
+<div class="accordion" id="accordionPanelsStayOpenExample">
+    @for (int i = 0; i < Model.QuestionsSetsIds.Count(); i++)
+    {
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading_@Model.QuestionsSetsIds[i]">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#panel_@Model.QuestionsSetsIds[i]" aria-expanded="true"
+                        aria-controls="panel_@Model.QuestionsSetsIds[i]">
+                    <p class="fw-bold">
+                        @Model.QuestionsSetsSkillDescriptions[i]
+                    </p>
+                </button>
+            </h2>
+            <div id="panel_@Model.QuestionsSetsIds[i]" class="accordion-collapse collapse show"
+                 aria-labelledby="heading_@Model.QuestionsSetsIds[i]">
+                <div class="accordion-body">
+                    @await Html.PartialAsync("_ResultSummary", Model.Results?[i])
+                </div>
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,22 @@
+﻿@model ResultViewModel
+
+<ul class="list-group">
+    <li class="list-group-item d-flex justify-content-between align-items-start">
+        <div class="ms-2 me-auto">
+            <div class="fw-bold">@Html.DisplayNameFor(m => m.QuestionsSetRating)</div>
+            @Model.QuestionsSetRating?.RatingDescription 
+        </div>
+    </li>
+    <li class="list-group-item d-flex justify-content-between align-items-start">
+        <div class="ms-2 me-auto">
+            <div class="fw-bold">@Html.DisplayNameFor(m => m.RatingLevel)</div>
+            @Model.RatingLevel
+        </div>
+    </li>
+    <li class="list-group-item d-flex justify-content-between align-items-start">
+        <div class="ms-2 me-auto">
+            <div class="fw-bold">@Html.DisplayNameFor(m => m.Notes)</div>
+            @Model.Notes
+        </div>
+    </li>
+</ul>
