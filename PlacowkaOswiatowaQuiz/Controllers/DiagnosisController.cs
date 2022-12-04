@@ -71,7 +71,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         #endregion
 
         #region Wyświetlanie formularza diagnozy
-        public async Task<IActionResult> Diagnosis([FromQuery] int diagnosisId)
+        public async Task<IActionResult> DiagnosisForm([FromQuery] int diagnosisId)
         {
             //Można założyć, że zawsze wszystkie zestawy pytań mają zostać zadane
             var diagnosis = new DiagnosisViewModel();
@@ -133,9 +133,9 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             {
                 var createdDiagnosis = await _diagnosisService.CreateDiagnosis(diagnosisVM);
                 //Po utworzeniu diagnozy, przekierowanie do formualrza (1 zestaw pytań)
-                return RedirectToAction(nameof(Diagnosis), new { diagnosisId = createdDiagnosis.Id});
+                return RedirectToAction(nameof(DiagnosisForm), new { diagnosisId = createdDiagnosis.Id});
             }
-            catch (HttpRequestException e)
+            catch (Exception e)
             {
                 TempData["errorAlert"] = $"Nie udało się utworzyć formularza diagnozy." +
                     $"\nOdpowiedź serwera: '{e.Message}'";

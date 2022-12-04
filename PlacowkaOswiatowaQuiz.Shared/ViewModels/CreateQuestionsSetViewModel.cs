@@ -24,7 +24,6 @@ namespace PlacowkaOswiatowaQuiz.Shared.ViewModels
         [DisplayName("Pytania")]
         public IEnumerable<QuestionViewModel>? Questions { get; set; }
         [DisplayName("Dołączone pliki - Karty pracy")]
-        public IEnumerable<IFormFile> AttachmentFiles { get; set; }
-        //public IList<IFormFile> AttachmentFile { get; set; }
+        public IEnumerable<IFormFile>? AttachmentFiles { get; set; }
     }
 }

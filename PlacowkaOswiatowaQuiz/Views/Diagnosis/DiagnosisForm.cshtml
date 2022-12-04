@@ -8,19 +8,28 @@
         <partial name="~/Views/UIComponents/_bootstrapAlert.cshtml" />
     </div>
     <div class="container-fluid">
+        <div id="questionsSetsIdsList" style="visibility:hidden">
+            @for (int i = 0; i < Model.QuestionsSetsIds.Count(); i++)
+            {
+                <input type="hidden" id="@Model.QuestionsSetsIds[i]"
+                       name="questionsSetIdItem"/>
+            }
+        </div>
         <div class="row mb-3">
             @Html.DisplayNameFor(m => m.SchoolYear)
-            <label class="col-sm-6 control-label">@Model.SchoolYear</label>
+            <label class="col-sm-6 control-label fst-italic">
+                @Model.SchoolYear
+            </label>
         </div>
         <div class="row mb-3">
             @Html.DisplayNameFor(m => m.Employee)
-            <label class="col-sm-6 control-label">
+            <label class="col-sm-6 control-label fst-italic">
                 @Model.Employee.FirstName @Model.Employee.LastName
             </label>
         </div>
         <div class="row mb-3">
             @Html.DisplayNameFor(m => m.Student)
-            <label asp-for="@Model.Student" class="col-sm-6 control-label">
+            <label asp-for="@Model.Student" class="col-sm-6 control-label fst-italic">
                 @Model.Student.FirstName @Model.Student.LastName
             </label>
         </div>
@@ -33,12 +42,14 @@
             @*<div class="d-grid d-flex gap-2 justify-content-between mx-auto">*@
             <div class="row g-2">
                 <div class="col">
-                    <button class="btn btn-secondary me-md-2" type="button" id="previousQS">
+                    <button class="btn btn-secondary me-md-2" type="button"
+                            id="previousQS">
                         Poprzedni zestaw pytań
                     </button>
                 </div>
                 <div class="col">
-                    <button class="btn btn-secondary ms-md-3" type="button" id="nextQS">
+                    <button class="btn btn-secondary ms-md-3" type="button"
+                            id="nextQS">
                         Następny zestaw pytań
                     </button>
                 </div>
@@ -57,20 +68,25 @@
 
 <script src="~/js/LoadDiagnosisPartials.js"></script>
 <script>
-    //Załadowanie strony (pierwsze)
+
+    var questionsSetsIds = [];
+    $('input[name="questionsSetIdItem"]').each(function () {
+        questionsSetsIds.push({ id: this.id });
+    });
+
+    var index = 0;
 
     $(document).ready(function () {
-        var requestedQuestionsSetId = @Model.QuestionsSetsIds.First();
+        var requestedQuestionsSetId = questionsSetsIds[index].id;
         $('#previousQS').prop('disabled', true);
         loadDiagnosisPartials(requestedQuestionsSetId, @Model.Id);
     });
 
-
     $("#previousQS").on("click", function () {
         $('#nextQS').prop('disabled', false);
         $('#previousQS').prop('disabled', false);
-        var currentQuestionsSetId = $('#questionsSetId').val();
-        var requestedQuestionsSetId = currentQuestionsSetId - 1;
+        index--;
+        var requestedQuestionsSetId = questionsSetsIds[index].id;
         if (requestedQuestionsSetId == @Model.QuestionsSetsIds.First()) {
             $('#previousQS').prop('disabled', true);
         }
@@ -83,8 +99,8 @@
     $("#nextQS").on("click", function () {
         $('#nextQS').prop('disabled', false);
         $('#previousQS').prop('disabled', false);
-        var currentQuestionsSetId = $('#questionsSetId').val();
-        var requestedQuestionsSetId = +currentQuestionsSetId + +1;
+        index++;
+        var requestedQuestionsSetId = questionsSetsIds[index].id;
         if (requestedQuestionsSetId == @Model.QuestionsSetsIds.First()) {
             $('#previousQS').prop('disabled', true);
         }
@@ -93,6 +109,7 @@
         }
         loadDiagnosisPartials(requestedQuestionsSetId, @Model.Id);
     });
+
 </script>
 
 <style>

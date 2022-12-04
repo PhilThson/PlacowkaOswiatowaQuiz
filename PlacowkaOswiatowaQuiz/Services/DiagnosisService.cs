@@ -50,7 +50,10 @@ namespace PlacowkaOswiatowaQuiz.Services
             var httpClient = _httpClientFactory.CreateClient(_apiUrl.ClientName);
             var response = await httpClient.PostAsJsonAsync(_apiSettings.Diagnosis,
                 createDiagnosis);
-            response.EnsureSuccessStatusCode();
+
+            if (!response.IsSuccessStatusCode)
+                throw new Exception(await response.Content.ReadAsStringAsync());
+
             return await response.Content.ReadFromJsonAsync<DiagnosisViewModel>();
         }
 

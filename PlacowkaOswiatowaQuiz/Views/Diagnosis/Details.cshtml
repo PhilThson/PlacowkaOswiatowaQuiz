@@ -6,7 +6,7 @@
 <div id="divAlertArea">
     <partial name="~/Views/UIComponents/_bootstrapAlert.cshtml" />
 </div>
-<br/>
+<br />
 <div class="container-fluid">
     <div class="row mb-3 mt-3">
         <p class="fs-5 fw-bold">
@@ -48,7 +48,16 @@
             <div id="panel_@Model.QuestionsSetsIds[i]" class="accordion-collapse collapse show"
                  aria-labelledby="heading_@Model.QuestionsSetsIds[i]">
                 <div class="accordion-body">
-                    @await Html.PartialAsync("_ResultSummary", Model.Results?[i])
+                    @if (Model.Results?.Count() > 0)
+                    {
+                        @await Html.PartialAsync("_ResultSummary", Model.Results[i])
+                    }
+                    else
+                    {
+                        <p class="fst-italic">
+                            Nie znaleziono zapisanych odpowiedzi, do wybranego zestawu pytań
+                        </p>
+                    }
                 </div>
             </div>
         </div>

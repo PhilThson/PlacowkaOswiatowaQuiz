@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
+using PlacowkaOswiatowaQuiz.Helpers.Extensions;
 using PlacowkaOswiatowaQuiz.Helpers.Options;
 using PlacowkaOswiatowaQuiz.Interfaces;
 using PlacowkaOswiatowaQuiz.Shared.DTOs;
@@ -92,10 +93,15 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         public async Task<IActionResult> Create(CreateQuestionsSetViewModel questionsSetVM)
         {
             var ratings = questionsSetVM.QuestionsSetRatings
-                    .Where(r => r != null).ToList();
+                .Where(r => r != null).ToList();
             if(ratings.Count < 3)
-                    ModelState.AddModelError(string.Empty,
-                        "Należy podać minimum 3 oceny zestawu pytań");
+                ModelState.AddModelError(string.Empty,
+                    "Należy podać minimum 3 oceny zestawu pytań");
+            if(questionsSetVM.AttachmentFiles?.Count() > 0 &&
+                questionsSetVM.AttachmentFiles.Any(a => !a.IsImage()))
+                ModelState.AddModelError(string.Empty,
+                    "Należy wybrać tylko pliki graficzne " +
+                    "(.jpg/.png/.gif/.jpeg)");
 
             if (!ModelState.IsValid)
                 return View(questionsSetVM);

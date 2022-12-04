@@ -27,6 +27,7 @@
     <Folder Include="Views\Diagnosis\" />
     <Folder Include="Services\" />
     <Folder Include="Interfaces\" />
+    <Folder Include="Helpers\Extensions\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Newtonsoft.Json" />
@@ -36,6 +37,7 @@
     <None Remove="Views\Diagnosis\" />
     <None Remove="Services\" />
     <None Remove="Interfaces\" />
+    <None Remove="Helpers\Extensions\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />

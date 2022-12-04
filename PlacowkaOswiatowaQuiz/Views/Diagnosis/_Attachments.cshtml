@@ -1,0 +1,33 @@
+﻿@model IList<AttachmentViewModel>
+
+@foreach (var attachment in Model)
+{
+    <button type="button" class="btn btn-primary col-6 mx-auto" data-bs-toggle="modal"
+            data-bs-target="#attachment_@attachment.Id">
+        Pokaż kartę pracy @attachment.Name
+    </button>
+    <div class="modal fade" id="attachment_@attachment.Id" tabindex="-1"
+         aria-labelledby="attachmentLabel_@attachment.Id"
+         aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="attachmentLabel_@attachment.Id">@attachment.Name</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <p class="fw-lighter">@attachment.Description</p>
+                </div>
+                <div class="modal-body">
+                    <div id="divAlertArea">
+                        <partial name="~/Views/UIComponents/_bootstrapAlert.cshtml" />
+                    </div>
+                    <img src="@Url.Action("GetAttachmentById", "Attachment",
+                             new { attachmentId = attachment.Id })" />
+                </div>
+                @*<div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>*@
+            </div>
+        </div>
+    </div>
+}

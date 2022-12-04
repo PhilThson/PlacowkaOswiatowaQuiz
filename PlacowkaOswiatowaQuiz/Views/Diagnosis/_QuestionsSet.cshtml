@@ -9,7 +9,7 @@
         <div id="divAlertArea">
             <partial name="~/Views/UIComponents/_bootstrapAlert.cshtml" />
         </div>
-        <input hidden id="questionsSetId" value="@Model.Id" />
+        <input id="questionsSetId" hidden value="@Model.Id" />
         <div id="questionsSetRatings" style="visibility:hidden">
             @foreach (var rating in Model.QuestionsSetRatings)
             {
@@ -66,6 +66,9 @@
                         }
                     </ul>
                 </div>
+            </div>
+            <div class="row">
+                @await Html.PartialAsync("_Attachments", Model.Attachments)
             </div>
         </div>
     </div>
