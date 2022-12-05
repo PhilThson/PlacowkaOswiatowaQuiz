@@ -70,7 +70,9 @@ namespace PlacowkaOswiatowaQuiz.Services
             var httpClient = _httpClientFactory.CreateClient(_apiUrl.ClientName);
             var response = await httpClient.PostAsJsonAsync(_apiSettings.Results,
                 createResultDto);
-            response.EnsureSuccessStatusCode();
+
+            if (!response.IsSuccessStatusCode)
+                throw new Exception(await response.Content.ReadAsStringAsync());
         }
 
         public async Task<ResultViewModel> GetResultById(int id)

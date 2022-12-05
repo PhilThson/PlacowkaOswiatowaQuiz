@@ -26,6 +26,15 @@
     </div>
 }
 
+@*Tutaj przekładka, ze wzgłędu na brak dziedziczenia elementów tymczasowych
+    ViewBag/ViewData/TempData przez dzieci widoku głównego (Nie przesyłają się
+    dane z kontrolera do PartialView)*@
+
+@if (ViewBag.SaveSuccess != null)
+{
+    <input type="hidden" id="saveSuccess" value="@ViewBag.SaveSuccess" />
+}
+
 @*<script>
         $(document).ready(function () {
             setTimeout(function () {

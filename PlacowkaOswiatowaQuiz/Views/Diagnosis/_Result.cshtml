@@ -69,11 +69,10 @@ $("#saveResult").click(function () {
     })
     .done(function (result, status) {
         $("#partialResult").html(result);
-        //TODO: coś szwankuje z tymi tosterami
-        console.log('@TempData["saveSuccess"]');
-        let isSuccess = @((TempData["saveSuccess"] != null).ToString().ToLower());
-        if (isSuccess) {
-            toastr.success('Poprawnie zapisano ocenę');
+        var saveSuccessMessage = $('#saveSuccess').val();
+        if (saveSuccessMessage != null) {
+            toastr.success(saveSuccessMessage, null,
+                { timeOut: 5000, positionClass: "toast-bottom-right" });
         }
     });
 })

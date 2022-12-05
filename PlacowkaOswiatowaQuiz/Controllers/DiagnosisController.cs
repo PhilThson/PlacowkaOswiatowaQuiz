@@ -58,10 +58,10 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             try
             {
                 await _diagnosisService.CreateResult(resultVM);
-                TempData["saveSuccess"] = "Poprawnie zapisno ocenę.";
+                ViewBag.SaveSuccess = "Poprawnie zapisno ocenę.";
                 return PartialView("_Result", resultVM);
             }
-            catch (HttpRequestException e)
+            catch (Exception e)
             {
                 TempData["errorAlert"] = $"Nie udało się zapisać oceny" +
                     $"\nOdpowiedź serwera: '{e.Message}'";
@@ -75,13 +75,9 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         {
             //Można założyć, że zawsze wszystkie zestawy pytań mają zostać zadane
             var diagnosis = new DiagnosisViewModel();
-            //var questionsSets = new List<QuestionsSetViewModel>();
             try
             {
                 diagnosis = await Map(diagnosisId);
-                //diagnosis = await _diagnosisService.GetDiagnosisById(diagnosisId);
-                //questionsSets = await _questionsSetService.GetAllQuestionsSets();
-                //diagnosis.QuestionsSetsIds = questionsSets.Select(qs => qs.Id).ToList();
                 return View(diagnosis);
             }
             catch (HttpRequestException e)
