@@ -44,6 +44,7 @@ namespace PlacowkaOswiatowaQuiz.Services
             {
                 EmployeeId = diagnosisVM.EmployeeId.Value,
                 StudentId = diagnosisVM.StudentId.Value,
+                DifficultyId = diagnosisVM.DifficultyId.Value,
                 SchoolYear = diagnosisVM.SchoolYear
             };
 

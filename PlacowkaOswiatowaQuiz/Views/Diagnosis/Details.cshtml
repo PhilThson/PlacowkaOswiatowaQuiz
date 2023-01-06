@@ -1,4 +1,5 @@
 ﻿@model DiagnosisSummaryViewModel
+@{ViewData["Title"] = "Diagnoza - podsumowanie";}
 
 <div class="heading">
     <h4><b>Podsumowanie formularza diagnozy o numerze: @Model.Id</b></h4>
@@ -30,6 +31,14 @@
             @Model.Student?.FirstName @Model.Student?.LastName
         </label>
     </div>
+    <div class="row mb-3">
+        <p class="fs-5 fw-bold">
+            @Html.DisplayNameFor(m => m.Difficulty)
+        </p>
+        <label class="col-sm-6 control-label">
+            @Model.Difficulty.Description
+        </label>
+    </div>
 </div>
 
 <div class="accordion" id="accordionPanelsStayOpenExample">
@@ -41,7 +50,15 @@
                         data-bs-target="#panel_@Model.QuestionsSetsIds[i]" aria-expanded="true"
                         aria-controls="panel_@Model.QuestionsSetsIds[i]">
                     <p class="fw-bold">
-                        @Model.QuestionsSetsSkillDescriptions[i]
+                        @Model.QuestionsSets[i].SkillDescription
+                    </p>
+                    &nbsp;&nbsp;&nbsp;
+                    <p class="text-end fw-light">
+                        Obszar:
+                    </p>
+                    &nbsp;
+                    <p class="text-end fw-light fst-italic">
+                        @Model.QuestionsSets[i].Area.Description
                     </p>
                 </button>
             </h2>

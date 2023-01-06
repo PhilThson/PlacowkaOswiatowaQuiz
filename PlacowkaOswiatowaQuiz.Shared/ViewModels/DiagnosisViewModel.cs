@@ -19,6 +19,8 @@ namespace PlacowkaOswiatowaQuiz.Shared.ViewModels
         public IList<ResultViewModel>? Results { get; set; }
         [DisplayName("Zestawy pytań")]
         public IList<int> QuestionsSetsIds { get; set; }
+        [DisplayName("Skala trudności diagnozy:")]
+        public DifficultyViewModel Difficulty { get; set; }
     }
 }
 

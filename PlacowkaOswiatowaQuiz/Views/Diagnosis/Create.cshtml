@@ -1,4 +1,5 @@
 ﻿@model CreateDiagnosisViewModel
+@{ViewData["Title"] = "Nowa diagnoza";}
 
 <fieldset class="border p-2">
     <legend class="w-auto">
@@ -22,7 +23,7 @@
             <div class="row mb-3">
                 <label asp-for="@Model.EmployeeId" class="col-sm-2 col-form-label"></label>
                 <div class="col-sm-10">
-                    <select asp-for="@Model.EmployeeId" class="form-control" id="employeeDropdown"
+                    <select asp-for="@Model.EmployeeId" class="form-control" id="employeesDropdown"
                             currentEmployeeId="@Model?.EmployeeId">
                         <option disabled selected>Wybierz prowadzącego nauczyciela...</option>
                     </select>
@@ -31,9 +32,18 @@
             <div class="row mb-3">
                 <label asp-for="@Model.StudentId" class="col-sm-2 col-form-label"></label>
                 <div class="col-sm-10">
-                    <select asp-for="@Model.StudentId" class="form-control" id="studentDropdown"
+                    <select asp-for="@Model.StudentId" class="form-control" id="studentsDropdown"
                             currentStudentId="@Model?.StudentId">
                         <option disabled selected>Wybierz ucznia...</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label asp-for="@Model.DifficultyId" class="col-sm-2 control-label"></label>
+                <div class="col-sm-10">
+                    <select asp-for="@Model.DifficultyId" class="form-control" id="difficultiesDropdown"
+                            currentDifficultyId="@Model?.DifficultyId">
+                        <option disabled selected>Wybierz skalę trudności...</option>
                     </select>
                 </div>
             </div>
@@ -46,50 +56,7 @@
     </form>
 </fieldset>
 
-<script>
-    $(document).ready(function () {
-        var currentEmployeeId = $("#employeeDropdown").attr('currentEmployeeId');
-        $.ajax({
-            type: "GET",
-            url: "/Employee/GetAllEmployees",
-            data: "{}",
-            success: function (data) {
-                $.each(data, function (i, employee) {
-                    if (employee.id != currentEmployeeId)
-                        $("#employeeDropdown").append(
-                            "<option value=" + employee.id + ">" +
-                            employee.firstName + ' ' + employee.lastName + "</option>");
-                    else
-                        $("#employeeDropdown").append(
-                            "<option selected value=" + employee.id + ">" +
-                            employee.firstName + ' ' + employee.lastName + "</option>");
-                });
-            }
-        });
-    });
-
-    $(document).ready(function () {
-        var currentStudentId = $("#studentDropdown").attr('currentStudentId');
-        $.ajax({
-            type: "GET",
-            url: "/Student/GetAllStudents",
-            data: "{}",
-            success: function (data) {
-                $.each(data, function (i, student) {
-                    if (student.id != currentStudentId)
-                        $("#studentDropdown").append(
-                            "<option value=" + student.id + ">" +
-                            student.firstName + ' ' + student.lastName + "</option>");
-                    else
-                        $("#studentDropdown").append(
-                            "<option selected value=" + student.id + ">" +
-                            student.firstName + ' ' + student.lastName + "</option>");
-                });
-            }
-        });
-    });
-
-</script>
+<script src="~/js/FetchCreateDiagnosisData.js"></script>
 
 <style>
     fieldset {

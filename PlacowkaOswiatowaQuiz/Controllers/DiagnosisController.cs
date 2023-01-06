@@ -12,15 +12,19 @@ namespace PlacowkaOswiatowaQuiz.Controllers
 {
     public class DiagnosisController : Controller
     {
+        #region Prywatne pola
         private readonly IQuestionsSetService _questionsSetService;
         private readonly IDiagnosisService _diagnosisService;
+        #endregion
 
+        #region Konstruktor
         public DiagnosisController(IQuestionsSetService questionsSetService,
             IDiagnosisService diagnosisService)
         {
             _questionsSetService = questionsSetService;
             _diagnosisService = diagnosisService;
         }
+        #endregion
 
         #region Lista wszystkich utworzonych formularzy
         public async Task<IActionResult> Index()
@@ -73,7 +77,6 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         #region Wyświetlanie formularza diagnozy
         public async Task<IActionResult> DiagnosisForm([FromQuery] int diagnosisId)
         {
-            //Można założyć, że zawsze wszystkie zestawy pytań mają zostać zadane
             var diagnosis = new DiagnosisViewModel();
             try
             {
@@ -163,7 +166,9 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         private async Task<DiagnosisSummaryViewModel> Map(int diagnosisId)
         {
             var diagnosis = await _diagnosisService.GetDiagnosisById(diagnosisId);
-            var questionsSets = await _questionsSetService.GetAllQuestionsSets();
+
+            var questionsSets =
+                await _questionsSetService.GetAllQuestionsSets(diagnosis.Difficulty.Id);
 
             return new DiagnosisSummaryViewModel
             {
@@ -171,10 +176,10 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 SchoolYear = diagnosis.SchoolYear,
                 Student = diagnosis.Student,
                 Employee = diagnosis.Employee,
+                Difficulty = diagnosis.Difficulty,
                 Results = diagnosis.Results,
                 QuestionsSetsIds = questionsSets.Select(qs => qs.Id).ToList(),
-                QuestionsSetsSkillDescriptions =
-                    questionsSets.Select(qs => qs.SkillDescription).ToList()
+                QuestionsSets = questionsSets
             };
         }
         #endregion

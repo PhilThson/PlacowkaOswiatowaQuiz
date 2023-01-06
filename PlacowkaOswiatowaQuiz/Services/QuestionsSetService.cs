@@ -20,10 +20,14 @@ namespace PlacowkaOswiatowaQuiz.Services
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<List<QuestionsSetViewModel>> GetAllQuestionsSets()
+        public async Task<List<QuestionsSetViewModel>> GetAllQuestionsSets(
+            byte? difficultyId = null)
         {
             var httpClient = _httpClientFactory.CreateClient(_apiUrl.ClientName);
-            var response = await httpClient.GetAsync(_apiSettings.QuestionsSets);
+            var uri = difficultyId.HasValue ?
+                $"{_apiSettings.QuestionsSets}?difficultyId={difficultyId}" :
+                _apiSettings.QuestionsSets;
+            var response = await httpClient.GetAsync(uri);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<List<QuestionsSetViewModel>>();
         }

@@ -9,11 +9,11 @@
                 if (area.id != currentAreaId)
                     $("#areasDropdown").append(
                         "<option value=" + area.id + ">" +
-                        area.name + "</option>");
+                        area.description + "</option>");
                 else
                     $("#areasDropdown").append(
                         "<option selected value=" + area.id + ">" +
-                        area.name + "</option>");
+                        area.description + "</option>");
             });
         }
     });
@@ -29,11 +29,11 @@ $(document).ready(function () {
                 if (difficulty.id != currentDifficultyId)
                     $("#difficultiesDropdown").append(
                         "<option value=" + difficulty.id + ">" +
-                        difficulty.name + "</option>");
+                        difficulty.description + "</option>");
                 else
                     $("#difficultiesDropdown").append(
                         "<option selected value=" + difficulty.id + ">" +
-                        difficulty.name + "</option>");
+                        difficulty.description + "</option>");
             });
         }
     });

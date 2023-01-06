@@ -1,4 +1,6 @@
 ﻿using System;
+using PlacowkaOswiatowaQuiz.Shared.DTOs;
+
 namespace PlacowkaOswiatowaQuiz.Shared.ViewModels
 {
 	public class StudentViewModel
@@ -8,6 +10,8 @@ namespace PlacowkaOswiatowaQuiz.Shared.ViewModels
         public string LastName { get; set; }
         public DateTime? DateOfBirth { get; set; }
         public string PersonalNumber { get; set; }
-        public string Branch { get; set; }
+        public string DisabilityCert { get; set; }
+        public string PlaceOfBirth { get; set; }
+        public BranchDto? Branch { get; set; }
     }
 }

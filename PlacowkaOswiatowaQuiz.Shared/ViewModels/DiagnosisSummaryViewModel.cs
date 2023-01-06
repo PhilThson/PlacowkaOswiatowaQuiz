@@ -3,7 +3,6 @@ namespace PlacowkaOswiatowaQuiz.Shared.ViewModels
 {
 	public class DiagnosisSummaryViewModel : DiagnosisViewModel
 	{
-        public IList<string> QuestionsSetsSkillDescriptions { get; set; }
+        public IList<QuestionsSetViewModel> QuestionsSets { get; set; }
     }
 }
-
