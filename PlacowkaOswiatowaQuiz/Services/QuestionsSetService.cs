@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Net.Mime;
+using System.Text;
 using PlacowkaOswiatowaQuiz.Helpers.Options;
 using PlacowkaOswiatowaQuiz.Interfaces;
 using PlacowkaOswiatowaQuiz.Shared.ViewModels;
+using Newtonsoft.Json;
 
 namespace PlacowkaOswiatowaQuiz.Services
 {
@@ -28,6 +31,32 @@ namespace PlacowkaOswiatowaQuiz.Services
                 $"{_apiSettings.QuestionsSets}?difficultyId={difficultyId}" :
                 _apiSettings.QuestionsSets;
             var response = await httpClient.GetAsync(uri);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<List<QuestionsSetViewModel>>();
+        }
+
+        public async Task<List<QuestionsSetViewModel>> GetQuestionsSetsByIds(List<int> ids)
+        {
+            if (ids == null || ids.Count < 1)
+                return null;
+
+            var httpClient = _httpClientFactory.CreateClient(_apiUrl.ClientName);
+
+            var idsString = string.Join(',', ids);
+            //wysyłanie żądania GET z Body (ale niezgodne z RestApi)
+            //var request = new HttpRequestMessage
+            //{
+            //    Method = HttpMethod.Get,
+            //    RequestUri = new Uri(httpClient.BaseAddress, _apiSettings.QuestionsSetsAsked),
+            //    Content = new StringContent(
+            //        JsonConvert.SerializeObject(ids),
+            //        Encoding.UTF8,
+            //        MediaTypeNames.Application.Json)
+            //};
+
+            //var response = await httpClient.SendAsync(request);
+            var response = await httpClient.GetAsync(
+                $"{_apiSettings.QuestionsSetsAsked}?askedQuestionSetsIds={idsString}");
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<List<QuestionsSetViewModel>>();
         }

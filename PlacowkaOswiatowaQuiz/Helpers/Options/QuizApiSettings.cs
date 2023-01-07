@@ -13,5 +13,7 @@
         public string Attachments { get; set; }
         public string Diagnosis { get; set; }
         public string Results { get; set; }
+        public string QuestionsSetsAsked { get; set; }
+        public string Reports { get; set; }
     }
 }

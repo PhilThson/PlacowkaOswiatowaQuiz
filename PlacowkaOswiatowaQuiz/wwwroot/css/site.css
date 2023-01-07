@@ -71,6 +71,9 @@ div {
     width: 100%;
     border: 1px solid #218838;
 }
+/*    .CustomColorTable table tr td:nth-last-child(0) {
+        align-content: center;
+    }*/
 
     .CustomColorTable td, #CustomColorTable th {
         border: 1px solid #218838;
@@ -89,6 +92,10 @@ div {
         line-height: 30px;
         padding-left: 5px;
     }
+
+        .CustomColorTable th:nth-last-child(0) {
+            align-content: center;
+        }
 
     .CustomColorTable tr:nth-child(even) {
         background-color: #f2f2f2;

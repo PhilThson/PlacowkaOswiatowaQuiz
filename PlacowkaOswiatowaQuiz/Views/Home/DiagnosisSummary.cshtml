@@ -1,0 +1,322 @@
+﻿@model DiagnosisToPdfViewModel
+
+<!doctype html>
+
+<html>
+<head>
+    <style>
+        .diagnosis-box {
+            max-width: 800px;
+            margin: auto;
+            padding: 30px;
+            border: 1px solid #eee;
+            box-shadow: 0 0 10px rgba(0, 0, 0, .15);
+            font-size: 16px;
+            line-height: 24px;
+            font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+            color: #555;
+        }
+
+            .diagnosis-box .title {
+                text-align: center;
+                font-size: 45px;
+                line-height: 45px;
+                color: #333;
+            }
+
+            .diagnosis-box table {
+                width: 100%;
+                line-height: inherit;
+                text-align: left;
+            }
+
+                .diagnosis-box table td {
+                    padding: 5px;
+                    vertical-align: top;
+                }
+
+                .diagnosis-box table tr.top table td {
+                    padding-bottom: 20px;
+                }
+
+                    .diagnosis-box table tr.top table td.title {
+                        font-size: 45px;
+                        line-height: 45px;
+                        color: #333;
+                    }
+
+                .diagnosis-box table tr.information table td {
+                    padding-bottom: 40px;
+                }
+
+                .diagnosis-box table tr.heading td {
+                    background: #eee;
+                    border-bottom: 1px solid #ddd;
+                    font-weight: bold;
+                }
+
+                .diagnosis-box table tr.details td {
+                    padding-bottom: 20px;
+                }
+
+                .diagnosis-box table tr.item td {
+                    border: 1px solid #eee;
+                }
+
+                .diagnosis-box table tr.total td:nth-child(2) {
+                    border-top: 2px solid #eee;
+                    font-weight: bold;
+                }
+    </style>
+</head>
+
+<body>
+    <div class="diagnosis-box">
+        <div class="title">
+            Diagnoza o numerze: @Model.Id
+        </div>
+        <table cellpadding="0" cellspacing="0">
+            <tr>
+                <th style="width: 100px; word-wrap: break-word;"></th>
+                <th></th>
+                <th></th>
+            </tr>
+            <tr class="top">
+                <td style="white-space: nowrap;">
+                    Diagnoza za rok szkolny:<br>
+                    Imię i nazwisko wykonującego badanie:<br>
+                    Skala trudności:<br>
+                    Data wykonania badania:
+                </td>
+                <td colspan="2" style="font-style:italic">
+                    @Model.SchoolYear<br>
+                    @Model.Employee.FirstName @Model.Employee.LastName<br>
+                    @Model.Difficulty.Description<br>
+                    @Model.CreatedDate.ToString("dd.MM.yyyy") r.
+                </td>
+            </tr>
+
+            <tr class="information">
+                <td>
+                    Imię i nazwisko ucznia: <br>
+                    Data i miejsce urodzenia: <br>
+                    PESEL:
+                </td>
+
+                <td style="font-style:italic">
+                    @Model.Student.FirstName @Model.Student.LastName<br>
+                    @Model.Student.DateOfBirth?.ToString("dd.MM.yyyy") r.
+                    w miejscowości @Model.Student.PlaceOfBirth<br>
+                    @Model.Student.PersonalNumber
+                </td>
+            </tr>
+
+            <tr class="information">
+                <td colspan="3">
+                    Dziecko przyjęte do szkoły SP nr 16 w Zielonej górze na podstawie                     orzeczenia nr @Model.Student.DisabilityCert                     o potrzebie kształcenia specjalnego z PPP w Zielonej Górze                      z niepełnosprawnością intelektualną w stopniu lekkim <br>
+                </td>
+            </tr>
+
+            <tr class="information">
+                <td colspan="3" style="font-weight:bold;">
+                    <div style="padding-left: 10px;">
+                        1. Zalecenia Poradnii Psychologiczno-Pedagogicznej:
+                    </div>
+                    ................................................................................................................................................................
+                </td>
+            </tr>
+
+            <tr class="information">
+                <td colspan="3" style="font-weight:bold;">
+                    <div style="padding-left: 10px;">
+                        2. Wnioski z diagnozy:
+                    </div>
+                    Uczeń/uczennica opanował/a, realizuje i dobrze radzi sobie z:
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="3">
+                    <table>
+                        <tr class="heading">
+                            <td>Obszar</td>
+                            <td>Umiejętności</td>
+                            <td>Uwagi</td>
+                        </tr>
+
+                        @for (int i = 0; i < Model.QuestionsSetsMastered.Count(); i++)
+                        {
+                        <tr class="item">
+                            @if (i > 0 && Model.QuestionsSetsMastered[i].Area.Id == Model.QuestionsSetsMastered[i-1].Area.Id)
+                            {
+                                <td style="border-top:hidden;"></td>
+                            }
+                            else
+                            {
+                                <td>
+                                    @Model.QuestionsSetsMastered[i].Area.Description
+                                </td>
+                            }
+                            <td>
+                                @Model.QuestionsSetsMastered[i].SkillDescription
+                            </td>
+                            <td>
+                                @if (Model.Results.Any(r => r.QuestionsSetRating.QuestionsSetId == Model.QuestionsSetsMastered[i].Id))
+                                {
+                                    @Model?.Results.First(r => r.QuestionsSetRating.QuestionsSetId == Model.QuestionsSetsMastered[i].Id).QuestionsSetRating?.RatingDescription;
+                                }
+                                else
+                                {
+                                    <div style="font-style:italic;">
+                                        Nie znaleziono odpowiedzi, do wybranego zestawu pytań
+                                    </div>
+                                }
+                            </td>
+                        </tr>
+                        }
+                    </table>
+                </td>
+            </tr>
+
+            <tr class="information">
+                <td colspan="3">
+                    Prognozuje się, że:<br />
+                    ze względu na trudności, które dziecko miało w podczas badania, należy rozpocząć z nią/nim pracę nad:
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="3">
+                    <table>
+                        <tr class="heading">
+                            <td>Obszar</td>
+                            <td>Umiejętności<br />Zaleca się rozpocząć pracę nad:</td>
+                            <td>Uwagi</td>
+                        </tr>
+
+                        @for (int i = 0; i < Model.QuestionsSetsToImprove.Count(); i++)
+                        {
+                            <tr class="item">
+                            @if (i > 0 && Model.QuestionsSetsToImprove[i].Area.Id == Model.QuestionsSetsToImprove[i-1].Area.Id)
+                            {
+                                <td style="border-top:hidden;"></td>
+                            }
+                            else
+                            {
+                                <td>
+                                    @Model.QuestionsSetsToImprove[i].Area.Description
+                                </td>
+                            }
+
+                            <td>
+                                @Model.QuestionsSetsToImprove[i].SkillDescription
+                            </td>
+                            <td>
+                            @if (Model.Results.Any(r => r.QuestionsSetRating.QuestionsSetId == Model.QuestionsSetsToImprove[i].Id))
+                            {
+                                @Model?.Results.First(r => r.QuestionsSetRating.QuestionsSetId == Model.QuestionsSetsToImprove[i].Id).QuestionsSetRating?.RatingDescription;
+                            }
+                            else
+                            {
+                                <div style="font-style:italic;">
+                                    Nie znaleziono odpowiedzi, do wybranego zestawu pytań
+                                </div>
+                            }
+                            </td>
+                        </tr>
+                        }
+                    </table>
+                </td>
+            </tr>
+
+            <tr class="information">
+                <td colspan="3">
+                    <div style="padding-left: 10px; font-weight: bold;">
+                        3. Obserwacje nauczyciela badającego dotyczące obserwacji zachowania dziecka:
+                    </div>
+                    <div style="font-weight: bold;">
+                        Komunikuje się z dziećmi  i osobami dorosłymi – ……………………… <br />
+                    </div>
+                    <div style="font-weight: bold;">
+                        Zasób słownictwa – …………………… <br />
+                    </div>
+                    <div style="font-weight: bold;">
+                        Rozumienie pytań i poleceń –  …………………………………… <br />
+                    </div>
+                    <div style="font-weight: bold;">
+                        Rozwój emocjonalno – społeczny : <br />
+                    </div>
+                    <div style="padding-left:10px;">
+                        A. Radzenie sobie z emocjami – <br />
+                        B. Rozstaje się z rodzicami bez lęku – <br />
+                        C. Sposób wykonywania zadań, motywacja – <br />
+                        D. Koncentracja uwagi – <br />
+                        E. Zachowanie – <br />
+                        F. Posługiwanie się zwrotami grzecznościowymi – <br />
+                    </div>
+                    <div style="font-weight: bold;">
+                        Rozwój fizyczny i stan zdrowia:
+                    </div>
+                    <div style="padding-left:10px;">
+                        A. Potrzeby fizjologiczne – <br />
+                        B. Czynności samoobsługowe( ubieranie się i rozbieranie) – <br />
+                        C. Motoryka duża. Sprawność ciała i koordynację (w stopniu pozwalającym na
+                        rozpoczęcie systematycznej nauki czynności złożonych, takich jak czytanie
+                        i pisanie) – <br />
+                        D. Rozwój zmysłów (wzrok, słuch, czucie, węch, równowaga) – <br />
+                        E. Szczególne uzdolnienia – <br />
+                    </div>
+                </td>
+            </tr>
+
+            <tr class="information">
+                <td colspan="3" style="font-weight:bold;">
+                    <div style="padding-left: 10px;">
+                        4. Stan zdrowia dziecka:
+                    </div>
+                    ................................................................................................................................................................
+                </td>
+            </tr>
+
+            <tr class="information">
+                <td colspan="3" style="font-weight:bold;">
+                    <div style="padding-left: 10px;">
+                        5. Po analizie wyników diagnozy oraz zaleceń PPP należy ucznia/uczennice objąć:
+                    </div>
+                    ................................................................................................................................................................
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="3">
+                    <div style="font-weight:bold;">
+                        Podpisy zespołu:
+                    </div>
+                    <table>
+                        <tr class="information">
+                            <td style="width:300px;">
+                            </td>
+                            <td>
+                                <div style="text-align:end;">
+                                    Psycholog: <br /><br />
+                                    Logopeda: <br /><br />
+                                    Reedukator: <br /><br />
+                                </div>
+                            </td>
+                            <td>
+                                <div>
+                                    ..........................................<br /><br />
+                                    ..........................................<br /><br />
+                                    ..........................................<br /><br />
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+        </table>
+    </div>
+</body>
+
+</html>

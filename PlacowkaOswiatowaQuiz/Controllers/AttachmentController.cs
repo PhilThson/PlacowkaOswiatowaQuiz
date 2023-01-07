@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using PlacowkaOswiatowaQuiz.Helpers.Options;
+using PlacowkaOswiatowaQuiz.Shared.DTOs;
 using PlacowkaOswiatowaQuiz.Shared.ViewModels;
 
 namespace PlacowkaOswiatowaQuiz.Controllers
@@ -73,6 +74,25 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                     $"'{e.Message}'";
                 return NoContent();
             }
+        }
+        #endregion
+
+        #region Pobranie raportu po identyfikatorze diagnozy
+        public async Task<IActionResult> DownloadDiagnosis([FromQuery] int diagnosisId)
+        {
+            var reportDto = new ReportDto();
+            if (diagnosisId == default(int))
+                return NotFound();
+
+            var httpClient = _httpClientFactory.CreateClient(_apiUrl.ClientName);
+            var response = await httpClient.GetAsync(
+                $"{_apiSettings.Reports}/{diagnosisId}");
+
+            response.EnsureSuccessStatusCode();
+            reportDto = await response.Content
+                .ReadFromJsonAsync<ReportDto>();
+
+            return File(reportDto.Content, "application/octet-stream", reportDto.Name);
         }
         #endregion
     }

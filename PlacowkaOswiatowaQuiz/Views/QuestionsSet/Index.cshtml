@@ -35,8 +35,8 @@
                     <tr>
                         <td>@Html.DisplayFor(modelItem => item.Id)</td>
                         <td>@Html.DisplayFor(modelItem => item.SkillDescription)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Area.Name)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Difficulty.Name)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Area.Description)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Difficulty.Description)</td>
                         <td>
                             <a class="btn btn-sm btn-info" asp-controller="QuestionsSet" asp-action="Details"
                                asp-route-id="@item.Id">

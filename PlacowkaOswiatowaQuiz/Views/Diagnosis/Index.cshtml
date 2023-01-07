@@ -25,8 +25,7 @@
                     <th>@Html.DisplayNameFor(m => m.Employee)</th>
                     <th>@Html.DisplayNameFor(m => m.Student)</th>
                     <th>@Html.DisplayNameFor(m => m.SchoolYear)</th>
-                    <th></th>
-                    <th></th>
+                    <th>Opcje</th>
                 </tr>
             </thead>
             <tbody>
@@ -38,13 +37,15 @@
                         <td>@item.Student.FirstName @item.Student.LastName</td>
                         <td>@Html.DisplayFor(modelItem => item.SchoolYear)</td>
                         <td>
-                            <a class="btn btn-sm btn-info" asp-controller="Diagnosis" asp-action="Details"
-                               asp-route-diagnosisId="@item.Id">
-                                Szczegóły
-                            </a>
-                            @*<a href='#' class="btn btn-sm btn-info" onclick="Details(@item.Id)">Szczegóły</a>*@
+                            @*<div class="d-grid gap-2 d-flex justify-content-center">*@
+                                    <a class="btn btn-sm btn-info me-2" asp-controller="Diagnosis" asp-action="Details"
+                                       asp-route-diagnosisId="@item.Id">
+                                        Szczegóły
+                                    </a>
+                                    @*<a href='#' class="btn btn-sm btn-info" onclick="Details(@item.Id)">Szczegóły</a>*@
+                                    <a class="btn btn-sm btn-danger" onclick="Delete(@item.Id)">Usuń</a>
+                            @*</div>*@
                         </td>
-                        <td><a class="btn btn-sm btn-danger" onclick="Delete(@item.Id)">Usuń</a></td>
                     </tr>
                 }
             </tbody>

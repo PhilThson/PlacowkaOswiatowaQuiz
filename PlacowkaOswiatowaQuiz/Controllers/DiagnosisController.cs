@@ -80,7 +80,14 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             var diagnosis = new DiagnosisViewModel();
             try
             {
-                diagnosis = await Map(diagnosisId);
+                diagnosis = await _diagnosisService.GetDiagnosisById(diagnosisId);
+
+                var questionsSets =
+                    await _questionsSetService.GetAllQuestionsSets(diagnosis.Difficulty.Id);
+
+                //na podstawie listy identyfikatorów zestawów pytań, są pobierane asynchronicznie
+                //perłne modele na etapie przełączania zestawów na formularzu diagnozy
+                diagnosis.QuestionsSetsIds = questionsSets.Select(qs => qs.Id).ToList();
                 return View(diagnosis);
             }
             catch (HttpRequestException e)
@@ -150,7 +157,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             var diagnosisSummary = new DiagnosisSummaryViewModel();
             try
             {
-                diagnosisSummary = await Map(diagnosisId);
+                diagnosisSummary = await GetDiagnosisSummary(diagnosisId);
                 return View(diagnosisSummary);
             }
             catch(HttpRequestException e)
@@ -163,12 +170,19 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         #endregion
 
         #region Metody prywatne
-        private async Task<DiagnosisSummaryViewModel> Map(int diagnosisId)
+        private async Task<DiagnosisSummaryViewModel> GetDiagnosisSummary(int diagnosisId)
         {
             var diagnosis = await _diagnosisService.GetDiagnosisById(diagnosisId);
 
+            var askedQuestionSetsIds = new List<int>();
+            //QuestionsSetRating (ocena zestawu pytań) jest wymagana do podania,
+            //więc na pewno istnieje, jeżeli istnieje Result (wynik)
+            if (diagnosis.Results?.Count > 0)
+                askedQuestionSetsIds = diagnosis.Results
+                    .Select(r => r.QuestionsSetRating.QuestionsSetId).ToList();
+
             var questionsSets =
-                await _questionsSetService.GetAllQuestionsSets(diagnosis.Difficulty.Id);
+                await _questionsSetService.GetQuestionsSetsByIds(askedQuestionSetsIds);
 
             return new DiagnosisSummaryViewModel
             {
@@ -178,7 +192,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 Employee = diagnosis.Employee,
                 Difficulty = diagnosis.Difficulty,
                 Results = diagnosis.Results,
-                QuestionsSetsIds = questionsSets.Select(qs => qs.Id).ToList(),
+                CreatedDate = diagnosis.CreatedDate,
                 QuestionsSets = questionsSets
             };
         }

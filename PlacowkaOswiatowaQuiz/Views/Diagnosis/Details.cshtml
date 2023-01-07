@@ -1,7 +1,7 @@
 ﻿@model DiagnosisSummaryViewModel
 @{ViewData["Title"] = "Diagnoza - podsumowanie";}
 
-<div class="heading">
+<div class="d-flex justify-content-center heading">
     <h4><b>Podsumowanie formularza diagnozy o numerze: @Model.Id</b></h4>
 </div>
 <div id="divAlertArea">
@@ -39,44 +39,63 @@
             @Model.Difficulty.Description
         </label>
     </div>
+    <div class="row mb-3">
+        <p class="fs-5 fw-bold">
+            @Html.DisplayNameFor(m => m.CreatedDate)
+        </p>
+        <label class="col-sm-6 control-label">
+            @Model.CreatedDate.ToString("dd.MM.yyyy") r.
+        </label>
+    </div>
 </div>
 
-<div class="accordion" id="accordionPanelsStayOpenExample">
-    @for (int i = 0; i < Model.QuestionsSetsIds.Count(); i++)
+<div class="accordion">
+    @if (Model.QuestionsSets?.Count() > 0)
     {
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="heading_@Model.QuestionsSetsIds[i]">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#panel_@Model.QuestionsSetsIds[i]" aria-expanded="true"
-                        aria-controls="panel_@Model.QuestionsSetsIds[i]">
-                    <p class="fw-bold">
-                        @Model.QuestionsSets[i].SkillDescription
-                    </p>
-                    &nbsp;&nbsp;&nbsp;
-                    <p class="text-end fw-light">
-                        Obszar:
-                    </p>
-                    &nbsp;
-                    <p class="text-end fw-light fst-italic">
-                        @Model.QuestionsSets[i].Area.Description
-                    </p>
-                </button>
-            </h2>
-            <div id="panel_@Model.QuestionsSetsIds[i]" class="accordion-collapse collapse show"
-                 aria-labelledby="heading_@Model.QuestionsSetsIds[i]">
-                <div class="accordion-body">
-                    @if (Model.Results?.Count() > 0)
-                    {
-                        @await Html.PartialAsync("_ResultSummary", Model.Results[i])
-                    }
-                    else
-                    {
-                        <p class="fst-italic">
-                            Nie znaleziono zapisanych odpowiedzi, do wybranego zestawu pytań
+        @for (int i = 0; i < Model.QuestionsSets.Count(); i++)
+        {
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading_@Model.QuestionsSets[i].Id">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#panel_@Model.QuestionsSets[i].Id" aria-expanded="true"
+                            aria-controls="panel_@Model.QuestionsSets[i].Id">
+                        <p class="fw-bold">
+                            @Model.QuestionsSets[i].SkillDescription
                         </p>
-                    }
+                        &nbsp;&nbsp;&nbsp;
+                        <p class="text-end fw-light">
+                            Obszar:
+                        </p>
+                        &nbsp;
+                        <p class="text-end fw-light fst-italic">
+                            @Model.QuestionsSets[i].Area.Description
+                        </p>
+                    </button>
+                </h2>
+                <div id="panel_@Model.QuestionsSets[i].Id" class="accordion-collapse collapse show"
+                     aria-labelledby="heading_@Model.QuestionsSets[i].Id">
+                    <div class="accordion-body">
+                        @await Html.PartialAsync("_ResultSummary", Model.Results[i])
+                    </div>
                 </div>
             </div>
+        }
+    }
+    else
+    {
+        <div class="d-flex justify-content-center">
+            <p class="fst-italic">
+                Nie znaleziono zapisanych pytań i odpowiedzi dla wybranej diagnozy
+            </p>
         </div>
     }
+
 </div>
+
+<div class="d-grid col-6 mx-auto">
+    <a href="#" class="btn btn-primary" onclick="Download('@Model.Id');">
+        Pobierz plik .pdf
+    </a>
+</div>
+
+<script src="~/js/ManageReports.js"></script>
