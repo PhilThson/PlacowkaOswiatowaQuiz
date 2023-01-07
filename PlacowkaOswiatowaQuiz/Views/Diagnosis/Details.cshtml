@@ -92,10 +92,15 @@
 
 </div>
 
-<div class="d-grid col-6 mx-auto">
+<div class="d-grid col-6 mx-auto gap-2">
     <a href="#" class="btn btn-primary" onclick="Download('@Model.Id');">
-        Pobierz plik .pdf
+        Pobierz raport (.pdf)
     </a>
+    <a asp-controller="Attachment" asp-action="ShowDiagnosisReport" asp-route-diagnosisId="@Model.Id"
+       class="btn btn-outline-primary" type="button" target="_blank">
+        Pokaż raport
+    </a>
+
 </div>
 
 <script src="~/js/ManageReports.js"></script>

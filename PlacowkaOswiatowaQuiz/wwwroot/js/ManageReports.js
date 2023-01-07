@@ -1,29 +1,38 @@
 ﻿
 var Download = function (id) {
-    var url = "/Attachment/DownloadDiagnosis?diagnosisId=" + id;
-    //var fileName = $("[name='FileName']");
+    var url = "/Attachment/GetDiagnosisReport?diagnosisId=" + id;
 
-    var fileName = $('#FileName').text();
+    var fileName = "Diagnoza_nr_" + id + ".pdf";
+
     $.ajax({
         url: url,
-        type: "GET",
+        method: "GET",
         cache: false,
-        xhr: function () {
-            var xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState == 2) {
-                    if (xhr.status == 200) {
-                        xhr.responseType = "blob";
-                    } else {
-                        xhr.responseType = "text";
-                    }
-                }
-            };
-            return xhr;
-        },
-        success: function (data) {
-            //Convert the Byte Data to BLOB object.
-            var blob = new Blob([data], { type: "application/octetstream" });
+        timeout: 60000,
+        })
+        .done(function (data, textStatus, xhr) {
+            //Pobranie nazwy pliku
+            console.log("text status:");
+            console.log(textStatus);
+            console.log(xhr);
+            
+            var disposition = xhr.getResponseHeader('Content-Disposition');
+            console.log(disposition);
+
+            if (disposition && disposition.indexOf('attachment') !== -1) {
+                var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                var matches = filenameRegex.exec(disposition);
+                if (matches != null && matches[1]) fileName = matches[1].replace(/['"]/g, '');
+            }
+            //zamiana tablicy bajtów na blob
+            var atobData = atob(data);
+            var num = new Array(atobData.length);
+            for (var i = 0; i < atobData.length; i++) {
+                num[i] = atobData.charCodeAt(i);
+            }
+            var pdfData = new Uint8Array(num);
+            //var blob = new Blob([data], { type: "application/octet-stream" });
+            var blob = new Blob([pdfData], { type: "application/pdf;base64" });
             var url = window.URL || window.webkitURL;
             link = url.createObjectURL(blob);
             var a = $("<a />");
@@ -33,15 +42,18 @@ var Download = function (id) {
             $("body").append(a);
             a[0].click();
             $("body").remove(a);
-            var message = "Załącznik jest pobierany";
-            Swal.fire({
-                title: message,
-                type: "success",
-                onAfterClose: () => {
-                    location.reload();
-                }
-            });
-        }
-    });
+            var message = "Raport jest pobierany";
+            Swal.fire("Sukces", message, "success");
+        })
+        .fail(function (data, textStatus, errorThrown) {
+            var title = "Nie udało się pobrać pliku";
+            if (textStatus === 'timeout') {
+                var message = "Przekroczono limit czasu oczekiwania";
+                Swal.fire(title, message, "error");
+            }
+            else {
+                Swal.fire(title, "Odpowiedź serwera: " + errorThrown, "error");
+            }
+        });
 };
 
