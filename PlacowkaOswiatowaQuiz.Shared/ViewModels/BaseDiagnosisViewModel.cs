@@ -1,10 +1,9 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace PlacowkaOswiatowaQuiz.Shared.ViewModels
 {
-	public class BaseDiagnosisViewModel
+    public class BaseDiagnosisViewModel
 	{
         public int Id { get; set; }
         [Required(ErrorMessage = "Należy podać rok szkolny np.: 2022/2023")]
@@ -21,6 +20,7 @@ namespace PlacowkaOswiatowaQuiz.Shared.ViewModels
         public DateTime CreatedDate { get; set; }
         [DisplayName("Wyniki przeprowadzonej diagnozy")]
         public IList<ResultViewModel>? Results { get; set; }
+        public int? ReportId { get; set; }
     }
 }
 

@@ -72,63 +72,6 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             }
         }
         #endregion
-
-        #region Pobranie raportu po identyfikatorze diagnozy
-        public async Task<IActionResult> GetDiagnosisReport([FromQuery] int diagnosisId)
-        {
-            var reportDto = await GetReportByDiagnosisId(diagnosisId);
-            if (reportDto == null)
-                return NotFound();
-
-            using (var pdfStream = new MemoryStream())
-            {
-                pdfStream.Write(reportDto.Content, 0, reportDto.Content.Length);
-                pdfStream.Position = 0;
-
-                var pdfArray = pdfStream.ToArray();
-                var base64stream = Convert.ToBase64String(pdfArray);
-                //return new FileStreamResult(pdfStream, "application/pdf");
-                //return File(Convert.ToBase64String(pdfArray), "application/pdf;base64");
-                return File(pdfArray, "application/octet-stream", reportDto.Name);
-            }
-        }
-        #endregion
-
-        #region Wyświetlenie raportu po identyfikatorze diagnozy
-        public async Task<IActionResult> ShowDiagnosisReport([FromQuery] int diagnosisId)
-        {
-            var reportDto = await GetReportByDiagnosisId(diagnosisId);
-            if (reportDto == null)
-                return NotFound();
-
-            var pdfStream = new MemoryStream();
-            pdfStream.Write(reportDto.Content, 0, reportDto.Content.Length);
-            pdfStream.Position = 0;
-
-            ViewData["Title"] = "Podgląd diagnozy";
-            //Natychmiastowe pobieranie
-            //return new FileStreamResult(pdfStream, "application/download");
-            //Wyświetlenie na stronie
-            return new FileStreamResult(pdfStream, "application/pdf");
-        }
-        #endregion
-
-        #region Wysłanie żądania do API
-        private async Task<ReportDto> GetReportByDiagnosisId(int diagnosisId)
-        {
-            var reportDto = new ReportDto();
-            if (diagnosisId == default(int))
-                return null;
-
-            var httpClient = _httpClientFactory.CreateClient(_apiUrl.ClientName);
-            httpClient.Timeout = TimeSpan.FromSeconds(70);
-            var response = await httpClient.GetAsync(
-                $"{_apiSettings.Reports}/{diagnosisId}");
-
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<ReportDto>();
-        }
-        #endregion
     }
 }
 

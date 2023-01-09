@@ -1,13 +1,12 @@
-﻿using System;
-using PlacowkaOswiatowaQuiz.Helpers.Options;
+﻿using PlacowkaOswiatowaQuiz.Helpers.Options;
 using PlacowkaOswiatowaQuiz.Interfaces;
 using PlacowkaOswiatowaQuiz.Shared.DTOs;
 using PlacowkaOswiatowaQuiz.Shared.ViewModels;
 
 namespace PlacowkaOswiatowaQuiz.Services
 {
-	public class DiagnosisService : IDiagnosisService
-	{
+    public class DiagnosisService : IDiagnosisService
+    {
         private readonly QuizApiUrl _apiUrl;
         private readonly QuizApiSettings _apiSettings;
         private readonly IHttpClientFactory _httpClientFactory;
@@ -96,6 +95,34 @@ namespace PlacowkaOswiatowaQuiz.Services
                 return new ResultViewModel() { DiagnosisId = diagnosisId };
 
             return await response.Content.ReadFromJsonAsync<ResultViewModel>();
+        }
+
+        public async Task<BaseReportDto> CreateDiagnosisReport(int diagnosisId)
+        {
+            if (diagnosisId == default)
+                throw new Exception("Nie znaleziono diagnozy o podanym identyfikatorze " +
+                    $"({diagnosisId})");
+
+            var httpClient = _httpClientFactory.CreateClient(_apiUrl.ClientName);
+            httpClient.Timeout = TimeSpan.FromSeconds(70);
+            var response = await httpClient.PostAsync(
+                $"{_apiSettings.Reports}/{diagnosisId}", null);
+
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<BaseReportDto>();
+        }
+
+        public async Task<ReportDto> GetDiagnosisReportById(int reportId)
+        {
+            if (reportId == default)
+                throw new Exception("Podano nieprawidłowy identyfikator raportu");
+
+            var httpClient = _httpClientFactory.CreateClient(_apiUrl.ClientName);
+            var response = await httpClient.GetAsync(
+                $"{_apiSettings.Reports}/{reportId}");
+
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<ReportDto>();
         }
     }
 }

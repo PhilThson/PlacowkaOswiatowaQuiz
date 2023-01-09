@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using PlacowkaOswiatowaQuiz.Interfaces;
 using PlacowkaOswiatowaQuiz.Shared.ViewModels;
@@ -138,8 +133,8 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             try
             {
                 var createdDiagnosis = await _diagnosisService.CreateDiagnosis(diagnosisVM);
-                //Po utworzeniu diagnozy, przekierowanie do formualrza (1 zestaw pytań)
-                return RedirectToAction(nameof(DiagnosisForm), new { diagnosisId = createdDiagnosis.Id});
+                //Po utworzeniu diagnozy, przekierowanie do formularza (1 zestaw pytań)
+                return RedirectToAction(nameof(DiagnosisForm), new { diagnosisId = createdDiagnosis.Id });
             }
             catch (Exception e)
             {
@@ -151,6 +146,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         #endregion
 
         #region Podsumowanie/szczegóły formularza diagnozy
+        //Przekazywanie przez Route wymaga ręcznego zadeklarowania endpointu
         [HttpGet("Diagnosis/Details/{diagnosisId}")]
         public async Task<IActionResult> Details([FromRoute] int diagnosisId)
         {
@@ -164,7 +160,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             {
                 TempData["errorAlert"] = "Nie udało się pobrać formularza diagnozy o " +
                     $"podanym identyfikatorze {diagnosisId}. Odpowiedź serwera: '{e.Message}'";
-                return View(diagnosisSummary);
+                return RedirectToAction(nameof(Index));
             }
         }
         #endregion
@@ -191,6 +187,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 Student = diagnosis.Student,
                 Employee = diagnosis.Employee,
                 Difficulty = diagnosis.Difficulty,
+                ReportId = diagnosis.ReportId,
                 Results = diagnosis.Results,
                 CreatedDate = diagnosis.CreatedDate,
                 QuestionsSets = questionsSets

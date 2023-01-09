@@ -1,0 +1,103 @@
+﻿@model DiagnosisReportKeyViewModel
+
+<div id="alertArea">
+    <partial name="~/Views/UIComponents/_bootstrapAlert.cshtml" />
+</div>
+
+<div id="loader">
+    Trwa generowanie raportu...
+</div>
+
+<div class="d-grid col-6 mx-auto gap-2">
+
+    <a href="#" class="btn btn-primary" onclick="GenerateReport('@Model.DiagnosisId');" id="generateBtn">
+        Generuj raport
+    </a>
+
+    <button asp-controller="Report" asp-action="ShowDiagnosisReport"
+            asp-route-reportId="@Model.ReportId.GetValueOrDefault()" class="btn btn-outline-secondary"
+            target="_blank" id="showBtn">
+        Pokaż raport
+    </button>
+
+    <a href="#" class="btn btn-secondary" onclick="GetReport('@Model.ReportId');" 
+        id="downloadBtn">
+        Pobierz raport (.pdf)
+    </a>
+</div>
+
+@*<script src="~/js/ManageReports.js"></script>*@
+
+<script>
+
+    var checkButtons = function () {
+        $('#loader').hide();
+        var reportId = @Model.ReportId.GetValueOrDefault();
+        if (reportId !== 0) {
+            $('#downloadBtn').show("slow");
+            $('#showBtn').show("slow");
+            $('#generateBtn').addClass("disabled");
+        }
+        else {
+            $('#downloadBtn').hide();
+            $('#showBtn').hide();
+        }
+    }
+
+    var GenerateReport = function (diagnosisId) {
+        $.ajax({
+            type: "POST",
+            url: "/Report/Generate/" + diagnosisId,
+            beforeSend: function () {
+                $("#loader").fadeIn(300);
+            }
+        })
+        .done(function (result, status) {
+            $("#generateReport").html(result);
+            var saveSuccessMessage = $('#saveSuccess').val();
+            if (saveSuccessMessage != null) {
+                toastr.success(saveSuccessMessage, null,
+                    { timeOut: 5000, positionClass: "toast-bottom-right" });
+            }
+        })
+        .fail(function (result, status, xhr) {
+            var errorMessage = "Wystąpił błąd podczas generowania raportu";
+            toastr.error(errorMessage, null,
+                { timeOut: 5000, positionClass: "toast-bottom-right" });
+        })
+        .always(function () {
+            $("#loader").fadeOut(300);
+            checkButtons();
+        });
+    };
+
+    var GetReport = function (reportId) {
+        console.log("W funkcji");
+        console.log(reportId);
+        if (reportId == null){
+            reportId = @Model.ReportId.GetValueOrDefault();
+        }
+        console.log(reportId);
+        location.href = "/Report/GetDiagnosisReport?reportId=" + reportId;
+        var message = "Raport jest pobierany";
+        toastr.success(message, null, { 
+            timeOut: 5000, positionClass: "toast-top-right" 
+        });
+    }
+
+</script>
+
+<style>
+
+    #loader {
+        position: fixed;
+        left: 1px;
+        top: 1px;
+        width: 100px;
+        height: 100px;
+        z-index: 9999;
+        background: url(../Images/duck.gif) 100% 100% no-repeat rgb(249,249,249);
+    @*50% 50% no-repeat rgb(249,249,249)*@
+    }
+
+</style>

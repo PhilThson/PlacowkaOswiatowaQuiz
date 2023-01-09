@@ -1,5 +1,7 @@
 ﻿@model DiagnosisSummaryViewModel
-@{ViewData["Title"] = "Diagnoza - podsumowanie";}
+@{
+    ViewData["Title"] = "Diagnoza - podsumowanie";
+}
 
 <div class="d-flex justify-content-center heading">
     <h4><b>Podsumowanie formularza diagnozy o numerze: @Model.Id</b></h4>
@@ -57,8 +59,8 @@
             <div class="accordion-item">
                 <h2 class="accordion-header" id="heading_@Model.QuestionsSets[i].Id">
                     <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#panel_@Model.QuestionsSets[i].Id" aria-expanded="true"
-                            aria-controls="panel_@Model.QuestionsSets[i].Id">
+                    data-bs-target="#panel_@Model.QuestionsSets[i].Id" aria-expanded="true"
+                    aria-controls="panel_@Model.QuestionsSets[i].Id">
                         <p class="fw-bold">
                             @Model.QuestionsSets[i].SkillDescription
                         </p>
@@ -73,7 +75,7 @@
                     </button>
                 </h2>
                 <div id="panel_@Model.QuestionsSets[i].Id" class="accordion-collapse collapse show"
-                     aria-labelledby="heading_@Model.QuestionsSets[i].Id">
+             aria-labelledby="heading_@Model.QuestionsSets[i].Id">
                     <div class="accordion-body">
                         @await Html.PartialAsync("_ResultSummary", Model.Results[i])
                     </div>
@@ -92,15 +94,21 @@
 
 </div>
 
-<div class="d-grid col-6 mx-auto gap-2">
-    <a href="#" class="btn btn-primary" onclick="Download('@Model.Id');">
-        Pobierz raport (.pdf)
-    </a>
-    <a asp-controller="Attachment" asp-action="ShowDiagnosisReport" asp-route-diagnosisId="@Model.Id"
-       class="btn btn-outline-primary" type="button" target="_blank">
-        Pokaż raport
-    </a>
-
+<div id="generateReport">
+    
 </div>
 
-<script src="~/js/ManageReports.js"></script>
+
+@*<script src="~/js/ManageReports.js"></script>*@
+
+<script>
+
+    $(document).ready(function() {
+        var reportId = @Model.ReportId.GetValueOrDefault();
+        $("#generateReport").load("/Report/DiagnosisReportPartial?diagnosisId=" +
+            @Model.Id + "&reportId=" + reportId, function (){
+                checkButtons();
+            });
+    });
+
+</script>

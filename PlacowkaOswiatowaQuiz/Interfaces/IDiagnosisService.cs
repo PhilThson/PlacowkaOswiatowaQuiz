@@ -1,9 +1,9 @@
-﻿using System;
+﻿using PlacowkaOswiatowaQuiz.Shared.DTOs;
 using PlacowkaOswiatowaQuiz.Shared.ViewModels;
 
 namespace PlacowkaOswiatowaQuiz.Interfaces
 {
-	public interface IDiagnosisService
+    public interface IDiagnosisService
 	{
         Task<List<DiagnosisViewModel>> GetAllDiagnosis();
         Task<DiagnosisViewModel> GetDiagnosisById(int id);
@@ -13,6 +13,8 @@ namespace PlacowkaOswiatowaQuiz.Interfaces
         Task<ResultViewModel> GetResultById(int id);
         Task<ResultViewModel> GetResultByDiagnosisQuestionsSetIds(
             int diagnosisId, int questionsSetId);
+        Task<BaseReportDto> CreateDiagnosisReport(int diagnosisId);
+        Task<ReportDto> GetDiagnosisReportById(int reportId);
     }
 }
 
