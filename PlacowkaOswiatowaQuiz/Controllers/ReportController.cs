@@ -29,7 +29,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 ReportId = reportId == default ? null : reportId
             };
 
-            return PartialView("_GenerateReport", model);
+            return PartialView("GenerateReport", model);
         }
         #endregion
 
@@ -45,7 +45,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             {
                 var baseReport = await _diagnosisService.CreateDiagnosisReport(diagnosisId);
                 model.ReportId = baseReport.Id;
-                ViewBag.SaveSuccess = "Poprawnie wygenerowano raport";
+                //ViewBag.SaveSuccess = "Poprawnie wygenerowano raport";
                 return PartialView("_GenerateReport", model);
             }
             catch (HttpRequestException e)
@@ -58,7 +58,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             catch(Exception e)
             {
                 TempData["errorAlert"] = e.Message;
-                return PartialView("_GenerateReport", model);
+                return PartialView("GenerateReport", model);
             }
         }
         #endregion
@@ -80,7 +80,10 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 //var base64stream = Convert.ToBase64String(pdfArray);
                 //return new FileStreamResult(pdfStream, "application/pdf");
                 //return File(Convert.ToBase64String(pdfArray), "application/pdf;base64");
-                return File(reportDto.Content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", reportDto.Name);
+                return File(
+                    reportDto.Content,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    reportDto.Name);
             }
             catch (HttpRequestException e)
             {
@@ -89,7 +92,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 TempData["errorAlert"] = $"Nie udało się pobrać raportu o " +
                     $"identyfikatorze {reportId}. Odpowiedź serwera: " +
                     $"'{e.Message}'";
-                return NoContent();
+                return BadRequest(e.Message);
             }
         }
         #endregion
@@ -119,7 +122,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 TempData["errorAlert"] = $"Nie udało się pobrać raportu o " +
                     $"identyfikatorze {reportId}. Odpowiedź serwera: " +
                     $"'{e.Message}'";
-                return NoContent();
+                return BadRequest(e.Message);
             }
         }
         #endregion

@@ -10,7 +10,7 @@
 
 <div class="d-grid col-6 mx-auto gap-2">
 
-    <a href="#" class="btn btn-primary" onclick="GenerateReport('@Model.DiagnosisId');" id="generateBtn">
+    <a href="#" class="btn btn-primary" id="generateBtn">
         Generuj raport
     </a>
 
@@ -20,8 +20,7 @@
         Pokaż raport
     </button>
 
-    <a href="#" class="btn btn-secondary" onclick="GetReport('@Model.ReportId');" 
-        id="downloadBtn">
+    <a href="#" class="btn btn-secondary" id="downloadBtn">
         Pobierz raport (.pdf)
     </a>
 </div>
@@ -44,7 +43,9 @@
         }
     }
 
-    var GenerateReport = function (diagnosisId) {
+    $("#generateBtn").click(function (e) {
+        console.log(e);
+        var diagnosisId = @Model.DiagnosisId;
         $.ajax({
             type: "POST",
             url: "/Report/Generate/" + diagnosisId,
@@ -54,24 +55,21 @@
         })
         .done(function (result, status) {
             $("#generateReport").html(result);
-            var saveSuccessMessage = $('#saveSuccess').val();
-            if (saveSuccessMessage != null) {
-                toastr.success(saveSuccessMessage, null,
-                    { timeOut: 5000, positionClass: "toast-bottom-right" });
+            toastr.success(saveSuccessMessage, null,
+                { timeOut: 5000, positionClass: "toast-bottom-right" });
             }
         })
         .fail(function (result, status, xhr) {
-            var errorMessage = "Wystąpił błąd podczas generowania raportu";
-            toastr.error(errorMessage, null,
+            toastr.error(result, null,
                 { timeOut: 5000, positionClass: "toast-bottom-right" });
         })
         .always(function () {
             $("#loader").fadeOut(300);
             checkButtons();
         });
-    };
+    });
 
-    var GetReport = function (reportId) {
+    @*var GetReport = function (reportId) {
         console.log("W funkcji");
         console.log(reportId);
         if (reportId == null){
@@ -80,24 +78,19 @@
         console.log(reportId);
         location.href = "/Report/GetDiagnosisReport?reportId=" + reportId;
         var message = "Raport jest pobierany";
-        toastr.success(message, null, { 
-            timeOut: 5000, positionClass: "toast-top-right" 
+        toastr.success(message, null, {
+            timeOut: 5000, positionClass: "toast-top-right"
         });
-    }
+    }*@
+
+    $("#downloadBtn").click(function (event) {
+        console.log()
+        var reportId = @Model.ReportId.GetValueOrDefault();
+        location.href = "/Report/GetDiagnosisReport?reportId=" + reportId;
+        var message = "Raport jest pobierany";
+        toastr.success(message, null, {
+            timeOut: 5000, positionClass: "toast-bottom-right"
+        return false;
+    });
 
 </script>
-
-<style>
-
-    #loader {
-        position: fixed;
-        left: 1px;
-        top: 1px;
-        width: 100px;
-        height: 100px;
-        z-index: 9999;
-        background: url(../Images/duck.gif) 100% 100% no-repeat rgb(249,249,249);
-    @*50% 50% no-repeat rgb(249,249,249)*@
-    }
-
-</style>

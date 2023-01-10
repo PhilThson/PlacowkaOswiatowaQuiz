@@ -27,7 +27,7 @@
                 <th>@Html.DisplayNameFor(model => model.Content)</th>
                 <th>@Html.DisplayNameFor(model => model.Description)</th>
                 <th>@Html.DisplayNameFor(model => model.QuestionsSetId)</th>
-                <th></th>
+                <th style="font-weight:normal;">Akcje</th>
                 <th></th>
             </tr>
         </thead>
@@ -45,11 +45,13 @@
                     <td>@Html.DisplayFor(item => question.QuestionsSetId)</td>
                     <td>
                         <div>
-                            <a class="btn btn-sm btn-info" asp-controller="Question" asp-action="Edit" asp-route-id="@question.Id">
+                            <a class="btn btn-sm btn-info" asp-controller="Question"
+                               asp-action="Edit" asp-route-id="@question.Id">
                                 Edytuj
                             </a>
                             @*<a href='#' class="btn btn-sm btn-info" onclick="Edit(@question.Id)">Edytuj</a>*@
-                            <a class="btn btn-sm btn-danger" asp-controller="Question" asp-action="Delete" asp-route-id="@question.Id">
+                            <a class="btn btn-sm btn-danger" asp-controller="Question"
+                               asp-action="Delete" asp-route-id="@question.Id">
                                 Usuń
                             </a>
                         </div>

@@ -21,6 +21,35 @@ div {
     margin: 5px;
 }
 
+fieldset {
+    font-family: sans-serif;
+    border: 3px solid #1F497D;
+    border-radius: 5px;
+    padding: 15px;
+    background-color: #ddd;
+}
+
+    fieldset legend {
+        background: #1F497D;
+        color: #fff;
+        padding: 5px 10px 10px 15px;
+        font-size: 15px;
+        border-radius: 5px;
+        margin-left: 1px;
+        margin-right: 10px;
+    }
+
+.validation-summary-valid {
+    display: none;
+}
+
+#loader {
+    width: 100px;
+    height: 100px;
+    z-index: 99;
+    background: url(../duck.gif) no-repeat rgb(249,249,249, 0.6);
+}
+
 /* Blue Green */
 .BlueGreen {
     font-family: Arial, Helvetica, sans-serif;
@@ -76,18 +105,18 @@ div {
     }*/
 
     .CustomColorTable td, #CustomColorTable th {
-        border: 1px solid #218838;
+        border: 1px solid #5D686F;
         /*padding: 1px;*/
         line-height: 20px;
         padding-left: 5px;
     }
 
     .CustomColorTable th {
-        border: 1px solid #4CAF50;
+        border: 1px solid #5D686F;
         padding-top: 1px;
         padding-bottom: 1px;
         text-align: left;
-        background-color: #218838;
+        background-color: #496171;
         color: white;
         line-height: 30px;
         padding-left: 5px;
@@ -101,10 +130,10 @@ div {
         background-color: #f2f2f2;
     }
 
-    .CustomColorTable tr:hover {
-        background-color: #0094ff;
+/*    .CustomColorTable tr:hover {
+        background-color: #789FBB;
         color: white;
-    }
+    }*/
 
     .CustomColorTable a:hover {
         color: #f2f2f2;
@@ -112,4 +141,15 @@ div {
 
     .CustomColorTable td, .CustomColorTable th {
         font-size: 12px;
+    }
+
+/*Nadpisanie stylów bootstrapowych*/
+.btn-info {
+    background-color: #B5C1C4;
+    border-color: #B5C1C4;
+}
+
+    .btn-info:hover {
+        background-color: #99A3A5;
+        border-color: #99A3A5;
     }
