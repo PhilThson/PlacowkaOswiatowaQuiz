@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
 using PlacowkaOswiatowaQuiz.Helpers.Options;
+using PlacowkaOswiatowaQuiz.Interfaces;
 using PlacowkaOswiatowaQuiz.Shared.ViewModels;
 
 namespace PlacowkaOswiatowaQuiz.Controllers
@@ -17,30 +18,23 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         private readonly QuizApiUrl _apiUrl;
         private readonly QuizApiSettings _apiSettings;
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IHttpClientService _httpClient;
 
         public QuestionController(QuizApiSettings apiSettings,
             IHttpClientFactory httpClientFactory,
-            QuizApiUrl apiUrl)
+            QuizApiUrl apiUrl,
+            IHttpClientService httpClient)
         {
             _apiSettings = apiSettings;
             _httpClientFactory = httpClientFactory;
             _apiUrl = apiUrl;
+            _httpClient = httpClient;
         }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var questions = new List<QuestionViewModel>();
-
-            var httpClient = _httpClientFactory.CreateClient(_apiUrl.ClientName);
-
-            var response = await httpClient.GetAsync(_apiSettings.Questions);
-
-            response.EnsureSuccessStatusCode();
-
-            questions = await response.Content
-                .ReadFromJsonAsync<List<QuestionViewModel>>();
-
+            var questions = await _httpClient.GetAllItems<QuestionViewModel>();
             return View(questions);
         }
 
@@ -99,6 +93,22 @@ namespace PlacowkaOswiatowaQuiz.Controllers
 
             TempData["successAlert"] = "Poprawnie zaktualizowano/dodano pytanie";
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> Delete(int questionId)
+        {
+            if (questionId == default)
+                return BadRequest("Nie znaleziono rekordu o podanym identyfikatorze");
+            try
+            {
+                await _httpClient.RemoveItemById<QuestionViewModel>(questionId);
+                return NoContent();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
     }
 }

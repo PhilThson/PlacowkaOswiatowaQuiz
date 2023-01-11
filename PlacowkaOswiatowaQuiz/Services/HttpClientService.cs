@@ -45,7 +45,9 @@ namespace PlacowkaOswiatowaQuiz.Services
 
             return JsonConvert.DeserializeObject<List<T>>(content);
         }
+        #endregion
 
+        #region Pobieranie rekordu po identyfikatorze
         public async Task<T> GetItemById<T>(object id)
         {
             if (!_endpoints.TryGetValue(typeof(T), out string endpoint))
@@ -59,7 +61,9 @@ namespace PlacowkaOswiatowaQuiz.Services
 
             return JsonConvert.DeserializeObject<T>(content);
         }
+        #endregion
 
+        #region Pobranie rekordu po kluczu i wartości
         public async Task<T> GetItemByKey<T>(string key, string value)
         {
             if (!_endpoints.TryGetValue(typeof(T), out string endpoint))
@@ -73,7 +77,9 @@ namespace PlacowkaOswiatowaQuiz.Services
 
             return JsonConvert.DeserializeObject<T>(content);
         }
+        #endregion
 
+        #region Usuwanie rekordu po identyfikatorze
         public async Task RemoveItemById<T>(object id)
         {
             if (!_endpoints.TryGetValue(typeof(T), out string endpoint))
@@ -89,7 +95,9 @@ namespace PlacowkaOswiatowaQuiz.Services
                 throw new HttpRequestException(content);
             }
         }
+        #endregion
 
+        #region Dodawanie rekordu
         public async Task AddItem<T>(T item, string dict = null)
         {
             if (!_endpoints.TryGetValue(typeof(T), out string endpoint))
@@ -108,6 +116,7 @@ namespace PlacowkaOswiatowaQuiz.Services
             if (!response.IsSuccessStatusCode)
                 throw new HttpRequestException(content);
         }
+        #endregion
 
         #endregion
 

@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IQuestionsSetService, QuestionsSetService>();
 builder.Services.AddScoped<IDiagnosisService, DiagnosisService>();
+builder.Services.AddScoped<IHttpClientService, HttpClientService>();
 
 builder.Services.AddSingleton(builder.Configuration
         .GetSection("QuizApiSettings").Get<QuizApiSettings>());
