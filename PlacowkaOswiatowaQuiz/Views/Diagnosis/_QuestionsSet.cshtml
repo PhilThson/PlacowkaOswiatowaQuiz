@@ -18,50 +18,51 @@
         </div>
         <div class="container rounded p-2">
             <div class="row">
-                <div class="col-12 col-lg-6 pb-4">
-                    @*<h4 class="d-flex justify-content-between align-items-center mb-3">
-                            Zestaw pytań:
-                        </h4>*@
+                <div class="col-12 pb-4">
                     <div class="row my-1">
-                        <div class="col-6">
+                        <div class="col-12">
                             <b>@Html.DisplayNameFor(m => m.SkillDescription)</b>
                         </div>
-                        <div class="col-9">
-                            <p class="text-center fst-italic">@Html.DisplayFor(m => m.SkillDescription)</p>
+                        <div class="col-12">
+                            <p class="text-start fst-italic">@Html.DisplayFor(m => m.SkillDescription)</p>
                         </div>
                     </div>
                     <div class="row my-1">
-                        <div class="col-6">
+                        <div class="col-12">
                             <b>@Html.DisplayNameFor(m => m.Area)</b>
                         </div>
                         <div class="col-9">
-                            <p class="text-center fst-italic">@Html.DisplayFor(m => m.Area.Description)</p>
+                            <p class="text-start fst-italic">@Html.DisplayFor(m => m.Area.Description)</p>
                         </div>
                     </div>
                     <div class="row my-1">
-                        <div class="col-6">
+                        <div class="col-12">
                             <b>@Html.DisplayNameFor(m => m.Difficulty)</b>
                         </div>
-                        <div class="col-9">
-                            <p class="text-center fst-italic">@Html.DisplayFor(m => m.Difficulty.Description)</p>
+                        <div class="col-12">
+                            <p class="text-start fst-italic">@Html.DisplayFor(m => m.Difficulty.Description)</p>
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-lg-6 offset-lg-1">
-                    <h4 class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="text">Pytania:</span>
-                    </h4>
+                <div class="col-10 offset-lg-1">
+                    @*d-flex justify-content-between align-items-center*@
+                    <div class="container d-flex justify-content-between">
+                        <h4 class="mb-3">
+                            <span class="text">Pytania:</span>
+                        </h4>
+                        <span class="text-muted fst-italic">Co robi nauczyciel:</span>
+                    </div>
                     <ul class="list-group mb-3">
                         @foreach (var question in Model.Questions)
                         {
-                            <li class="list-group-item d-flex justify-content-between">
-                                <div class="checkbox">
+                            <li class="list-group-item list-group-item-dark d-flex justify-content-between">
+                                <div class="checkbox me-auto">
                                     <label>
                                         <input type="checkbox" name="isAnswered" value="is-answered" />
-                                        @question.Content
+                                            @question.Content
                                     </label>
                                 </div>
-                                <small class="text-muted">@question.Description</small>
+                                <p class="text-muted pt-2 fst-italic">@question.Description</p>
                             </li>
                         }
                     </ul>
@@ -77,18 +78,6 @@
 <style>
     legend {
         border: 3px solid #1F497D;
-        border-radius: 5px;
-        float: none;
-        padding: inherit;
     }
 
-    fieldset legend {
-        background: #1F497D;
-        color: #fff;
-        padding: 5px 10px 10px 15px;
-        font-size: 15px;
-        border-radius: 5px;
-        margin-left: 1px;
-        margin-right: 10px;
-    }
 </style>

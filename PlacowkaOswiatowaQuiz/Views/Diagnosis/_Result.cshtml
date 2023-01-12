@@ -45,54 +45,45 @@
 </fieldset>
 
 <script>
-$(document).ready(function () {
-    var currentRatingId = $("#ratingsDropdown").attr('currentRatingId');
 
-    $('input[name="questionsSetRating"]')
-        .each(function (i, rating) {
-            if (rating.id != currentRatingId)
-                $("#ratingsDropdown").append(
-                    "<option value=" + rating.id + ">" +
-                    rating.value + "</option>");
-            else
-                $("#ratingsDropdown").append(
-                    "<option selected value=" + rating.id + ">" +
-                    rating.value + "</option>");
-        });
-});
+    $(document).ready(function () {
+        var currentRatingId = $("#ratingsDropdown").attr('currentRatingId');
 
-$("#saveResult").click(function () {
-    $.ajax({
-        type: "POST",
-        url: "/Diagnosis/SaveResult",
-        data: $("form").serialize()
-    })
-    .done(function (result, status) {
-        $("#partialResult").html(result);
-        var saveSuccessMessage = $('#saveSuccess').val();
-        if (saveSuccessMessage != null) {
-            toastr.success(saveSuccessMessage, null,
-                { timeOut: 5000, positionClass: "toast-bottom-right" });
-        }
+        $('input[name="questionsSetRating"]')
+            .each(function (i, rating) {
+                if (rating.id != currentRatingId)
+                    $("#ratingsDropdown").append(
+                        "<option value=" + rating.id + ">" +
+                        rating.value + "</option>");
+                else
+                    $("#ratingsDropdown").append(
+                        "<option selected value=" + rating.id + ">" +
+                        rating.value + "</option>");
+            });
     });
-})
+
+    $("#saveResult").click(function () {
+        $.ajax({
+            type: "POST",
+            url: "/Diagnosis/SaveResult",
+            data: $("form").serialize()
+        })
+        .done(function (result, status) {
+            $("#partialResult").html(result);
+            var saveSuccessMessage = $('#saveSuccess').val();
+            if (saveSuccessMessage != null) {
+                toastr.success(saveSuccessMessage, null,
+                    { timeOut: 5000, positionClass: "toast-bottom-right" });
+            }
+        });
+    });
+
 </script>
 
 <style>
+
     legend {
         border: 3px solid #1F497D;
-        border-radius: 5px;
-        float: none;
-        padding: inherit;
     }
 
-    fieldset legend {
-        background: #1F497D;
-        color: #fff;
-        padding: 5px 10px 10px 15px;
-        font-size: 15px;
-        border-radius: 5px;
-        margin-left: 1px;
-        margin-right: 10px;
-    }
 </style>

@@ -64,14 +64,16 @@
         </div>
         <div class="container">
             <div class="row">
-                <a href="#" asp-action="Details" asp-route-diagnosisId="@Model.Id"
-                   class="btn btn-outline-primary" type="button">
+                <a href="#" class="btn btn-outline-primary js-end-diagnosis"
+                   type="button" data-diagnosis-id="@Model.Id">
                     Zakończ diagnozę
                 </a>
             </div>
         </div>
     </div>
 </fieldset>
+
+@section Scripts {
 
 <script src="~/js/LoadDiagnosisPartials.js"></script>
 <script>
@@ -129,28 +131,27 @@
         loadDiagnosisPartials(requestedQuestionsSetId, @Model.Id);
     });
 
+    //obsługa zakończenia diagnozy
+
+    $(".js-end-diagnosis").click(function (e) {
+        e.preventDefault();
+        var button = $(e.target);
+        var diagnosisId = button.attr("data-diagnosis-id");
+        Swal.fire({
+            title: 'Czy na pewno zakończyć diagnozę?',
+            type: 'warning',
+            showCancelButton: true,
+            cancelButtonText: 'Anuluj',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Zakończ'
+        }).then((result) => {
+            if (result.value == true) {
+                location.href = "/Diagnosis/Details/" + diagnosisId;
+            }
+        });
+    });
+
 </script>
 
-@*<style>
-    fieldset {
-        font-family: sans-serif;
-        border: 3px solid #1F497D;
-        border-radius: 5px;
-        padding: 15px;
-        background-color: #ddd;
-    }
-
-        fieldset legend {
-            background: #1F497D;
-            color: #fff;
-            padding: 5px 10px 10px 15px;
-            font-size: 15px;
-            border-radius: 5px;
-            margin-left: 1px;
-            margin-right: 10px;
-        }
-
-    .validation-summary-valid {
-        display: none;
-    }
-</style>*@
+}

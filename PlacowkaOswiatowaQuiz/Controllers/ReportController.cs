@@ -46,19 +46,19 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 var baseReport = await _diagnosisService.CreateDiagnosisReport(diagnosisId);
                 model.ReportId = baseReport.Id;
                 //ViewBag.SaveSuccess = "Poprawnie wygenerowano raport";
-                return PartialView("_GenerateReport", model);
+                return PartialView("GenerateReport", model);
             }
             catch (HttpRequestException e)
             {
                 TempData["errorAlert"] = $"Nie udało się utworzyć raportu diagnozy o " +
                     $"identyfikatorze {diagnosisId}. Odpowiedź serwera: " +
                     $"'{e.Message}'";
-                return PartialView("_GenerateReport", model);
+                return BadRequest("Wystąpił błąd połączenia do serwera");
             }
             catch(Exception e)
             {
                 TempData["errorAlert"] = e.Message;
-                return PartialView("GenerateReport", model);
+                return BadRequest("Wystąpił błąd połączenia do serwera.");
             }
         }
         #endregion

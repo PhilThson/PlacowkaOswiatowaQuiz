@@ -63,7 +63,9 @@
     </form>
 </fieldset>
 
-<script>$(document).ready(function () {
+<script>
+
+    $(document).ready(function () {
         var currentQuestionsSetId = $("#questionsSetDropdown").attr('currentQuestionsSetId');
         $.ajax({
             type: "GET",
@@ -82,11 +84,6 @@
                 });
             }
         });
-    });</script>
+});
 
-<style>
-    legend {
-        float: none;
-        padding: inherit;
-    }
-</style>
+</script>

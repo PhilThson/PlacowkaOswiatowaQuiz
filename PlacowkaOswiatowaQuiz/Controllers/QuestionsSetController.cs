@@ -92,11 +92,11 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateQuestionsSetViewModel questionsSetVM)
         {
-            var ratings = questionsSetVM.QuestionsSetRatings
-                .Where(r => r != null).ToList();
-            if(ratings.Count < 3)
-                ModelState.AddModelError(string.Empty,
-                    "Należy podać minimum 3 oceny zestawu pytań");
+            //var ratings = questionsSetVM.QuestionsSetRatings
+            //    .Where(r => r != null).ToList();
+            //if(ratings.Count < 3)
+            //    ModelState.AddModelError(string.Empty,
+            //        "Należy podać minimum 3 oceny zestawu pytań");
             if(questionsSetVM.AttachmentFiles?.Count() > 0 &&
                 questionsSetVM.AttachmentFiles.Any(a => !a.IsImage()))
                 ModelState.AddModelError(string.Empty,
@@ -105,7 +105,10 @@ namespace PlacowkaOswiatowaQuiz.Controllers
 
             if (!ModelState.IsValid)
                 return View(questionsSetVM);
-            
+
+            var ratings = questionsSetVM.QuestionsSetRatings
+                .Where(r => r != null).ToList();
+
             var createQuestionSetDto = new CreateQuestionsSetDto
             {
                 SkillDescription = questionsSetVM.SkillDescription,

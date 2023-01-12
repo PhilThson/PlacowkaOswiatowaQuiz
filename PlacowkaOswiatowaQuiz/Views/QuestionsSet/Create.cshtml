@@ -37,14 +37,19 @@
     </div>
     <div class="row mb-3 form-group">
         <label asp-for="@Model.QuestionsSetRatings" class="col-form-label"></label>
-        <div id="Ratings" class="container-flex">
-            @if(Model?.QuestionsSetRatings.Count() > 0)
+        <div id="Ratings" class="container">
+            @if(Model?.QuestionsSetRatings?.Count() > 0)
              {
                     @for(int i = 0; i < Model.QuestionsSetRatings.Count(); i++)
                     {
-                        <input type="text" class="form-control mb-2"
-                               name="QuestionsSetRatings[@i]"
-                               value="@Model.QuestionsSetRatings[i]"/>
+                        <div id="rating_@i" class="mb-2 d-flex g-3">
+                            <input type="text" class="form-control"
+                                    name="QuestionsSetRatings[@i]"
+                                    value="@Model.QuestionsSetRatings[i]" />
+                            <a href="#" class="btn btn-link" onclick="DeleteRating(@i)">
+                                Usuń
+                            </a>
+                        </div>
                     }
              }
         </div>
@@ -68,11 +73,13 @@
     </div>
 </form>
 
+@section Scripts{
+
 <script src="~/js/FetchDictionaryData.js"></script>
 <script>
     var i = $("#Ratings").children().length;
     var addRating = function() {
-        
+
         if (i >= 6) {
             Swal.fire({
                 title: 'Nie można dodać więcej ocen',
@@ -84,14 +91,22 @@
             return;
         }
         $("#Ratings").append(
-            '<input type="text" class="form-control mb-2"' +
-            ' name="QuestionsSetRatings[' + i + ']"/>');
+            '<div id="rating_' + i + '" class="mb-2 d-flex g-3">' +
+            '<input type="text" class="form-control"' +
+            ' name="QuestionsSetRatings[' + i + ']"/>' +
+            '<a href="#" class="btn btn-link"' +
+            ' onclick="DeleteRating(' + i + ')"' + '>Usuń</a>' +
+            '</div>');
         i++;
     }
+
+    var DeleteRating = function (ratingId) {
+        $("#rating_" + ratingId).fadeOut(500, function () {
+            $(this).remove();
+        });
+        i--;
+    };
+
 </script>
 
-<style>
-    .validation-summary-valid {
-        display: none;
-    }
-</style>
+}

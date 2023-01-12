@@ -21,6 +21,11 @@ div {
     margin: 5px;
 }
 
+/*legend {
+    float: none;
+    padding: inherit;
+}*/
+
 fieldset {
     font-family: sans-serif;
     border: 3px solid #1F497D;
@@ -32,11 +37,12 @@ fieldset {
     fieldset legend {
         background: #1F497D;
         color: #fff;
-        padding: 5px 10px 10px 15px;
+        padding: inherit;
         font-size: 15px;
         border-radius: 5px;
         margin-left: 1px;
         margin-right: 10px;
+        float: none;
     }
 
 .validation-summary-valid {
@@ -44,10 +50,16 @@ fieldset {
 }
 
 #loader {
-    width: 100px;
-    height: 100px;
-    z-index: 99;
-    background: url(../duck.gif) no-repeat rgb(249,249,249, 0.6);
+    width: 20%;
+    height: 20%;
+    position: fixed;
+    top: 40%;
+    left: 25%;
+    z-index: 90;
+    background: url(/images/duck.gif) no-repeat center;
+    text-align: center;
+/*    padding: 15em;*/
+    padding:25%;
 }
 
 /* Blue Green */

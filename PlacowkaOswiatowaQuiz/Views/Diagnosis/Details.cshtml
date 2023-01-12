@@ -75,7 +75,7 @@
                     </button>
                 </h2>
                 <div id="panel_@Model.QuestionsSets[i].Id" class="accordion-collapse collapse show"
-             aria-labelledby="heading_@Model.QuestionsSets[i].Id">
+                    aria-labelledby="heading_@Model.QuestionsSets[i].Id">
                     <div class="accordion-body">
                         @await Html.PartialAsync("_ResultSummary", Model.Results[i])
                     </div>
@@ -95,17 +95,20 @@
 </div>
 
 <div id="generateReport">
-    
 </div>
 
 <script>
 
-    $(document).ready(function() {
-        var reportId = @Model.ReportId.GetValueOrDefault();
+    var loadGenerateReport = function (diagnosisId, reportId) {
         $("#generateReport").load("/Report/DiagnosisReportPartial?diagnosisId=" +
-            @Model.Id + "&reportId=" + reportId, function (){
+            diagnosisId + "&reportId=" + reportId, function (){
                 checkButtons();
             });
+    };
+
+    $(document).ready(function() {
+        var reportId = @Model.ReportId.GetValueOrDefault();
+        loadGenerateReport(@Model.Id, reportId);
     });
 
 </script>

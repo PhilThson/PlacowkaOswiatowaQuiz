@@ -4,8 +4,16 @@
     <partial name="~/Views/UIComponents/_bootstrapAlert.cshtml" />
 </div>
 
+
 <div id="loader">
-    Trwa generowanie raportu...
+    <span class="fst-italic">Trwa generowanie raportu...</span>
+    @*<div class="d-flex justify-content-center">
+        <span class="fst-italic">Trwa generowanie raportu...</span>
+
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>*@
 </div>
 
 <div class="d-grid col-6 mx-auto gap-2">
@@ -15,7 +23,8 @@
     </a>
 
     <button asp-controller="Report" asp-action="ShowDiagnosisReport"
-            asp-route-reportId="@Model.ReportId.GetValueOrDefault()" class="btn btn-outline-secondary"
+            asp-route-reportId="@Model.ReportId.GetValueOrDefault()"
+            class="btn btn-outline-secondary"
             target="_blank" id="showBtn">
         Pokaż raport
     </button>
@@ -24,8 +33,6 @@
         Pobierz raport (.pdf)
     </a>
 </div>
-
-@*<script src="~/js/ManageReports.js"></script>*@
 
 <script>
 
@@ -43,29 +50,41 @@
         }
     }
 
+    //W przypadku niepowodzenia, wyświetlane jest powiadomienie typu toastr
+    // oraz przeładowany zostaje region generateReport, w celu wyświetlenia
+    // alertArea ze szczegółowymi danymi dot. niepowodzenia (z TempData)
+
     $("#generateBtn").click(function (e) {
-        console.log(e);
+        e.preventDefault();
         var diagnosisId = @Model.DiagnosisId;
         $.ajax({
             type: "POST",
             url: "/Report/Generate/" + diagnosisId,
             beforeSend: function () {
-                $("#loader").fadeIn(300);
+                $("#loader").fadeIn(500);
             }
         })
         .done(function (result, status) {
             $("#generateReport").html(result);
-            toastr.success(saveSuccessMessage, null,
-                { timeOut: 5000, positionClass: "toast-bottom-right" });
-            }
+            var message = "Poprawnie wygenerowano raport";
+            toastr.success(message, null, {
+                timeOut: 5000, positionClass: "toast-bottom-right"
+            });
         })
         .fail(function (result, status, xhr) {
-            toastr.error(result, null,
-                { timeOut: 5000, positionClass: "toast-bottom-right" });
+            toastr.error(result.responseText, null, {
+                timeOut: 5000, positionClass: "toast-bottom-right"
+            });
         })
-        .always(function () {
-            $("#loader").fadeOut(300);
-            checkButtons();
+        .always(function (data, status) {
+            $("#loader").fadeOut(500, function () {
+                if (status == 'error') {
+                    loadGenerateReport(@Model.DiagnosisId, @Model.ReportId);
+                }
+                else {
+                    checkButtons();
+                }
+            });
         });
     });
 
@@ -84,13 +103,13 @@
     }*@
 
     $("#downloadBtn").click(function (event) {
-        console.log()
+        event.preventDefault();
         var reportId = @Model.ReportId.GetValueOrDefault();
         location.href = "/Report/GetDiagnosisReport?reportId=" + reportId;
         var message = "Raport jest pobierany";
         toastr.success(message, null, {
             timeOut: 5000, positionClass: "toast-bottom-right"
-        return false;
+        });
     });
 
 </script>

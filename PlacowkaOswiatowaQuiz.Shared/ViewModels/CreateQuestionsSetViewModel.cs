@@ -19,7 +19,9 @@ namespace PlacowkaOswiatowaQuiz.Shared.ViewModels
         public byte? DifficultyId { get; set; }
         [Required(ErrorMessage = "Oceny zestawu pytań są wymagane")]
         [DisplayName("Oceny zestawu pytań")]
-        [MaxLength(1024)]
+        [StringLength(512)]
+        [MinLength(3, ErrorMessage = "Należy podać minimum 3 oceny")]
+        [MaxLength(6, ErrorMessage = "Należy podać maksymalnie 6 ocen")]
         public IList<string> QuestionsSetRatings { get; set; }
         [DisplayName("Pytania")]
         public IEnumerable<QuestionViewModel>? Questions { get; set; }
