@@ -1,15 +1,14 @@
 ﻿@model QuestionsSetViewModel
 
+<div class="d-flex justify-content-center">
+    <h4 class="fw-bold">Szczegóły zestawu pytań o identyfikatorze: @Model.Id</h4>
+</div>
 <div id="divAlertArea">
     <partial name="~/Views/UIComponents/_bootstrapAlert.cshtml" />
 </div>
 <div class="row">
     <div class="col-md-12">
         <table class="CustomColorTable">
-            <tr>
-                <th>@Html.DisplayNameFor(m => m.Id)</th>
-                <td>@Model.Id</td>
-            </tr>
             <tr>
                 <th>@Html.DisplayNameFor(m => m.SkillDescription)</th>
                 <td>

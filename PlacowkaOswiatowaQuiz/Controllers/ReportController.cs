@@ -98,8 +98,8 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         #endregion
 
         #region Wyświetlenie raportu po identyfikatorze
-        //[HttpGet("Report/ShowDiagnosisReport/reportId")]
-        public async Task<IActionResult> ShowDiagnosisReport([FromQuery] int reportId)
+        [HttpGet("Report/ShowDiagnosisReport/{reportId}")]
+        public async Task<IActionResult> ShowDiagnosisReport([FromRoute] int reportId)
         {
             try
             {

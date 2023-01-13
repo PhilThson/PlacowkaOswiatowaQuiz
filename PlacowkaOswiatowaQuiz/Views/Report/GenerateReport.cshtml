@@ -6,14 +6,9 @@
 
 
 <div id="loader">
-    <span class="fst-italic">Trwa generowanie raportu...</span>
-    @*<div class="d-flex justify-content-center">
-        <span class="fst-italic">Trwa generowanie raportu...</span>
-
-        <div class="spinner-border" role="status">
-            <span class="visually-hidden">Loading...</span>
-        </div>
-    </div>*@
+    <span class="fst-italic fw-bold" style="position:fixed; left:40%;top:50%;">
+        Trwa generowanie raportu......
+    </span>
 </div>
 
 <div class="d-grid col-6 mx-auto gap-2">
@@ -22,14 +17,12 @@
         Generuj raport
     </a>
 
-    <button asp-controller="Report" asp-action="ShowDiagnosisReport"
-            asp-route-reportId="@Model.ReportId.GetValueOrDefault()"
-            class="btn btn-outline-secondary"
-            target="_blank" id="showBtn">
+    <button href="#" data-report-id="@Model.ReportId.GetValueOrDefault()"
+            class="btn btn-outline-primary" id="showBtn">
         Pokaż raport
     </button>
 
-    <a href="#" class="btn btn-secondary" id="downloadBtn">
+    <a href="#" class="btn btn-primary" id="downloadBtn">
         Pobierz raport (.pdf)
     </a>
 </div>
@@ -42,7 +35,7 @@
         if (reportId !== 0) {
             $('#downloadBtn').show("slow");
             $('#showBtn').show("slow");
-            $('#generateBtn').addClass("disabled");
+            $('#generateBtn').hide("slow");
         }
         else {
             $('#downloadBtn').hide();
@@ -88,19 +81,13 @@
         });
     });
 
-    @*var GetReport = function (reportId) {
-        console.log("W funkcji");
-        console.log(reportId);
-        if (reportId == null){
-            reportId = @Model.ReportId.GetValueOrDefault();
-        }
-        console.log(reportId);
-        location.href = "/Report/GetDiagnosisReport?reportId=" + reportId;
-        var message = "Raport jest pobierany";
-        toastr.success(message, null, {
-            timeOut: 5000, positionClass: "toast-top-right"
-        });
-    }*@
+    $("#showBtn").click(function (event) {
+        event.preventDefault();
+        var button = $(event.target);
+        var reportId = button.attr("data-report-id");
+        var uri = "/Report/ShowDiagnosisReport/" + reportId;
+        window.open(uri, '_blank');
+    });
 
     $("#downloadBtn").click(function (event) {
         event.preventDefault();

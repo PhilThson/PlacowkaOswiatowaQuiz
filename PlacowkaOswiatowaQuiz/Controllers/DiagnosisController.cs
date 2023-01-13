@@ -146,7 +146,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         #endregion
 
         #region Podsumowanie/szczegóły formularza diagnozy
-        //Przekazywanie przez Route wymaga ręcznego zadeklarowania endpointu
+        //Przekazywanie parametru przez Route wymaga ręcznego zadeklarowania endpointu
         [HttpGet("Diagnosis/Details/{diagnosisId}")]
         public async Task<IActionResult> Details([FromRoute] int diagnosisId)
         {
