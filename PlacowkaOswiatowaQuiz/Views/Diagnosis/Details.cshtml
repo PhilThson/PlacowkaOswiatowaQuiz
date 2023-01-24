@@ -101,16 +101,20 @@
 
 <script>
 
-    var loadGenerateReport = function (diagnosisId, reportId) {
-        $("#generateReport").load("/Report/DiagnosisReportPartial?diagnosisId=" +
-            diagnosisId + "&reportId=" + reportId, function (){
-                checkButtons();
-            });
-    };
-
+    //po załadowaniu strony, wywołanie funkcji ładującej widok przycisków raportu
     $(document).ready(function() {
         var reportId = @Model.ReportId.GetValueOrDefault();
         loadGenerateReport(@Model.Id, reportId);
     });
+
+    //w callbacku do załadowania widoku przycisków wywołanie funkcji ustawiającej
+    //stan przycisków w zależności od dostępności raportu
+
+    var loadGenerateReport = function (diagnosisId, reportId) {
+        $("#generateReport").load("/Report/DiagnosisReportPartial?diagnosisId=" +
+            diagnosisId + "&reportId=" + reportId, function () {
+                checkButtons();
+        });
+    };
 
 </script>

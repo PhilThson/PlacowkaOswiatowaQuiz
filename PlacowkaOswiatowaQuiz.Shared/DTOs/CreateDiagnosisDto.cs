@@ -7,5 +7,6 @@ namespace PlacowkaOswiatowaQuiz.Shared.DTOs
         public int StudentId { get; set; }
         public string SchoolYear { get; set; }
         public byte DifficultyId { get; set; }
+        public string Institution { get; set; }
     }
 }

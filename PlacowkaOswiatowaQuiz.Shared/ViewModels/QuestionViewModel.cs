@@ -17,5 +17,6 @@ namespace PlacowkaOswiatowaQuiz.Shared.ViewModels
         public string Description { get; set; }
         [DisplayName("Zestaw pytań")]
         public int QuestionsSetId { get; set; }
+        public bool IsFromQuestionsSet { get; set; }
     }
 }

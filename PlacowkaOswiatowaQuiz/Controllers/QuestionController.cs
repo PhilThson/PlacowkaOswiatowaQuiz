@@ -43,24 +43,34 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         {
             var question = new QuestionViewModel
             {
-                QuestionsSetId = questionsSetId
+                QuestionsSetId = questionsSetId,
+                IsFromQuestionsSet = questionsSetId != 0
             };
+            try
+            {
+                if (id == default(int))
+                    return View(question);
 
-            if (id == default(int))
+                var httpClient = _httpClientFactory.CreateClient(_apiUrl.ClientName);
+
+                var response = await httpClient.GetAsync(
+                    $"{_apiSettings.Questions}/{id}");
+
+                response.EnsureSuccessStatusCode();
+
+                question = await response.Content
+                    .ReadFromJsonAsync<QuestionViewModel>();
+                _ = question ?? throw new InvalidCastException(
+                    "Nie udało się odczytać pytania");
+                question.IsFromQuestionsSet = questionsSetId != 0;
+
                 return View(question);
-
-            var httpClient = _httpClientFactory.CreateClient(_apiUrl.ClientName);
-
-            var response = await httpClient.GetAsync(
-                $"{_apiSettings.Questions}/{id}");
-
-            response.EnsureSuccessStatusCode();
-
-            question = await response.Content
-                .ReadFromJsonAsync<QuestionViewModel>();
-
-            //return PartialView("Edit", question);
-            return View(question);
+            }
+            catch(Exception e)
+            {
+                TempData["errorAlert"] = e.Message;
+                return View(question);
+            }
         }
 
         [HttpPost]
@@ -92,6 +102,11 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             }
 
             TempData["successAlert"] = "Poprawnie zaktualizowano/dodano pytanie";
+
+            if (questionVM.IsFromQuestionsSet)
+                return RedirectToAction("Details", "QuestionsSet",
+                    new { id = questionVM.QuestionsSetId });
+
             return RedirectToAction(nameof(Index));
         }
 

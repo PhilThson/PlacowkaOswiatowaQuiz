@@ -14,7 +14,7 @@
         headerText = "Nowe pytanie";
         buttonText = "Utwórz";
     }
-    }
+}
 
 <fieldset class="border p-2">
     <legend class="w-auto">
@@ -26,8 +26,9 @@
     <div asp-validation-summary="All" class="text-danger container-flex md-2 mb-3">
         <span>Popraw następujące błędy i spróbuj ponownie:</span>
     </div>
-    <form method="post" asp-controller="Question" asp-action="Edit">
+    <form method="post" asp-controller="Question" asp-action="Edit" id="questionForm">
         <input type="hidden" asp-for="@Model.Id" />
+        <input type="hidden" asp-for="@Model.IsFromQuestionsSet" />
         <div class="container-fluid">
             <div class="row mb-3">
                 <label asp-for="@Model.Content" class="col-sm-2 form-label"></label>
@@ -44,7 +45,7 @@
                 </div>
             </div>
             <div class="row mb-3">
-                <label asp-for="@Model.QuestionsSetId" class="col-sm-2 col-form-label"></label>
+                <label asp-for="@Model.QuestionsSetId" class="col-sm-4 col-form-label"></label>
                 <div class="col-sm-10">
                     <select asp-for="@Model.QuestionsSetId" class="form-control" id="questionsSetDropdown"
                             currentQuestionsSetId="@Model?.QuestionsSetId">
@@ -53,37 +54,73 @@
                 </div>
             </div>
             <div class="d-grid gap-2 col-6 mx-auto">
-                <button class="btn btn-success" type="submit">
+                <a href="#" class="btn btn-success" id="submitButton">
                     @buttonText
-                </button>
-                <a class="btn btn-outline-secondary" asp-controller="Question"
-                   asp-action="Index">Powrót do listy pytań</a>
+                </a>
+                <a href="#" id="navigateBack" class="btn btn-outline-secondary"></a>
             </div>
         </div>
     </form>
 </fieldset>
 
+@section Scripts
+{
+
 <script>
 
     $(document).ready(function () {
-        var currentQuestionsSetId = $("#questionsSetDropdown").attr('currentQuestionsSetId');
+        var incomingQuestionsSetId = $("#questionsSetDropdown").attr('currentQuestionsSetId');
         $.ajax({
             type: "GET",
             url: "/QuestionsSet/GetAllQuestionsSets",
             data: "{}",
             success: function (data) {
                 $.each(data, function (i, questionsSet) {
-                    if (questionsSet.id != currentQuestionsSetId)
+                    if (questionsSet.id != incomingQuestionsSetId) {
                         $("#questionsSetDropdown").append(
                             "<option value=" + questionsSet.id + ">" +
                             questionsSet.skillDescription + "</option>");
-                    else
+                    }
+                    else {
                         $("#questionsSetDropdown").append(
                             "<option selected value=" + questionsSet.id + ">" +
                             questionsSet.skillDescription + "</option>");
+                    }
                 });
             }
         });
-});
+        var isFromQuestionsSet = @Model.IsFromQuestionsSet.ToString().ToLower();
+        if (isFromQuestionsSet == true) {
+            $("#navigateBack").html("Powrót do zestawu pytań");
+            // jeżeli ktoś dokounje edycji z przekierowania z zestawu pytań,
+            // to nie powinien mieć możliwości zmiany podpietego zestawu pytań
+            $("#questionsSetDropdown").prop("disabled", true);
+        }
+        else {
+            $("#navigateBack").html("Powrót do listy pytań");
+        }
+    });
+
+    $("#navigateBack").click(function (event) {
+        event.preventDefault();
+        var isFromQuestionsSet = @Model.IsFromQuestionsSet.ToString().ToLower();
+        if (isFromQuestionsSet == true) {
+            location.href = "/QuestionsSet/Details?id=" + @Model.QuestionsSetId;
+        }
+        else {
+            location.href = "/Question/Index";
+        }
+    });
+
+    //w przypadku edycji pytań do której przekierowanie nastąpiło ze szczegółów
+    //zestawu pytań, należy usnąć atrybut disabled, bo tak oznaczona właściwość
+    //formularza NIE zostanie zserializowana, co powoduje błąd walidacji
+
+    $("#submitButton").click(function () {
+        $("#questionsSetDropdown").prop("disabled", false);
+        $("#questionForm").submit();
+    });
 
 </script>
+
+}

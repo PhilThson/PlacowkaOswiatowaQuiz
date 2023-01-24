@@ -80,8 +80,8 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 var questionsSets =
                     await _questionsSetService.GetAllQuestionsSets(diagnosis.Difficulty.Id);
 
-                //na podstawie listy identyfikatorów zestawów pytań, są pobierane asynchronicznie
-                //perłne modele na etapie przełączania zestawów na formularzu diagnozy
+                //Lista identyfikatorów zestawów pytań, których modele będą pobrane 
+                //asynchronicznie na etapie przełączania zestawów na formularzu diagnozy
                 diagnosis.QuestionsSetsIds = questionsSets.Select(qs => qs.Id).ToList();
                 return View(diagnosis);
             }
@@ -129,7 +129,6 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         {
             if (!ModelState.IsValid)
                 return View(diagnosisVM);
-
             try
             {
                 var createdDiagnosis = await _diagnosisService.CreateDiagnosis(diagnosisVM);
@@ -172,13 +171,14 @@ namespace PlacowkaOswiatowaQuiz.Controllers
 
             var askedQuestionSetsIds = new List<int>();
             //QuestionsSetRating (ocena zestawu pytań) jest wymagana do podania,
-            //więc na pewno istnieje, jeżeli istnieje Result (wynik)
+            //więc na pewno istnieje, jeżeli istnieje powiązany z diagnozą Result (wynik)
             if (diagnosis.Results?.Count > 0)
                 askedQuestionSetsIds = diagnosis.Results
                     .Select(r => r.QuestionsSetRating.QuestionsSetId).ToList();
 
             var questionsSets =
-                await _questionsSetService.GetQuestionsSetsByIds(askedQuestionSetsIds);
+                await _questionsSetService.GetQuestionsSetsByIds(askedQuestionSetsIds) ??
+                new List<QuestionsSetViewModel>();
 
             return new DiagnosisSummaryViewModel
             {

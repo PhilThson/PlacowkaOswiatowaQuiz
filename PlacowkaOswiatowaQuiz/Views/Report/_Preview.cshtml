@@ -5,6 +5,7 @@
 <html>
 <head>
     <style>
+
         .diagnosis-box {
             max-width: 800px;
             margin: auto;
@@ -15,7 +16,20 @@
             line-height: 24px;
             font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
             color: #555;
+            position: relative;
         }
+
+            @*
+            .diagnosis-box h1 {
+                position: absolute;
+                transform: rotate(-45deg);
+                opacity: 0.3;
+                top: 40%;
+                left: 25%;
+                z-index: 9;
+                font-family: sans-serif, "Helvetica Neue", "Lucida Grande", Arial;
+                font-stretch: ultra-expanded;
+            }*@
 
             .diagnosis-box .title {
                 text-align: center;
@@ -146,33 +160,33 @@
 
                         @for (int i = 0; i < Model.QuestionsSetsMastered.Count(); i++)
                         {
-                        <tr class="item">
-                            @if (i > 0 && Model.QuestionsSetsMastered[i].Area.Id == Model.QuestionsSetsMastered[i-1].Area.Id)
-                            {
-                                <td style="border-top:hidden;"></td>
-                            }
-                            else
-                            {
-                                <td>
-                                    @Model.QuestionsSetsMastered[i].Area.Description
-                                </td>
-                            }
-                            <td>
-                                @Model.QuestionsSetsMastered[i].SkillDescription
-                            </td>
-                            <td>
-                                @if (Model.Results.Any(r => r.QuestionsSetRating.QuestionsSetId == Model.QuestionsSetsMastered[i].Id))
+                            <tr class="item">
+                                @if (i > 0 && Model.QuestionsSetsMastered[i].Area.Id == Model.QuestionsSetsMastered[i - 1].Area.Id)
                                 {
-                                    @Model?.Results.First(r => r.QuestionsSetRating.QuestionsSetId == Model.QuestionsSetsMastered[i].Id).QuestionsSetRating?.RatingDescription;
+                                    <td style="border-top:hidden;"></td>
                                 }
                                 else
                                 {
-                                    <div style="font-style:italic;">
-                                        Nie znaleziono odpowiedzi, do wybranego zestawu pytań
-                                    </div>
+                                    <td>
+                                        @Model.QuestionsSetsMastered[i].Area.Description
+                                    </td>
                                 }
-                            </td>
-                        </tr>
+                                <td>
+                                    @Model.QuestionsSetsMastered[i].SkillDescription
+                                </td>
+                                <td>
+                                    @if (Model.Results.Any(r => r.QuestionsSetRating.QuestionsSetId == Model.QuestionsSetsMastered[i].Id))
+                                    {
+                                        @Model?.Results.First(r => r.QuestionsSetRating.QuestionsSetId == Model.QuestionsSetsMastered[i].Id).QuestionsSetRating?.RatingDescription;
+                                    }
+                                    else
+                                    {
+                                        <div style="font-style:italic;">
+                                            Nie znaleziono odpowiedzi, do wybranego zestawu pytań
+                                        </div>
+                                    }
+                                </td>
+                            </tr>
                         }
                     </table>
                 </td>
@@ -197,33 +211,33 @@
                         @for (int i = 0; i < Model.QuestionsSetsToImprove.Count(); i++)
                         {
                             <tr class="item">
-                            @if (i > 0 && Model.QuestionsSetsToImprove[i].Area.Id == Model.QuestionsSetsToImprove[i-1].Area.Id)
-                            {
-                                <td style="border-top:hidden;"></td>
-                            }
-                            else
-                            {
-                                <td>
-                                    @Model.QuestionsSetsToImprove[i].Area.Description
-                                </td>
-                            }
+                                @if (i > 0 && Model.QuestionsSetsToImprove[i].Area.Id == Model.QuestionsSetsToImprove[i - 1].Area.Id)
+                                {
+                                    <td style="border-top:hidden;"></td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        @Model.QuestionsSetsToImprove[i].Area.Description
+                                    </td>
+                                }
 
-                            <td>
-                                @Model.QuestionsSetsToImprove[i].SkillDescription
-                            </td>
-                            <td>
-                            @if (Model.Results.Any(r => r.QuestionsSetRating.QuestionsSetId == Model.QuestionsSetsToImprove[i].Id))
-                            {
-                                @Model?.Results.First(r => r.QuestionsSetRating.QuestionsSetId == Model.QuestionsSetsToImprove[i].Id).QuestionsSetRating?.RatingDescription;
-                            }
-                            else
-                            {
-                                <div style="font-style:italic;">
-                                    Nie znaleziono odpowiedzi, do wybranego zestawu pytań
-                                </div>
-                            }
-                            </td>
-                        </tr>
+                                <td>
+                                    @Model.QuestionsSetsToImprove[i].SkillDescription
+                                </td>
+                                <td>
+                                    @if (Model.Results.Any(r => r.QuestionsSetRating.QuestionsSetId == Model.QuestionsSetsToImprove[i].Id))
+                                    {
+                                        @Model?.Results.First(r => r.QuestionsSetRating.QuestionsSetId == Model.QuestionsSetsToImprove[i].Id).QuestionsSetRating?.RatingDescription;
+                                    }
+                                    else
+                                    {
+                                        <div style="font-style:italic;">
+                                            Nie znaleziono odpowiedzi, do wybranego zestawu pytań
+                                        </div>
+                                    }
+                                </td>
+                            </tr>
                         }
                     </table>
                 </td>

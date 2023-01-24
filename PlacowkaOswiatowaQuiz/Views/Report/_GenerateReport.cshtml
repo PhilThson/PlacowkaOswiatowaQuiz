@@ -4,7 +4,6 @@
     <partial name="~/Views/UIComponents/_bootstrapAlert.cshtml" />
 </div>
 
-
 <div id="loader">
     <span class="fst-italic fw-bold" style="position:fixed; left:40%;top:50%;">
         Trwa generowanie raportu......
@@ -12,6 +11,30 @@
 </div>
 
 <div class="d-grid col-6 mx-auto gap-2">
+
+    <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal"
+            id="reportPreviewButton"
+            data-bs-target="#reportPreview">
+        Podgląd widoku raportu
+    </button>
+    <div class="modal fade" id="reportPreview" tabindex="-1"
+         aria-labelledby="reportPreviewLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="reportPreviewLabel">Podgląd raportu</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="reportPreviewBody">
+                    <img src="@Url.Content("~/images/round.gif")" class="img-responsive" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <a href="#" class="btn btn-primary" id="generateBtn">
         Generuj raport
@@ -29,19 +52,19 @@
 
 <script>
 
-    var checkButtons = function () {
+    function checkButtons() {
         $('#loader').hide();
         var reportId = @Model.ReportId.GetValueOrDefault();
         if (reportId !== 0) {
             $('#downloadBtn').show("slow");
             $('#showBtn').show("slow");
-            $('#generateBtn').hide("slow");
+            $('#generateBtn').hide();
         }
         else {
             $('#downloadBtn').hide();
             $('#showBtn').hide();
         }
-    }
+    };
 
     //W przypadku niepowodzenia, wyświetlane jest powiadomienie typu toastr
     // oraz przeładowany zostaje region generateReport, w celu wyświetlenia
@@ -81,6 +104,7 @@
         });
     });
 
+    //otworzenie wygenerowanego raportu w nowej zakładce
     $("#showBtn").click(function (event) {
         event.preventDefault();
         var button = $(event.target);
@@ -89,6 +113,9 @@
         window.open(uri, '_blank');
     });
 
+    //pobieranie raportu
+    //preventDefault: normalnie po kliknięciu linku z atrybutem href='#'
+    //strona przewija się do góry; preventDefault blokuje to zachowanie
     $("#downloadBtn").click(function (event) {
         event.preventDefault();
         var reportId = @Model.ReportId.GetValueOrDefault();
@@ -98,5 +125,15 @@
             timeOut: 5000, positionClass: "toast-bottom-right"
         });
     });
+
+    //załadowanie podglądu raportu w oknie modalnym po kliknięciu przycisku
+    $("#reportPreviewButton").click(function (e) {
+        $("#reportPreviewBody").load(
+            "@Url.Action("Preview", "Report", new { diagnosisId = Model.DiagnosisId })",
+            function () {
+                $(".img-responsive").hide();
+            });
+    });
+
 
 </script>

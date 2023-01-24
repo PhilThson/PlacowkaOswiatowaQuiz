@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PlacowkaOswiatowaQuiz.Interfaces;
+using PlacowkaOswiatowaQuiz.Services;
 using PlacowkaOswiatowaQuiz.Shared.ViewModels;
 
 namespace PlacowkaOswiatowaQuiz.Controllers
@@ -8,12 +9,15 @@ namespace PlacowkaOswiatowaQuiz.Controllers
     {
         #region Pola prywatne
         private readonly IDiagnosisService _diagnosisService;
+        private readonly IQuestionsSetService _questionsSetService;
         #endregion
 
         #region Konstruktor
-        public ReportController(IDiagnosisService diagnosisService)
+        public ReportController(IDiagnosisService diagnosisService,
+            IQuestionsSetService questionsSetService)
         {
             _diagnosisService = diagnosisService;
+            _questionsSetService = questionsSetService;
         }
         #endregion
 
@@ -29,7 +33,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 ReportId = reportId == default ? null : reportId
             };
 
-            return PartialView("GenerateReport", model);
+            return PartialView("_GenerateReport", model);
         }
         #endregion
 
@@ -46,7 +50,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 var baseReport = await _diagnosisService.CreateDiagnosisReport(diagnosisId);
                 model.ReportId = baseReport.Id;
                 //ViewBag.SaveSuccess = "Poprawnie wygenerowano raport";
-                return PartialView("GenerateReport", model);
+                return PartialView("_GenerateReport", model);
             }
             catch (HttpRequestException e)
             {
@@ -87,8 +91,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             }
             catch (HttpRequestException e)
             {
-                //Pytanie czy ten komunikat pojawi się na dole podsumowania
-                //czy trzeba zwracać PartialView
+                //ten komunikat się nie wyświetli dopóki nie zostanie przeładowany partialView
                 TempData["errorAlert"] = $"Nie udało się pobrać raportu o " +
                     $"identyfikatorze {reportId}. Odpowiedź serwera: " +
                     $"'{e.Message}'";
@@ -124,6 +127,55 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                     $"'{e.Message}'";
                 return BadRequest(e.Message);
             }
+        }
+        #endregion
+
+
+        #region Podgląd raportu
+        
+        public async Task<IActionResult> Preview(int diagnosisId)
+        {
+            await Task.Delay(2000);
+            var diagnosisToPdf = await GetDiagnosisPdf(diagnosisId);
+
+            return PartialView("_Preview", diagnosisToPdf);
+        }
+
+        //Ta sama mechanika jest wykorzystywana po stronie API do generowania raportu
+        private async Task<DiagnosisToPdfViewModel> GetDiagnosisPdf(int diagnosisId)
+        {
+            var diagnosis = await _diagnosisService.GetDiagnosisById(diagnosisId);
+
+            var askedQuestionSetsIds = new List<int>();
+
+            if (diagnosis.Results?.Count > 0)
+                askedQuestionSetsIds = diagnosis.Results
+                    .Select(r => r.QuestionsSetRating.QuestionsSetId).ToList();
+            var questionsSets =
+                await _questionsSetService.GetQuestionsSetsByIds(askedQuestionSetsIds) ??
+                new List<QuestionsSetViewModel>();
+
+            var masteredQSIds = diagnosis.Results.Where(d => d.RatingLevel > 4)
+                .Select(r => r.QuestionsSetRating.QuestionsSetId).ToList();
+            var toImproveQSIds = diagnosis.Results.Where(d => d.RatingLevel < 5)
+                .Select(r => r.QuestionsSetRating.QuestionsSetId).ToList();
+
+            return new DiagnosisToPdfViewModel
+            {
+                Id = diagnosis.Id,
+                Student = diagnosis.Student,
+                Employee = diagnosis.Employee,
+                CreatedDate = diagnosis.CreatedDate,
+                Difficulty = diagnosis.Difficulty,
+                SchoolYear = diagnosis.SchoolYear,
+                Results = diagnosis.Results,
+                QuestionsSetsMastered =
+                    questionsSets.Where(qs => masteredQSIds.Contains(qs.Id))
+                    .OrderBy(qs => qs.Area.Name).ToList(),
+                QuestionsSetsToImprove =
+                    questionsSets.Where(qs => toImproveQSIds.Contains(qs.Id))
+                    .OrderBy(qs => qs.Area.Name).ToList(),
+            };
         }
         #endregion
 
