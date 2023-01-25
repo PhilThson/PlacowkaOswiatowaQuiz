@@ -47,6 +47,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             };
             try
             {
+                await Task.Delay(2000);
                 var baseReport = await _diagnosisService.CreateDiagnosisReport(diagnosisId);
                 model.ReportId = baseReport.Id;
                 //ViewBag.SaveSuccess = "Poprawnie wygenerowano raport";
@@ -151,6 +152,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             if (diagnosis.Results?.Count > 0)
                 askedQuestionSetsIds = diagnosis.Results
                     .Select(r => r.QuestionsSetRating.QuestionsSetId).ToList();
+
             var questionsSets =
                 await _questionsSetService.GetQuestionsSetsByIds(askedQuestionSetsIds) ??
                 new List<QuestionsSetViewModel>();
@@ -160,24 +162,16 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             var toImproveQSIds = diagnosis.Results.Where(d => d.RatingLevel < 5)
                 .Select(r => r.QuestionsSetRating.QuestionsSetId).ToList();
 
-            return new DiagnosisToPdfViewModel
-            {
-                Id = diagnosis.Id,
-                Institution = diagnosis.Institution,
-                SchoolYear = diagnosis.SchoolYear,
-                CounselingCenter = diagnosis.CounselingCenter,
-                Student = diagnosis.Student,
-                Employee = diagnosis.Employee,
-                CreatedDate = diagnosis.CreatedDate,
-                Difficulty = diagnosis.Difficulty,
-                Results = diagnosis.Results,
-                QuestionsSetsMastered =
+            var diagnosisToPdf = (DiagnosisToPdfViewModel)diagnosis;
+
+            diagnosisToPdf.QuestionsSetsMastered =
                     questionsSets.Where(qs => masteredQSIds.Contains(qs.Id))
-                    .OrderBy(qs => qs.Area.Name).ToList(),
-                QuestionsSetsToImprove =
+                    .OrderBy(qs => qs.Area.Name).ToList();
+            diagnosisToPdf.QuestionsSetsToImprove =
                     questionsSets.Where(qs => toImproveQSIds.Contains(qs.Id))
-                    .OrderBy(qs => qs.Area.Name).ToList(),
-            };
+                    .OrderBy(qs => qs.Area.Name).ToList();
+
+            return diagnosisToPdf;
         }
         #endregion
 

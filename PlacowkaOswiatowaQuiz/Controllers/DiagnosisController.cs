@@ -98,7 +98,8 @@ namespace PlacowkaOswiatowaQuiz.Controllers
 
                     //Lista identyfikatorów zestawów pytań, których modele będą pobrane 
                     //asynchronicznie na etapie przełączania zestawów na formularzu diagnozy
-                    diagnosis.QuestionsSetsIds = questionsSets.Select(qs => qs.Id).ToList();
+                    diagnosis.QuestionsSetsIds = questionsSets.Select(qs => qs.Id).ToList() ??
+                        new List<int>();
                 }
 
                 return View(diagnosis);
@@ -154,9 +155,23 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 return View(diagnosisVM);
             try
             {
+                var availableQuestionsSets =
+                    await _questionsSetService.GetAllQuestionsSets(diagnosisVM.DifficultyId) ??
+                    new List<QuestionsSetViewModel>();
+
+                if (!availableQuestionsSets.Any())
+                    throw new DataValidationException(
+                        "Brak dostępnych zestawów pytań dla wybranej skali trudności. " +
+                        "Proszę dodać zestawy pytań i ponownie utworzyć formularz diagnozy.");
+
                 var createdDiagnosis = await _diagnosisService.CreateDiagnosis(diagnosisVM);
                 //Po utworzeniu diagnozy, przekierowanie do formularza (pierwszego zestawu pytań)
                 return RedirectToAction(nameof(Form), new { diagnosisId = createdDiagnosis.Id });
+            }
+            catch(DataValidationException e)
+            {
+                TempData["errorAlert"] = $"Nie udało się utworzyć formularza diagnozy. {e.Message}";
+                return View(diagnosisVM);
             }
             catch (Exception e)
             {

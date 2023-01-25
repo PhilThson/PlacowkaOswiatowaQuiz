@@ -21,7 +21,7 @@ function DeleteItem(endpoint, itemId) {
                     'Usunięto!',
                     'Poprawnie usunięto rekord.',
                     'success');
-                $('#tr_' + questionId).remove();
+                $('#tr_' + itemId).remove();
             })
             .fail(function (result) {
                 Swal.fire(

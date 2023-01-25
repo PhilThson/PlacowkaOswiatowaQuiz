@@ -32,7 +32,7 @@
             <tbody>
                 @foreach (var questionsSet in Model)
                 {
-                    <tr>
+                    <tr id="tr_@questionsSet.Id">
                         <td>@Html.DisplayFor(modelItem => questionsSet.Id)</td>
                         <td>@Html.DisplayFor(modelItem => questionsSet.SkillDescription)</td>
                         <td>@Html.DisplayFor(modelItem => questionsSet.Area.Description)</td>
@@ -44,9 +44,6 @@
                             </a>
                         </td>
                         <td>
-                            @*<a class="btn btn-sm btn-danger js-delete" data-questionsSetId="@questionsSet.Id">
-                                Usuń
-                            </a>*@
                             <a class="btn btn-sm btn-danger" onclick="DeleteItem('QuestionsSet', '@questionsSet.Id')">
                                 Usuń
                             </a>

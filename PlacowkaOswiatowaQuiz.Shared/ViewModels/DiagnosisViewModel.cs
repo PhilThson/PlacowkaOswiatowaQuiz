@@ -16,5 +16,15 @@ namespace PlacowkaOswiatowaQuiz.Shared.ViewModels
             diagnosisSummary.Map(diagnosisVM);
             return diagnosisSummary;
         }
+
+        public static explicit operator DiagnosisToPdfViewModel(
+            DiagnosisViewModel diagnosisVM)
+        {
+            var diagnosisToPdf = new DiagnosisToPdfViewModel();
+            diagnosisToPdf.Map(diagnosisVM);
+            diagnosisToPdf.QuestionsSetsMastered = new List<QuestionsSetViewModel>();
+            diagnosisToPdf.QuestionsSetsToImprove = new List<QuestionsSetViewModel>();
+            return diagnosisToPdf;
+        }
     }
 }
