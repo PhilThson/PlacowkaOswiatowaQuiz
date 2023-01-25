@@ -1,18 +1,18 @@
 ﻿@model QuestionViewModel
 @{
     var headerText = "";
-    var buttonText = "";
+    var saveButtonText = "";
     if (Model.Id != 0)
     {
         ViewData["Title"] = "Pytanie - edycja";
         headerText = "Edycja pytania";
-        buttonText = "Zapisz";
+        saveButtonText = "Zapisz";
     }
     else
     {
         ViewData["Title"] = "Pytanie";
         headerText = "Nowe pytanie";
-        buttonText = "Utwórz";
+        saveButtonText = "Utwórz";
     }
 }
 
@@ -55,7 +55,7 @@
             </div>
             <div class="d-grid gap-2 col-6 mx-auto">
                 <a href="#" class="btn btn-success" id="submitButton">
-                    @buttonText
+                    @saveButtonText
                 </a>
                 <a href="#" id="navigateBack" class="btn btn-outline-secondary"></a>
             </div>
@@ -93,7 +93,7 @@
         if (isFromQuestionsSet == true) {
             $("#navigateBack").html("Powrót do zestawu pytań");
             // jeżeli ktoś dokounje edycji z przekierowania z zestawu pytań,
-            // to nie powinien mieć możliwości zmiany podpietego zestawu pytań
+            // to nie powinien mieć możliwości zmiany podpiętego zestawu pytań
             $("#questionsSetDropdown").prop("disabled", true);
         }
         else {
@@ -112,7 +112,7 @@
         }
     });
 
-    //w przypadku edycji pytań do której przekierowanie nastąpiło ze szczegółów
+    //w przypadku edycji pytań do których przekierowanie nastąpiło ze szczegółów
     //zestawu pytań, należy usnąć atrybut disabled, bo tak oznaczona właściwość
     //formularza NIE zostanie zserializowana, co powoduje błąd walidacji
 

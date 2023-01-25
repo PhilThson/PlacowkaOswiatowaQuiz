@@ -75,6 +75,13 @@
                     Zakończ diagnozę
                 </a>
             </div>
+            <div class="row">
+                <a class="btn btn-outline-primary" id="back-to-details"
+                   asp-controller="Diagnosis" asp-action="Details"
+                   asp-route-diagnosisId="@Model.Id">
+                    Przejdź do podsumowania
+                </a>
+            </div>
         </div>
     </div>
 </fieldset>
@@ -103,6 +110,13 @@
         var requestedQuestionsSetId = questionsSetsIds[index].id;
         $('#previousQS').prop('disabled', true);
         loadDiagnosisPartials(requestedQuestionsSetId, @Model.Id);
+        var isForEdit = @Model.IsForEdit.ToString().ToLower();
+        if (isForEdit == true) {
+            $(".js-end-diagnosis").hide();
+        }
+        else {
+            $("#back-to-details").hide();
+        }
     });
 
     //pobranie poprzedniego zestawu pytań

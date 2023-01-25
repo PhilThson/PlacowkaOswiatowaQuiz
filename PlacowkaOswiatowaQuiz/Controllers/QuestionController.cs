@@ -15,11 +15,14 @@ namespace PlacowkaOswiatowaQuiz.Controllers
 {
     public class QuestionController : Controller
     {
+        #region Pola prywatne
         private readonly QuizApiUrl _apiUrl;
         private readonly QuizApiSettings _apiSettings;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IHttpClientService _httpClient;
+        #endregion
 
+        #region Konstruktor
         public QuestionController(QuizApiSettings apiSettings,
             IHttpClientFactory httpClientFactory,
             QuizApiUrl apiUrl,
@@ -30,14 +33,18 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             _apiUrl = apiUrl;
             _httpClient = httpClient;
         }
+        #endregion
 
+        #region Wszystkie pytania
         [HttpGet]
         public async Task<IActionResult> Index()
         {
             var questions = await _httpClient.GetAllItems<QuestionViewModel>();
             return View(questions);
         }
+        #endregion
 
+        #region Edycja pytania
         [HttpGet]
         public async Task<IActionResult> Edit(int id, int questionsSetId)
         {
@@ -109,15 +116,17 @@ namespace PlacowkaOswiatowaQuiz.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+        #endregion
 
+        #region Usuwania pytania
         [HttpDelete]
-        public async Task<IActionResult> Delete(int questionId)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (questionId == default)
+            if (id == default)
                 return BadRequest("Nie znaleziono rekordu o podanym identyfikatorze");
             try
             {
-                await _httpClient.RemoveItemById<QuestionViewModel>(questionId);
+                await _httpClient.DeleteItemById<QuestionViewModel>(id);
                 return NoContent();
             }
             catch (Exception e)
@@ -125,5 +134,6 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 return BadRequest(e.Message);
             }
         }
+        #endregion
     }
 }

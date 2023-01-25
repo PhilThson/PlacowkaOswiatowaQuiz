@@ -30,7 +30,7 @@ namespace PlacowkaOswiatowaQuiz.Services
         }
         #endregion
 
-        #region Methods
+        #region Metody
 
         #region Pobranie wszystkich rekordów
         public async Task<List<T>> GetAllItems<T>()
@@ -80,7 +80,7 @@ namespace PlacowkaOswiatowaQuiz.Services
         #endregion
 
         #region Usuwanie rekordu po identyfikatorze
-        public async Task RemoveItemById<T>(object id)
+        public async Task DeleteItemById<T>(object id)
         {
             if (!_endpoints.TryGetValue(typeof(T), out string endpoint))
                 throw new DataNotFoundException();

@@ -47,13 +47,15 @@
                                asp-action="Edit" asp-route-id="@question.Id">
                                 Edytuj
                             </a>
-                            <a class="btn btn-sm btn-danger js-delete" data-question-id="@question.Id">
+                            @*<a class="btn btn-sm btn-danger js-delete" data-item-id="@question.Id">
+                                    Usuń
+                                </a>*@
+                            <a class="btn btn-sm btn-danger" onclick="DeleteItem('Question', '@question.Id')">
                                 Usuń
                             </a>
                         </div>
                     </td>
                 </tr>
-
             }
 
         </tbody>
@@ -61,43 +63,5 @@
 </div>
 
 @section Scripts {
-<script>
-
-    $(".js-delete").click(function (e) {
-        var button = $(e.target);
-        var questionId = button.attr("data-question-id");
-        Swal.fire({
-            title: 'Czy na pewno usunąć rekord?',
-            type: 'warning',
-            showCancelButton: true,
-            cancelButtonText: 'Anuluj',
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Usuń'
-        }).then((result) => {
-            if (result.value == true) {
-                $.ajax({
-                    type: "DELETE",
-                    url: "/Question/Delete?questionId=" + questionId,
-                })
-                .done(function (result) {
-                    Swal.fire(
-                        'Usunięto!',
-                        'Usunięto pytanie.',
-                        'success');
-                    $('#tr_' + questionId).remove();
-                })
-                .fail(function (result) {
-                    Swal.fire(
-                        'Błąd!',
-                        'Wystąpił błąd podczas usuwania. Odpowiedź serwera:' +
-                            result.responseText,
-                        'warning');
-                });
-            }
-        });
-    });
-
-</script>
-
+    <script src="~/js/DeleteItem.js"></script>
 }

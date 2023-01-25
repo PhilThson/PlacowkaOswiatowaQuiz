@@ -24,7 +24,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             _apiUrl = apiUrl;
         }
 
-        #region Area
+        #region Obszar zestawu pytań
         public async Task<IActionResult> GetAreas()
         {
             var areas = new List<AreaViewModel>();
@@ -89,7 +89,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         }
         #endregion
 
-        #region Difficulty
+        #region Skala trudności
         public async Task<IActionResult> GetDifficulties()
         {
             var difficulties = new List<DifficultyViewModel>();

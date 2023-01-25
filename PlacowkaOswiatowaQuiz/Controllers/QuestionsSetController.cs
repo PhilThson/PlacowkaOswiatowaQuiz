@@ -18,23 +18,30 @@ namespace PlacowkaOswiatowaQuiz.Controllers
 {
     public class QuestionsSetController : Controller
     {
+        #region Pola prywatne
         private readonly QuizApiUrl _apiUrl;
         private readonly QuizApiSettings _apiSettings;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IQuestionsSetService _service;
+        private readonly IHttpClientService _httpClient;
+        #endregion
 
+        #region Konstruktor
         public QuestionsSetController(QuizApiSettings apiSettings,
             IHttpClientFactory httpClientFactory,
             QuizApiUrl apiUrl,
-            IQuestionsSetService service)
+            IQuestionsSetService service,
+            IHttpClientService httpClient)
         {
             _apiSettings = apiSettings;
             _httpClientFactory = httpClientFactory;
             _apiUrl = apiUrl;
             _service = service;
+            _httpClient = httpClient;
         }
+        #endregion
 
-        #region QuestionsSet
+        #region Pobranie wszystkich zestawów pytań
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -64,7 +71,9 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 return BadRequest(e.Message);
             }
         }
+        #endregion
 
+        #region Szczegóły zestawu pytań
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
@@ -83,7 +92,9 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 return View(questionsSet);
             }
         }
+        #endregion
 
+        #region Tworzenie zestawu pytań
         public IActionResult Create()
         {
             return View();
@@ -152,7 +163,25 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         }
         #endregion
 
-        #region Ratings
+        #region Usuwanie zestawu pytań
+        [HttpDelete]
+        public async Task<IActionResult> Delete(int id)
+        {
+            if (id == default)
+                return BadRequest("Nie znaleziono rekordu o podanym identyfikatorze");
+            try
+            {
+                await _httpClient.DeleteItemById<QuestionsSetViewModel>(id);
+                return NoContent();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        #endregion
+
+        #region Wszystkie oceny zestawu pytań
         public async Task<List<RatingViewModel>> GetQuestionsSetRatings(int questionsSetId)
         {
             try
@@ -166,7 +195,9 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 return new List<RatingViewModel>();
             }
         }
+        #endregion
 
+        #region Edycja oceny zestawu pytań
         [HttpPost]
         public async Task<IActionResult> EditRating(RatingViewModel ratingVM)
         {
@@ -190,7 +221,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         }
         #endregion
 
-        #region Skill
+        #region Edycja umiejętności zestawu pytań
         [HttpPost]
         public async Task<IActionResult> EditSkill(int id, string skill)
         {
@@ -215,7 +246,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         }
         #endregion
 
-        #region QuestionsSet Area
+        #region Edycja obszaru zestawu pytań
         [HttpPost]
         public async Task<IActionResult> EditArea(int id, byte requestedAreaId,
             byte currentAreaId)
@@ -248,7 +279,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         }
         #endregion
 
-        #region QuestionsSet Difficulty
+        #region Edycja skali trudności zestawu pytań
         [HttpPost]
         public async Task<IActionResult> EditDifficulty(int id, byte requestedDifficultyId,
             byte currentDifficultyId)

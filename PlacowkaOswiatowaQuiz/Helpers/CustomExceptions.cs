@@ -14,5 +14,19 @@ namespace PlacowkaOswiatowaQuiz.Helpers
 
         }
     }
+
+    public class DataValidationException : Exception
+    {
+        public DataValidationException()
+            : base("Niepoprawnie wprowadzone dane")
+        {
+
+        }
+
+        public DataValidationException(string message) : base(message)
+        {
+
+        }
+    }
 }
 

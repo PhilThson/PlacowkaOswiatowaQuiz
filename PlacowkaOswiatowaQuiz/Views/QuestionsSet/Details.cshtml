@@ -55,7 +55,10 @@
             <tr>
                 <th>@Html.DisplayNameFor(m => m.Questions)</th>
                 <td>
-                    @await Html.PartialAsync("_Questions", Model.Questions)
+                    @if(Model.Questions?.Count() > 0)
+                    {
+                        @await Html.PartialAsync("_Questions", Model.Questions)
+                    }
                     <div class="d-flex justify-content-md-end">
                         <a asp-controller="Question" asp-action="Edit" class="btn btn-sm btn-info"
                            asp-route-questionsSetId="@Model.Id">Dodaj pytanie</a>
@@ -71,7 +74,10 @@
             <tr>
                 <th>@Html.DisplayNameFor(m => m.Attachments)</th>
                 <td>
-                    @await Html.PartialAsync("_Attachments", Model.Attachments)
+                    @if(Model.Attachments?.Count() > 0)
+                    {
+                        @await Html.PartialAsync("_Attachments", Model.Attachments)
+                    }
                 </td>
             </tr>
         </table>

@@ -127,15 +127,20 @@ fieldset {
         border: 1px solid #5D686F;
         padding-top: 1px;
         padding-bottom: 1px;
-        text-align: left;
+        text-align: center;
         background-color: #496171;
         color: white;
         line-height: 30px;
         padding-left: 5px;
     }
 
-        .CustomColorTable th:nth-last-child(0) {
+/*    .CustomColorTable tr th:nth-child(2) {
+        width: 60%;
+    }*/
+
+        .CustomColorTable tr th:nth-last-child(1) {
             align-content: center;
+            width: 10%;
         }
 
     .CustomColorTable tr:nth-child(even) {
@@ -204,4 +209,17 @@ fieldset {
     top: 50%;
     margin-top: -25px;
     margin-left: -25px;
+}
+
+.panel-heading {
+    padding: 0px 0px 0px 5px;
+}
+
+.panel-body {
+    padding: 5px;
+}
+
+.h4 {
+    margin-top: 1px;
+    margin-bottom: 1px;
 }

@@ -30,21 +30,27 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model)
+                @foreach (var questionsSet in Model)
                 {
                     <tr>
-                        <td>@Html.DisplayFor(modelItem => item.Id)</td>
-                        <td>@Html.DisplayFor(modelItem => item.SkillDescription)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Area.Description)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Difficulty.Description)</td>
+                        <td>@Html.DisplayFor(modelItem => questionsSet.Id)</td>
+                        <td>@Html.DisplayFor(modelItem => questionsSet.SkillDescription)</td>
+                        <td>@Html.DisplayFor(modelItem => questionsSet.Area.Description)</td>
+                        <td>@Html.DisplayFor(modelItem => questionsSet.Difficulty.Description)</td>
                         <td>
                             <a class="btn btn-sm btn-info" asp-controller="QuestionsSet" asp-action="Details"
-                               asp-route-id="@item.Id">
+                               asp-route-id="@questionsSet.Id">
                                 Szczegóły
                             </a>
-                            @*<a href='#' class="btn btn-sm btn-info" onclick="Details(@item.Id)">Szczegóły</a>*@
                         </td>
-                        <td><a class="btn btn-sm btn-danger" onclick="Delete(@item.Id)">Usuń</a></td>
+                        <td>
+                            @*<a class="btn btn-sm btn-danger js-delete" data-questionsSetId="@questionsSet.Id">
+                                Usuń
+                            </a>*@
+                            <a class="btn btn-sm btn-danger" onclick="DeleteItem('QuestionsSet', '@questionsSet.Id')">
+                                Usuń
+                            </a>
+                        </td>
                     </tr>
                 }
             </tbody>
@@ -52,17 +58,6 @@
     </div>
 </div>
 
-<style>
-    .panel-heading {
-        padding: 0px 0px 0px 5px;
-    }
-
-    .panel-body {
-        padding: 5px;
-    }
-
-    .h4 {
-        margin-top: 1px;
-        margin-bottom: 1px;
-    }
-</style>
+@section Scripts {
+    <script src="~/js/DeleteItem.js"></script>
+}

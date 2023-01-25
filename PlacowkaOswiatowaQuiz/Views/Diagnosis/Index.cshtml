@@ -5,7 +5,7 @@
     <div class="panel-heading">
         <div class="row">
             <div class="col-md-7">
-                <h4><b>Lista utworzonych diagnóz</b></h4>
+                <h4><b>Lista utworzonych diagnoz</b></h4>
             </div>
             <div id="divAlertArea">
                 <partial name="~/Views/UIComponents/_bootstrapAlert.cshtml" />
@@ -29,21 +29,27 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model)
+                @foreach (var diagnosis in Model)
                 {
                     <tr>
-                        <td>@Html.DisplayFor(modelItem => item.Id)</td>
-                        <td>@item.Employee.FirstName @item.Employee.LastName</td>
-                        <td>@item.Student.FirstName @item.Student.LastName</td>
-                        <td>@Html.DisplayFor(modelItem => item.SchoolYear)</td>
+                        <td>@Html.DisplayFor(modelItem => diagnosis.Id)</td>
+                        <td>@diagnosis.Employee.FirstName @diagnosis.Employee.LastName</td>
+                        <td>@diagnosis.Student.FirstName @diagnosis.Student.LastName</td>
+                        <td>@Html.DisplayFor(modelItem => diagnosis.SchoolYear)</td>
                         <td>
-                            @*<div class="d-grid gap-2 d-flex justify-content-center">*@
-                                    <a class="btn btn-sm btn-info me-2" asp-controller="Diagnosis" asp-action="Details"
-                                       asp-route-diagnosisId="@item.Id">
-                                        Szczegóły
-                                    </a>
-                                    @*<a class="btn btn-sm btn-danger" onclick="Delete(@item.Id)">Usuń</a>*@
-                            @*</div>*@
+                            <div class="d-flex justify-content-center">
+                                <a class="btn btn-sm btn-info me-2" asp-controller="Diagnosis"
+                                   asp-action="Details" asp-route-diagnosisId="@diagnosis.Id">
+                                    Szczegóły
+                                </a>
+                                @{
+                                    var disabled = diagnosis.ReportId.HasValue ? "disabled" : "";
+                                }
+                                <a class="btn btn-sm btn-secondary @disabled" asp-controller="Diagnosis"
+                                   asp-action="Form" asp-route-diagnosisId="@diagnosis.Id">
+                                    Edytuj
+                                </a>
+                            </div>
                         </td>
                     </tr>
                 }
@@ -51,18 +57,3 @@
         </table>
     </div>
 </div>
-
-<style>
-    .panel-heading {
-        padding: 0px 0px 0px 5px;
-    }
-
-    .panel-body {
-        padding: 5px;
-    }
-
-    .h4 {
-        margin-top: 1px;
-        margin-bottom: 1px;
-    }
-</style>

@@ -6,9 +6,10 @@ namespace PlacowkaOswiatowaQuiz.Shared.Extensions
 {
     public static class PropertyUtil
     {
-        public static void CopyPropertiesExtension<T, T2>(this T targetObject, T2 sourceObject)
+        public static TTarget Map<TTarget, TSource>(this TTarget targetObject, TSource sourceObject)
         {
             CopyProperties(targetObject, sourceObject);
+            return targetObject;
         }
 
         public static void CopyProperties<T, T2>(T targetObject, T2 sourceObject)

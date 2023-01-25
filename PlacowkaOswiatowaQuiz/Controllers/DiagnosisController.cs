@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using PlacowkaOswiatowaQuiz.Helpers;
 using PlacowkaOswiatowaQuiz.Interfaces;
 using PlacowkaOswiatowaQuiz.Shared.ViewModels;
 
@@ -33,7 +34,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             catch (HttpRequestException e)
             {
                 TempData["errorAlert"] = $"Nie udało się pobrać wszystkich" +
-                    $"formularzy diagnóz. \nOdpowiedź serwera: '{e.Message}'";
+                    $"formularzy diagnoz. \nOdpowiedź serwera: '{e.Message}'";
                 return View(diagnosis);
             }
         }
@@ -69,27 +70,49 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         }
         #endregion
 
-        #region Wyświetlanie formularza diagnozy
-        public async Task<IActionResult> DiagnosisForm([FromQuery] int diagnosisId)
+        #region Wyświetlanie formularza diagnozy (tworzenie/edycja)
+        public async Task<IActionResult> Form([FromQuery] int diagnosisId)
         {
             var diagnosis = new DiagnosisViewModel();
             try
             {
                 diagnosis = await _diagnosisService.GetDiagnosisById(diagnosisId);
 
-                var questionsSets =
-                    await _questionsSetService.GetAllQuestionsSets(diagnosis.Difficulty.Id);
+                if (diagnosis.ReportId.HasValue)
+                    throw new DataValidationException(
+                        "Nie można edytować diagnozy, która posiada wygenerowany raport");
 
-                //Lista identyfikatorów zestawów pytań, których modele będą pobrane 
-                //asynchronicznie na etapie przełączania zestawów na formularzu diagnozy
-                diagnosis.QuestionsSetsIds = questionsSets.Select(qs => qs.Id).ToList();
+
+                //jeżeli jest to edycja, to listę identyfikatorów zestawów pytań można
+                //wyciągnąć z wyników diagnozy
+                if (diagnosis.Results?.Count > 0)
+                {
+                    diagnosis.IsForEdit = true;
+                    diagnosis.QuestionsSetsIds = diagnosis.Results
+                        .Select(r => r.QuestionsSetRating.QuestionsSetId).ToList();
+                }
+                else
+                {
+                    var questionsSets =
+                        await _questionsSetService.GetAllQuestionsSets(diagnosis.Difficulty.Id);
+
+                    //Lista identyfikatorów zestawów pytań, których modele będą pobrane 
+                    //asynchronicznie na etapie przełączania zestawów na formularzu diagnozy
+                    diagnosis.QuestionsSetsIds = questionsSets.Select(qs => qs.Id).ToList();
+                }
+
                 return View(diagnosis);
             }
             catch (HttpRequestException e)
             {
                 TempData["errorAlert"] = $"Nie udało się pobrać formularza diagnozy" +
                     $"\nOdpowiedź serwera: '{e.Message}'";
-                return View(diagnosis);
+                return RedirectToAction(nameof(Index));
+            }
+            catch(Exception e)
+            {
+                TempData["errorAlert"] = e.Message;
+                return RedirectToAction(nameof(Index));
             }
         }
 
@@ -133,7 +156,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             {
                 var createdDiagnosis = await _diagnosisService.CreateDiagnosis(diagnosisVM);
                 //Po utworzeniu diagnozy, przekierowanie do formularza (pierwszego zestawu pytań)
-                return RedirectToAction(nameof(DiagnosisForm), new { diagnosisId = createdDiagnosis.Id });
+                return RedirectToAction(nameof(Form), new { diagnosisId = createdDiagnosis.Id });
             }
             catch (Exception e)
             {
@@ -180,20 +203,9 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 await _questionsSetService.GetQuestionsSetsByIds(askedQuestionSetsIds) ??
                 new List<QuestionsSetViewModel>();
 
-            return new DiagnosisSummaryViewModel
-            {
-                Id = diagnosis.Id,
-                Institution = diagnosis.Institution,
-                SchoolYear = diagnosis.SchoolYear,
-                CounselingCenter = diagnosis.CounselingCenter,
-                Student = diagnosis.Student,
-                Employee = diagnosis.Employee,
-                Difficulty = diagnosis.Difficulty,
-                ReportId = diagnosis.ReportId,
-                Results = diagnosis.Results,
-                CreatedDate = diagnosis.CreatedDate,
-                QuestionsSets = questionsSets
-            };
+            var diagnosisSummary = (DiagnosisSummaryViewModel)diagnosis;
+            diagnosisSummary.QuestionsSets = questionsSets;
+            return diagnosisSummary;
         }
         #endregion
     }
