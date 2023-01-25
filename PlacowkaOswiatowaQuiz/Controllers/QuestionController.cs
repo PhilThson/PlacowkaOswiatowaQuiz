@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
+using PlacowkaOswiatowaQuiz.Helpers;
 using PlacowkaOswiatowaQuiz.Helpers.Options;
 using PlacowkaOswiatowaQuiz.Interfaces;
 using PlacowkaOswiatowaQuiz.Shared.ViewModels;
@@ -39,8 +40,18 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var questions = await _httpClient.GetAllItems<QuestionViewModel>();
-            return View(questions);
+            var questions = new List<QuestionViewModel>();
+            try
+            {
+                questions = await _httpClient.GetAllItems<QuestionViewModel>();
+                return View(questions);
+            }
+            catch(Exception e)
+            {
+                TempData["errorAlert"] = $"Nie udało się pobrać wszystkich pytań. " +
+                    $"'{e.Message}'";
+                return View(questions);
+            }
         }
         #endregion
 
@@ -56,19 +67,10 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             try
             {
                 if (id == default(int))
-                    return View(question);
+                    throw new DataNotFoundException(
+                        "Nie znaleziono pytania o podyn identyfikatorze");
 
-                var httpClient = _httpClientFactory.CreateClient(_apiUrl.ClientName);
-
-                var response = await httpClient.GetAsync(
-                    $"{_apiSettings.Questions}/{id}");
-
-                response.EnsureSuccessStatusCode();
-
-                question = await response.Content
-                    .ReadFromJsonAsync<QuestionViewModel>();
-                _ = question ?? throw new InvalidCastException(
-                    "Nie udało się odczytać pytania");
+                question = await _httpClient.GetItemById<QuestionViewModel>(id);
                 question.IsFromQuestionsSet = questionsSetId != 0;
 
                 return View(question);
@@ -89,36 +91,32 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             
             if (!ModelState.IsValid)
                 return View(questionVM);
-
-            var httpClient = _httpClientFactory.CreateClient(_apiUrl.ClientName);
-            var response = new HttpResponseMessage();
-
-            if (questionVM.Id == default(int))
-                response = await httpClient.PostAsJsonAsync(_apiSettings.Questions,
-                    questionVM);
-            else
-                response = await httpClient.PutAsJsonAsync(_apiSettings.Questions,
-                    questionVM);
-
-            if (!response.IsSuccessStatusCode)
+            try
             {
-                var responseMessage = await response.Content.ReadAsStringAsync();
-                TempData["errorAlert"] = "Nieudana próba edycji/utworzenia pytania." +
-                    $"Odpowiedź serwera: '{responseMessage}'";
+                if (questionVM.Id == default(int))
+                    await _httpClient.AddItem(questionVM);
+                else
+                    await _httpClient.UpdateItem(questionVM);
+
+                TempData["successAlert"] = "Poprawnie zaktualizowano/dodano pytanie";
+
+                if (questionVM.IsFromQuestionsSet)
+                    return RedirectToAction("Details", "QuestionsSet",
+                        new { id = questionVM.QuestionsSetId });
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch(Exception e)
+            {
+                TempData["errorAlert"] = "Nieudana próba edycji/utworzenia pytania. " +
+                    $"'{e.Message}'";
                 return View(questionVM);
             }
-
-            TempData["successAlert"] = "Poprawnie zaktualizowano/dodano pytanie";
-
-            if (questionVM.IsFromQuestionsSet)
-                return RedirectToAction("Details", "QuestionsSet",
-                    new { id = questionVM.QuestionsSetId });
-
-            return RedirectToAction(nameof(Index));
         }
         #endregion
 
         #region Usuwania pytania
+        //Do zapytań asynchronicznych
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {

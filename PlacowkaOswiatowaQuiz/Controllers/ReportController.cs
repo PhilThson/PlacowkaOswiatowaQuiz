@@ -81,10 +81,6 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 pdfStream.Write(reportDto.Content, 0, reportDto.Content.Length);
                 pdfStream.Position = 0;
 
-                //var pdfArray = pdfStream.ToArray();
-                //var base64stream = Convert.ToBase64String(pdfArray);
-                //return new FileStreamResult(pdfStream, "application/pdf");
-                //return File(Convert.ToBase64String(pdfArray), "application/pdf;base64");
                 return File(
                     reportDto.Content,
                     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",

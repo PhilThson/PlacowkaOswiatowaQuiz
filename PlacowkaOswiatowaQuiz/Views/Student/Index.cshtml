@@ -1,6 +1,9 @@
 ﻿@model IEnumerable<StudentViewModel>
 @{ViewData["Title"] = "Uczniowie";}
 
+<div id="divAlertArea">
+    <partial name="~/Views/UIComponents/_bootstrapAlert.cshtml" />
+</div>
 <div class="row pb-3">
     @foreach (var student in Model)
     {

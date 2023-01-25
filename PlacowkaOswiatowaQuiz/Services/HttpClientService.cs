@@ -118,6 +118,27 @@ namespace PlacowkaOswiatowaQuiz.Services
         }
         #endregion
 
+        #region Aktualizacja rekordu
+        public async Task UpdateItem<T>(T item, string dict = null)
+        {
+            if (!_endpoints.TryGetValue(typeof(T), out string endpoint))
+            {
+                if (!string.IsNullOrEmpty(dict))
+                    endpoint = dict;
+                else
+                    throw new DataNotFoundException();
+            }
+
+            var dataToSend = new StringContent(JsonConvert.SerializeObject(item),
+                Encoding.UTF8, "application/json");
+            var response = await _client.PutAsync(endpoint, dataToSend);
+            var content = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+                throw new HttpRequestException(content);
+        }
+        #endregion
+
         #endregion
 
         #region Private methods

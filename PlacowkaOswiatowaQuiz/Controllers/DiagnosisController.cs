@@ -47,6 +47,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             if (ModelState.ContainsKey("QuestionsSetRating.RatingDescription"))
             {
                 //Manualne usunięcie walidacji niewykorzystywanej właściwości ViewModel'u
+                //tzn. jest ComboBox z ocenami zestawu pytań do wyboru (a nie tworzenia)
                 ModelState["QuestionsSetRating.RatingDescription"].Errors.Clear();
                 ModelState["QuestionsSetRating.RatingDescription"].ValidationState =
                     ModelValidationState.Valid;
@@ -82,7 +83,6 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                     throw new DataValidationException(
                         "Nie można edytować diagnozy, która posiada wygenerowany raport");
 
-
                 //jeżeli jest to edycja, to listę identyfikatorów zestawów pytań można
                 //wyciągnąć z wyników diagnozy
                 if (diagnosis.Results?.Count > 0)
@@ -98,9 +98,12 @@ namespace PlacowkaOswiatowaQuiz.Controllers
 
                     //Lista identyfikatorów zestawów pytań, których modele będą pobrane 
                     //asynchronicznie na etapie przełączania zestawów na formularzu diagnozy
-                    diagnosis.QuestionsSetsIds = questionsSets.Select(qs => qs.Id).ToList() ??
-                        new List<int>();
+                    diagnosis.QuestionsSetsIds = questionsSets.Select(qs => qs.Id).ToList();
                 }
+
+                //if(ids?.Count < 1) - nie zwaliduje dla listy = null
+                if (!(diagnosis.QuestionsSetsIds?.Count > 0))
+                    throw new ArgumentNullException(nameof(diagnosis.QuestionsSetsIds));
 
                 return View(diagnosis);
             }

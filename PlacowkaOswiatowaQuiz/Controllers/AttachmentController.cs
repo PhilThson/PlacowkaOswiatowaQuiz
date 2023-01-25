@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PlacowkaOswiatowaQuiz.Helpers.Options;
+using PlacowkaOswiatowaQuiz.Interfaces;
 using PlacowkaOswiatowaQuiz.Shared.DTOs;
 using PlacowkaOswiatowaQuiz.Shared.ViewModels;
 
@@ -7,35 +8,34 @@ namespace PlacowkaOswiatowaQuiz.Controllers
 {
     public class AttachmentController : Controller
     {
-        private readonly QuizApiUrl _apiUrl;
-        private readonly QuizApiSettings _apiSettings;
-        private readonly IHttpClientFactory _httpClientFactory;
+        #region Pola prywatne
+        private readonly IHttpClientService _httpClient;
+        #endregion
 
-        public AttachmentController(QuizApiSettings apiSettings,
-            IHttpClientFactory httpClientFactory,
-            QuizApiUrl apiUrl)
+        #region Konstruktor
+        public AttachmentController(IHttpClientService httpClient)
         {
-            _apiSettings = apiSettings;
-            _httpClientFactory = httpClientFactory;
-            _apiUrl = apiUrl;
+            _httpClient = httpClient;
         }
+        #endregion
 
-        #region Pobranie załadowanego załącznika
+        #region Pobranie załadowanego załącznika (ze szczegółów zestawu pytań)
         public async Task<IActionResult> Download([FromQuery] int attachmentId)
         {
             var attachment = new AttachmentFileViewModel();
             if (attachmentId == default(int))
-                return NotFound();
+                return NotFound("Nie znaleziono karty pracy o podanym identyfikatorze");
+            try
+            {
+                attachment =
+                    await _httpClient.GetItemById<AttachmentFileViewModel>(attachmentId);
 
-            var httpClient = _httpClientFactory.CreateClient(_apiUrl.ClientName);
-            var response = await httpClient.GetAsync(
-                $"{_apiSettings.Attachments}/{attachmentId}");
-
-            response.EnsureSuccessStatusCode();
-            attachment = await response.Content
-                .ReadFromJsonAsync<AttachmentFileViewModel>();
-
-            return File(attachment.Content, "application/octet-stream", attachment.Name);
+                return File(attachment.Content, "application/octet-stream", attachment.Name);
+            }
+            catch(Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
         #endregion
 
@@ -45,15 +45,10 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             var attachment = new AttachmentFileViewModel();
             try
             {
-                var httpClient = _httpClientFactory.CreateClient(_apiUrl.ClientName);
-                var response = await httpClient.GetAsync(
-                    $"{_apiSettings.Attachments}/{attachmentId}");
+                attachment =
+                    await _httpClient.GetItemById<AttachmentFileViewModel>(attachmentId);
 
-                response.EnsureSuccessStatusCode();
-                attachment = await response.Content
-                    .ReadFromJsonAsync<AttachmentFileViewModel>();
-
-                if(string.IsNullOrEmpty(attachment.ContentType) ||
+                if (string.IsNullOrEmpty(attachment.ContentType) ||
                     !attachment.ContentType.Contains("image"))
                 {
                     TempData["errorAlert"] = $"Nie można wyświetlić pliku o " +
@@ -65,6 +60,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             }
             catch(HttpRequestException e)
             {
+                //Komunikat z TempData zostanie wyświetlony po odświeżeniu strony
                 TempData["errorAlert"] = $"Nie udało się pobrać pliku o " +
                     $"identyfikatorze {attachmentId}. Odpowiedź serwera: " +
                     $"'{e.Message}'";

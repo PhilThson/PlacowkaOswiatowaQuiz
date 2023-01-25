@@ -2,47 +2,55 @@
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
 using PlacowkaOswiatowaQuiz.Helpers.Options;
+using PlacowkaOswiatowaQuiz.Interfaces;
 using PlacowkaOswiatowaQuiz.Shared.ViewModels;
 
 namespace PlacowkaOswiatowaQuiz.Models.Controllers
 {
     public class EmployeeController : Controller
     {
-        private readonly QuizApiUrl _apiUrl;
-        private readonly QuizApiSettings _apiSettings;
-        private readonly IHttpClientFactory _httpClientFactory;
+        #region Pola prywatne
+        private readonly IHttpClientService _httpClient;
+        #endregion
 
-        public EmployeeController(QuizApiSettings apiSettings,
-            IHttpClientFactory httpClientFactory,
-            QuizApiUrl apiUrl)
+        #region Konstruktor
+        public EmployeeController(IHttpClientService httpClient)
         {
-            _apiSettings = apiSettings;
-            _httpClientFactory = httpClientFactory;
-            _apiUrl = apiUrl;
+            _httpClient = httpClient;
         }
+        #endregion
 
+        #region Pobieranie wszystkich pracowników
         public async Task<IActionResult> Index()
         {
             var employees = new List<EmployeeViewModel>();
-            var httpClient = _httpClientFactory.CreateClient(_apiUrl.ClientName);
-            var response = await httpClient.GetAsync(_apiSettings.Employees);
-            response.EnsureSuccessStatusCode();
-            employees = await response.Content
-                .ReadFromJsonAsync<List<EmployeeViewModel>>();
-
-            return View(employees);
+            try
+            {
+                employees = await _httpClient.GetAllItems<EmployeeViewModel>();
+                return View(employees);
+            }
+            catch(Exception e)
+            {
+                TempData["errorAlert"] =
+                    $"Nie udało się pobrać wszystkich pracowników. '{e.Message}'";
+                return View(employees);
+            }
         }
 
+        //Do pobierania asynchronicznego
         public async Task<IActionResult> GetAllEmployees()
         {
-            var employees = new List<EmployeeViewModel>();
-            var httpClient = _httpClientFactory.CreateClient(_apiUrl.ClientName);
-            var response = await httpClient.GetAsync(_apiSettings.Employees);
-            response.EnsureSuccessStatusCode();
-            employees = await response.Content
-                .ReadFromJsonAsync<List<EmployeeViewModel>>();
+            try
+            {
+                var employees = await _httpClient.GetAllItems<EmployeeViewModel>();
+                return Ok(employees);
+            }
+            catch(Exception e)
+            {
+                return BadRequest(e.Message);
+            }
 
-            return Ok(employees);
         }
+        #endregion
     }
 }

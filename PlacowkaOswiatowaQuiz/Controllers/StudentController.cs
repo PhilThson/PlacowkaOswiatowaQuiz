@@ -5,48 +5,55 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using PlacowkaOswiatowaQuiz.Helpers.Options;
+using PlacowkaOswiatowaQuiz.Interfaces;
 using PlacowkaOswiatowaQuiz.Shared.ViewModels;
 
 namespace PlacowkaOswiatowaQuiz.Controllers
 {
     public class StudentController : Controller
     {
-        private readonly QuizApiUrl _apiUrl;
-        private readonly QuizApiSettings _apiSettings;
-        private readonly IHttpClientFactory _httpClientFactory;
+        #region Pola prywatne
+        private readonly IHttpClientService _httpClient;
+        #endregion
 
-        public StudentController(QuizApiSettings apiSettings,
-            IHttpClientFactory httpClientFactory,
-            QuizApiUrl apiUrl)
+        #region Konstruktor
+        public StudentController(IHttpClientService httpClient)
         {
-            _apiSettings = apiSettings;
-            _httpClientFactory = httpClientFactory;
-            _apiUrl = apiUrl;
+            _httpClient = httpClient;
         }
+        #endregion
 
+        #region Pobranie wszystkich uczniów
         public async Task<IActionResult> Index()
         {
             var students = new List<StudentViewModel>();
-            var httpClient = _httpClientFactory.CreateClient(_apiUrl.ClientName);
-            var response = await httpClient.GetAsync(_apiSettings.Students);
-            response.EnsureSuccessStatusCode();
-            students = await response.Content
-                .ReadFromJsonAsync<List<StudentViewModel>>();
-
-            return View(students);
+            try
+            {
+                students = await _httpClient.GetAllItems<StudentViewModel>();
+                return View(students);
+            }
+            catch(Exception e)
+            {
+                TempData["errorAlert"] =
+                    $"'Nie udało się pobrać wszystkich uczniów. {e.Message}'";
+                return View(students);
+            }
         }
 
+        //Do pobieranie asynchronicznego
         public async Task<IActionResult> GetAllStudents()
         {
-            var students = new List<StudentViewModel>();
-            var httpClient = _httpClientFactory.CreateClient(_apiUrl.ClientName);
-            var response = await httpClient.GetAsync(_apiSettings.Students);
-            response.EnsureSuccessStatusCode();
-            students = await response.Content
-                .ReadFromJsonAsync<List<StudentViewModel>>();
-
-            return Ok(students);
+            try
+            {
+                var students = await _httpClient.GetAllItems<StudentViewModel>();
+                return Ok(students);
+            }
+            catch(Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
+        #endregion
     }
 }
 
