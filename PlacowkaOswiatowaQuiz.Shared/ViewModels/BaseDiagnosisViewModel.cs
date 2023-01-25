@@ -6,10 +6,12 @@ namespace PlacowkaOswiatowaQuiz.Shared.ViewModels
     public class BaseDiagnosisViewModel
 	{
         public int Id { get; set; }
-        [Required(ErrorMessage = "Należy podać rok szkolny np.: 2022/2023")]
-        [MaxLength(9)]
+        [DisplayName("Nazwa placówki oświatowej:")]
+        public string Institution { get; set; }
         [DisplayName("Rok szkolny:")]
         public string SchoolYear { get; set; }
+        [DisplayName("PPP:")]
+        public string CounselingCenter { get; set; }
         [DisplayName("Uczeń:")]
         public StudentViewModel Student { get; set; }
         [DisplayName("Prowadzący:")]

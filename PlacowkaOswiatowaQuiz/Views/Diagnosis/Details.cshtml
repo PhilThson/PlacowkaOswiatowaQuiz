@@ -13,15 +13,33 @@
     <div class="container-fluid">
         <div class="row mb-3 mt-3">
             <p class="fs-5 fw-bold">
+                @Html.DisplayNameFor(m => m.Institution)
+            </p>
+            <label class="col-sm-6 control-label fst-italic">
+                @Model.Institution
+            </label>
+        </div>
+        <div class="row mb-3 mt-3">
+            <p class="fs-5 fw-bold">
+                @Html.DisplayNameFor(m => m.CounselingCenter)
+            </p>
+            <label class="col-sm-6 control-label fst-italic">
+                @Model.CounselingCenter
+            </label>
+        </div>
+        <div class="row mb-3 mt-3">
+            <p class="fs-5 fw-bold">
                 @Html.DisplayNameFor(m => m.SchoolYear)
             </p>
-            <label class="col-sm-6 control-label">@Model.SchoolYear</label>
+            <label class="col-sm-6 control-label fst-italic">
+                @Model.SchoolYear
+            </label>
         </div>
         <div class="row mb-3">
             <p class="fs-5 fw-bold">
                 @Html.DisplayNameFor(m => m.Employee)
             </p>
-            <label class="col-sm-6 control-label">
+            <label class="col-sm-6 control-label fst-italic">
                 @Model.Employee?.FirstName @Model.Employee?.LastName
             </label>
         </div>
@@ -29,7 +47,7 @@
             <p class="fs-5 fw-bold">
                 @Html.DisplayNameFor(m => m.Student)
             </p>
-            <label class="col-sm-6 control-label">
+            <label class="col-sm-6 control-label fst-italic">
                 @Model.Student?.FirstName @Model.Student?.LastName
             </label>
         </div>
@@ -37,7 +55,7 @@
             <p class="fs-5 fw-bold">
                 @Html.DisplayNameFor(m => m.Difficulty)
             </p>
-            <label class="col-sm-6 control-label">
+            <label class="col-sm-6 control-label fst-italic">
                 @Model.Difficulty.Description
             </label>
         </div>
@@ -45,7 +63,7 @@
             <p class="fs-5 fw-bold">
                 @Html.DisplayNameFor(m => m.CreatedDate)
             </p>
-            <label class="col-sm-6 control-label">
+            <label class="col-sm-6 control-label fst-italic">
                 @Model.CreatedDate.ToString("dd.MM.yyyy") r.
             </label>
         </div>

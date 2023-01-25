@@ -13,7 +13,7 @@ namespace PlacowkaOswiatowaQuiz.Shared.ViewModels
         public string Content { get; set; }
         [Required(ErrorMessage = "Opis pytania jest wymagany")]
         [MaxLength(2048)]
-        [DisplayName("Opis pytania")]
+        [DisplayName("Opis pytania (co robi nauczyciel)")]
         public string Description { get; set; }
         [DisplayName("Zestaw pytań")]
         public int QuestionsSetId { get; set; }

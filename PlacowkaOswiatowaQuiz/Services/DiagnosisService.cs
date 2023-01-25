@@ -39,13 +39,7 @@ namespace PlacowkaOswiatowaQuiz.Services
         public async Task<DiagnosisViewModel> CreateDiagnosis(
             CreateDiagnosisViewModel diagnosisVM)
         {
-            var createDiagnosis = new CreateDiagnosisDto
-            {
-                EmployeeId = diagnosisVM.EmployeeId.Value,
-                StudentId = diagnosisVM.StudentId.Value,
-                DifficultyId = diagnosisVM.DifficultyId.Value,
-                SchoolYear = diagnosisVM.SchoolYear
-            };
+            var createDiagnosis = (CreateDiagnosisDto)diagnosisVM;
 
             var httpClient = _httpClientFactory.CreateClient(_apiUrl.ClientName);
             var response = await httpClient.PostAsJsonAsync(_apiSettings.Diagnosis,

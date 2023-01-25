@@ -4,15 +4,8 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>
-                    @Html.DisplayNameFor(m => m.Id)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(m => m.Content)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(m => m.Description)
-                </th>
+                <th>@Html.DisplayNameFor(m => m.Content)</th>
+                <th>@Html.DisplayNameFor(m => m.Description)</th>
                 <th></th>
             </tr>
         </thead>
@@ -21,15 +14,8 @@
             @foreach (var question in Model)
             {
                 <tr>
-                    <td>
-                        @Html.DisplayFor(item => question.Id)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(item => question.Content)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(item => question.Description)
-                    </td>
+                    <td>@Html.DisplayFor(item => question.Content)</td>
+                    <td>@Html.DisplayFor(item => question.Description)</td>
                     <td>
                         <a href="#" class="btn btn-sm btn-info"
                            onclick="editQuestion('@question.Id', '@question.QuestionsSetId')">

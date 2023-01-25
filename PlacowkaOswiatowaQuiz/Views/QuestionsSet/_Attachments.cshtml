@@ -4,7 +4,6 @@
     <table class="CustomColorTable" border="0">
         <thead>
             <tr>
-                <th>@Html.DisplayNameFor(m => m.Id)</th>
                 <th>@Html.DisplayNameFor(m => m.Name)</th>
                 <th>@Html.DisplayNameFor(m => m.ContentType)</th>
                 <th>@Html.DisplayNameFor(m => m.Size)</th>
@@ -15,7 +14,6 @@
             @foreach (var attachment in Model)
             {
             <tr>
-                <td>@Html.DisplayFor(m => attachment.Id)</td>
                 <td id="FileName">@Html.DisplayFor(m => attachment.Name)</td>
                 <td>@Html.DisplayFor(m => attachment.ContentType)</td>
                 <td>@Html.DisplayFor(m => attachment.Size)</td>

@@ -132,7 +132,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             try
             {
                 var createdDiagnosis = await _diagnosisService.CreateDiagnosis(diagnosisVM);
-                //Po utworzeniu diagnozy, przekierowanie do formularza (1 zestaw pytań)
+                //Po utworzeniu diagnozy, przekierowanie do formularza (pierwszego zestawu pytań)
                 return RedirectToAction(nameof(DiagnosisForm), new { diagnosisId = createdDiagnosis.Id });
             }
             catch (Exception e)
@@ -183,7 +183,9 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             return new DiagnosisSummaryViewModel
             {
                 Id = diagnosis.Id,
+                Institution = diagnosis.Institution,
                 SchoolYear = diagnosis.SchoolYear,
+                CounselingCenter = diagnosis.CounselingCenter,
                 Student = diagnosis.Student,
                 Employee = diagnosis.Employee,
                 Difficulty = diagnosis.Difficulty,
