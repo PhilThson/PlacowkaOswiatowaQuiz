@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using PlacowkaOswiatowaQuiz.Helpers;
 using PlacowkaOswiatowaQuiz.Interfaces;
+using PlacowkaOswiatowaQuiz.Shared.DTOs;
 using PlacowkaOswiatowaQuiz.Shared.ViewModels;
 
 namespace PlacowkaOswiatowaQuiz.Controllers
@@ -9,16 +10,14 @@ namespace PlacowkaOswiatowaQuiz.Controllers
     public class DiagnosisController : Controller
     {
         #region Prywatne pola
-        private readonly IQuestionsSetService _questionsSetService;
-        private readonly IDiagnosisService _diagnosisService;
+        private readonly IHttpClientService _httpClient;
         #endregion
 
         #region Konstruktor
-        public DiagnosisController(IQuestionsSetService questionsSetService,
-            IDiagnosisService diagnosisService)
+        public DiagnosisController(
+            IHttpClientService httpClient)
         {
-            _questionsSetService = questionsSetService;
-            _diagnosisService = diagnosisService;
+            _httpClient = httpClient;
         }
         #endregion
 
@@ -28,7 +27,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             var diagnosis = new List<DiagnosisViewModel>();
             try
             {
-                diagnosis = await _diagnosisService.GetAllDiagnosis();
+                diagnosis = await _httpClient.GetAllItems<DiagnosisViewModel>();
                 return View(diagnosis);
             }
             catch (HttpRequestException e)
@@ -58,7 +57,15 @@ namespace PlacowkaOswiatowaQuiz.Controllers
 
             try
             {
-                await _diagnosisService.CreateResult(resultVM);
+                var createResultDto = new CreateResultDto
+                {
+                    DiagnosisId = resultVM.DiagnosisId,
+                    RatingId = resultVM.QuestionsSetRating.Id,
+                    RatingLevel = resultVM.RatingLevel.Value,
+                    Notes = resultVM.Notes
+                };
+
+                await _httpClient.AddItem(createResultDto);
                 ViewBag.SaveSuccess = "Poprawnie zapisno ocenę.";
                 return PartialView("_Result", resultVM);
             }
@@ -77,7 +84,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             var diagnosis = new DiagnosisViewModel();
             try
             {
-                diagnosis = await _diagnosisService.GetDiagnosisById(diagnosisId);
+                diagnosis = await _httpClient.GetItemById<DiagnosisViewModel>(diagnosisId);
 
                 if (diagnosis.ReportId.HasValue)
                     throw new DataValidationException(
@@ -93,8 +100,8 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 }
                 else
                 {
-                    var questionsSets =
-                        await _questionsSetService.GetAllQuestionsSets(diagnosis.Difficulty.Id);
+                    var questionsSets = await _httpClient.GetAllItems<QuestionsSetViewModel>(
+                        ("difficultyId", diagnosis.Difficulty.Id.ToString()));
 
                     //Lista identyfikatorów zestawów pytań, których modele będą pobrane 
                     //asynchronicznie na etapie przełączania zestawów na formularzu diagnozy
@@ -124,24 +131,36 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         {
             try
             {
-                var questionsSet = await _questionsSetService.GetQuestionsSetById(questionsSetId);
+                var questionsSet =
+                    await _httpClient.GetItemById<QuestionsSetViewModel>(questionsSetId);
                 return PartialView("_QuestionsSet", questionsSet);
             }
-            catch (HttpRequestException e)
+            catch (Exception e)
             {
                 TempData["errorAlert"] = $"Nie udało się pobrać zestawu pytań." +
                     $"\nOdpowiedź serwera: '{e.Message}'";
-                return PartialView(null);
+                return PartialView("_QuestionsSet", new QuestionsSetViewModel());
             }
         }
 
         public async Task<IActionResult> ResultPartial([FromQuery] int diagnosisId,
             [FromQuery] int questionsSetId)
         {
-            var result = await _diagnosisService.GetResultByDiagnosisQuestionsSetIds(
-                    diagnosisId, questionsSetId);
-
-            return PartialView("_Result", result);
+            var result = new ResultViewModel() { DiagnosisId = diagnosisId };
+            try
+            {
+                result = await _httpClient.GetItemById<ResultViewModel>(null,
+                    (nameof(diagnosisId), diagnosisId.ToString()),
+                    (nameof(questionsSetId), questionsSetId.ToString()));
+                    
+                return PartialView("_Result", result);
+            }
+            catch(Exception e)
+            {
+                //Tutaj jeżeli nie znaleziono, (api zwraca NotFound),
+                //to poprostu wynik nie jest uzupełniany
+                return PartialView("_Result", result);
+            }
         }
         #endregion
 
@@ -158,8 +177,10 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 return View(diagnosisVM);
             try
             {
-                var availableQuestionsSets =
-                    await _questionsSetService.GetAllQuestionsSets(diagnosisVM.DifficultyId) ??
+                //DifficultyId jest wymagane na formularzu
+                var availableQuestionsSets = await _httpClient.GetAllItems<QuestionsSetViewModel>(
+                    ("difficultyId", diagnosisVM.DifficultyId.Value.ToString())) ??
+                //await _questionsSetService.GetAllQuestionsSets(diagnosisVM.DifficultyId) ??
                     new List<QuestionsSetViewModel>();
 
                 if (!availableQuestionsSets.Any())
@@ -167,9 +188,23 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                         "Brak dostępnych zestawów pytań dla wybranej skali trudności. " +
                         "Proszę dodać zestawy pytań i ponownie utworzyć formularz diagnozy.");
 
-                var createdDiagnosis = await _diagnosisService.CreateDiagnosis(diagnosisVM);
+                var emptyQuestionsSetsIds = availableQuestionsSets
+                    .Where(qs => qs.Questions.Count() < 1)
+                    .Select(qs => qs.Id)
+                    .ToList();
+
+                if (emptyQuestionsSetsIds.Count > 0)
+                    throw new DataValidationException(
+                        "Jeden z zestawów pytań dostępnych dla diagnozy, " +
+                        "nie posiada pytań składowych. Proszę uzupełnić pytania " +
+                        "i ponownie utworzyć formularz diagnozy. " +
+                        "Lista identyfikatorów pustych zestawów pytań: " +
+                        $"{string.Join(", ", emptyQuestionsSetsIds)}");
+
+                var createDiagnosisDto = (CreateDiagnosisDto)diagnosisVM;
+                var createdDiagnosisId = await _httpClient.AddItem(createDiagnosisDto);
                 //Po utworzeniu diagnozy, przekierowanie do formularza (pierwszego zestawu pytań)
-                return RedirectToAction(nameof(Form), new { diagnosisId = createdDiagnosis.Id });
+                return RedirectToAction(nameof(Form), new { diagnosisId = createdDiagnosisId });
             }
             catch(DataValidationException e)
             {
@@ -208,7 +243,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         #region Metody prywatne
         private async Task<DiagnosisSummaryViewModel> GetDiagnosisSummary(int diagnosisId)
         {
-            var diagnosis = await _diagnosisService.GetDiagnosisById(diagnosisId);
+            var diagnosis = await _httpClient.GetItemById<DiagnosisViewModel>(diagnosisId);
 
             var askedQuestionSetsIds = new List<int>();
             //QuestionsSetRating (ocena zestawu pytań) jest wymagana do podania,
@@ -218,7 +253,9 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                     .Select(r => r.QuestionsSetRating.QuestionsSetId).ToList();
 
             var questionsSets =
-                await _questionsSetService.GetQuestionsSetsByIds(askedQuestionSetsIds) ??
+                await _httpClient.GetAllItems<QuestionsSetViewModel>(
+                    ("askedQuestionSetsIds", string.Join(',', askedQuestionSetsIds))) ??
+                //await _questionsSetService.GetQuestionsSetsByIds(askedQuestionSetsIds) ??
                 new List<QuestionsSetViewModel>();
 
             var diagnosisSummary = (DiagnosisSummaryViewModel)diagnosis;

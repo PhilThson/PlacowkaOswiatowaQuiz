@@ -64,12 +64,12 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 QuestionsSetId = questionsSetId,
                 IsFromQuestionsSet = questionsSetId != 0
             };
+
+            if (id == default(int))
+                return View(question);
+
             try
             {
-                if (id == default(int))
-                    throw new DataNotFoundException(
-                        "Nie znaleziono pytania o podyn identyfikatorze");
-
                 question = await _httpClient.GetItemById<QuestionViewModel>(id);
                 question.IsFromQuestionsSet = questionsSetId != 0;
 

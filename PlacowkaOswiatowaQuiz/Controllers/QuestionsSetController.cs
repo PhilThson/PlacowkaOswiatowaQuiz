@@ -19,24 +19,12 @@ namespace PlacowkaOswiatowaQuiz.Controllers
     public class QuestionsSetController : Controller
     {
         #region Pola prywatne
-        private readonly QuizApiUrl _apiUrl;
-        private readonly QuizApiSettings _apiSettings;
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IQuestionsSetService _service;
         private readonly IHttpClientService _httpClient;
         #endregion
 
         #region Konstruktor
-        public QuestionsSetController(QuizApiSettings apiSettings,
-            IHttpClientFactory httpClientFactory,
-            QuizApiUrl apiUrl,
-            IQuestionsSetService service,
-            IHttpClientService httpClient)
+        public QuestionsSetController(IHttpClientService httpClient)
         {
-            _apiSettings = apiSettings;
-            _httpClientFactory = httpClientFactory;
-            _apiUrl = apiUrl;
-            _service = service;
             _httpClient = httpClient;
         }
         #endregion
@@ -48,7 +36,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             var questionsSets = new List<QuestionsSetViewModel>();
             try
             {
-                questionsSets = await _service.GetAllQuestionsSets();
+                questionsSets = await _httpClient.GetAllItems<QuestionsSetViewModel>();
                 return View(questionsSets);
             }
             catch(HttpRequestException e)
@@ -63,7 +51,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         {
             try
             {
-                var questionsSets = await _service.GetAllQuestionsSets();
+                var questionsSets = await _httpClient.GetAllItems<QuestionsSetViewModel>();
                 return Ok(questionsSets);
             }
             catch(HttpRequestException e)
@@ -82,7 +70,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 return View(questionsSet);
             try
             {
-                questionsSet = await _service.GetQuestionsSetById(id);
+                questionsSet = await _httpClient.GetItemById<QuestionsSetViewModel>(id);
                 return View(questionsSet);
             }
             catch(HttpRequestException e)
@@ -112,47 +100,47 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             if (!ModelState.IsValid)
                 return View(questionsSetVM);
 
-            var ratings = questionsSetVM.QuestionsSetRatings
-                .Where(r => r != null).ToList();
-
-            var createQuestionSetDto = new CreateQuestionsSetDto
+            try
             {
-                SkillDescription = questionsSetVM.SkillDescription,
-                AreaId = questionsSetVM.AreaId.GetValueOrDefault(),
-                DifficultyId = questionsSetVM.DifficultyId.GetValueOrDefault(),
-                Questions = questionsSetVM.Questions ?? new List<QuestionViewModel>(),
-                QuestionsSetRatings = ratings
-            };
+                var ratings = questionsSetVM.QuestionsSetRatings
+                    .Where(r => r != null).ToList();
 
-            if (questionsSetVM.AttachmentFiles?.Count() > 0)
-            {
-                var files = new List<AttachmentFileViewModel>();
-                foreach(var file in questionsSetVM.AttachmentFiles)
+                var createQuestionSetDto = new CreateQuestionsSetDto
                 {
-                    files.Add(new AttachmentFileViewModel
+                    SkillDescription = questionsSetVM.SkillDescription,
+                    AreaId = questionsSetVM.AreaId.Value, //właściwość wymagana
+                    DifficultyId = questionsSetVM.DifficultyId.Value, //właściwość wymagana
+                    Questions = questionsSetVM.Questions ?? new List<QuestionViewModel>(),
+                    QuestionsSetRatings = ratings
+                };
+
+                if (questionsSetVM.AttachmentFiles?.Count() > 0)
+                {
+                    var files = new List<AttachmentFileViewModel>();
+                    foreach (var file in questionsSetVM.AttachmentFiles)
                     {
-                        Name = file.FileName,
-                        Content = await GetBytes(file),
-                        Size = file.Length,
-                        ContentType = file.ContentType
-                    });
+                        files.Add(new AttachmentFileViewModel
+                        {
+                            Name = file.FileName,
+                            Content = await GetBytes(file),
+                            Size = file.Length,
+                            ContentType = file.ContentType
+                        });
+                    }
+                    createQuestionSetDto.AttachmentFiles = files;
                 }
-                createQuestionSetDto.AttachmentFiles = files;
+
+                await _httpClient.AddItem(createQuestionSetDto);
+
+                TempData["successAlert"] = "Poprawnie utworzono zestaw pytań";
+                return RedirectToAction(nameof(Index));
             }
-
-            var httpClient = _httpClientFactory.CreateClient(_apiUrl.ClientName);
-            var response = await httpClient.PostAsJsonAsync(_apiSettings.QuestionsSets,
-                createQuestionSetDto);
-
-            if (!response.IsSuccessStatusCode)
+            catch (Exception e)
             {
-                var responseMessage = await response.Content.ReadAsStringAsync();
                 TempData["errorAlert"] = $"Nie udało się utworzyć zestawu pytań." +
-                    $"\nOdpowiedź serwera: '{responseMessage}'";
+                    $"'{e.Message}'";
                 return View(questionsSetVM);
             }
-            TempData["successAlert"] = "Poprawnie utworzono zestaw pytań";
-            return RedirectToAction(nameof(Index));
         }
 
         private async Task<byte[]> GetBytes(IFormFile formFile)
@@ -182,17 +170,21 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         #endregion
 
         #region Wszystkie oceny zestawu pytań
-        public async Task<List<RatingViewModel>> GetQuestionsSetRatings(int questionsSetId)
+        public async Task<IActionResult> GetQuestionsSetRatings(int questionsSetId)
         {
             try
             {
-                return await _service.GetRatingsByQuestionsSetId(questionsSetId);
+                var ratings = new List<RatingViewModel>();
+                ratings = await _httpClient.GetAllItems<RatingViewModel>(
+                    (nameof(questionsSetId), questionsSetId.ToString()));
+
+                return Ok(ratings);
             }
             catch(HttpRequestException e)
             {
                 TempData["errorAlert"] = "Błąd podczas pobierania ocen zestawu pytań." +
                     $"Odpowiedź serwera: '{e.Message}";
-                return new List<RatingViewModel>();
+                return BadRequest(e.Message);
             }
         }
         #endregion
@@ -202,22 +194,21 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         public async Task<IActionResult> EditRating(RatingViewModel ratingVM)
         {
             if (!ModelState.IsValid)
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Details), new { id = ratingVM.QuestionsSetId});
 
-            var httpClient = _httpClientFactory.CreateClient(_apiUrl.ClientName);
-            var response = await httpClient.PutAsJsonAsync(_apiSettings.Ratings,
-                ratingVM);
-
-            if (!response.IsSuccessStatusCode)
+            try
             {
-                var responseMessage = await response.Content.ReadAsStringAsync();
-                TempData["errorAlert"] = "Nieudana próba edycji oceny." +
-                    $"Odpowiedź serwera: '{responseMessage}";
-            }
-            else
-                TempData["successAlert"] = "Poprawnie zaktualizowano ocenę";
+                await _httpClient.UpdateItem<RatingViewModel>(ratingVM);
 
-            return RedirectToAction(nameof(Details), new { id = ratingVM.QuestionsSetId });
+                TempData["successAlert"] = "Poprawnie zaktualizowano ocenę";
+                return RedirectToAction(nameof(Details), new { id = ratingVM.QuestionsSetId });
+            }
+            catch(Exception e)
+            {
+                TempData["errorAlert"] = "Nieudana próba edycji oceny." +
+                    $"Odpowiedź serwera: '{e.Message}";
+                return RedirectToAction(nameof(Details), new { id = ratingVM.QuestionsSetId });
+            }
         }
         #endregion
 
@@ -226,23 +217,22 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         public async Task<IActionResult> EditSkill(int id, string skill)
         {
             if (!ModelState.IsValid || skill.Length == 0)
-                return RedirectToAction(nameof(Details), new {id = id});
+                return RedirectToAction(nameof(Details), new {id = id });
 
-            var httpClient = _httpClientFactory.CreateClient(_apiUrl.ClientName);
-            var response = await httpClient.PatchAsync(
-                $"{_apiSettings.QuestionsSets}/{id}/skill?skill={skill}", null);
-            var updated = await response.Content.ReadAsStringAsync();
-
-            if (!response.IsSuccessStatusCode)
+            try
             {
-                var responseMessage = await response.Content.ReadAsStringAsync();
-                TempData["errorAlert"] = "Nieudana próba edycji umiejętności." +
-                    $"Odpowiedź serwera: '{responseMessage}";
-            }
-            else
-                TempData["successAlert"] = "Poprawnie zaktualizowano umiejętności";
+                var updated = await _httpClient.UpdateItemProperty<QuestionsSetViewModel>(
+                    id, new KeyValuePair<string, string>("skill", skill));
 
-            return RedirectToAction(nameof(Details), new { id = id });
+                TempData["successAlert"] = "Poprawnie zaktualizowano umiejętności";
+                return RedirectToAction(nameof(Details), new { id = id });
+            }
+            catch(Exception e)
+            {
+                TempData["errorAlert"] = "Nieudana próba edycji umiejętności." +
+                    $"Odpowiedź serwera: '{e.Message}";
+                return RedirectToAction(nameof(Details), new { id = id });
+            }
         }
         #endregion
 
@@ -262,20 +252,20 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 return RedirectToAction(nameof(Details), new { id = id });
             }
 
-            var httpClient = _httpClientFactory.CreateClient(_apiUrl.ClientName);
-            var response = await httpClient.PatchAsync(
-                $"{_apiSettings.QuestionsSets}/{id}/area?areaId={requestedAreaId}", null);
-
-            if (!response.IsSuccessStatusCode)
+            try
             {
-                var responseMessage = await response.Content.ReadAsStringAsync();
-                TempData["errorAlert"] = "Nieudana próba edycji obszaru zestawu pytań." +
-                    $"Odpowiedź serwera: '{responseMessage}";
-            }
-            else
-                TempData["successAlert"] = "Poprawnie zaktualizowano obszar zestawu pytań";
+                await _httpClient.UpdateItemProperty<QuestionsSetViewModel>(id,
+                    new KeyValuePair<string, string>("area", requestedAreaId.ToString()));
 
-            return RedirectToAction(nameof(Details), new { id = id });
+                TempData["successAlert"] = "Poprawnie zaktualizowano obszar zestawu pytań";
+                return RedirectToAction(nameof(Details), new { id = id });
+            }
+            catch(Exception e)
+            {
+                TempData["errorAlert"] = "Nieudana próba edycji obszaru zestawu pytań." +
+                    $"Odpowiedź serwera: '{e.Message}";
+                return RedirectToAction(nameof(Details), new { id = id });
+            }
         }
         #endregion
 
@@ -289,27 +279,26 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 TempData["errorAlert"] = "Niepoprawny format wprowadzonych danych";
                 return RedirectToAction(nameof(Details), new { id = id });
             }
-            if(currentDifficultyId == requestedDifficultyId)
+            if (currentDifficultyId == requestedDifficultyId)
             {
                 TempData["infoAlert"] = "Nie dokonano zmian";
                 return RedirectToAction(nameof(Details), new { id = id });
-            }    
-
-            var httpClient = _httpClientFactory.CreateClient(_apiUrl.ClientName);
-            var response = await httpClient.PatchAsync(
-                $"{_apiSettings.QuestionsSets}/{id}/difficulty?difficultyId={requestedDifficultyId}",
-                null);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                var responseMessage = await response.Content.ReadAsStringAsync();
-                TempData["errorAlert"] = "Nieudana próba zmiany skali trudności." +
-                    $"Odpowiedź serwera: '{responseMessage}";
             }
-            else
-                TempData["successAlert"] = "Poprawnie zaktualizowano skalę trudności";
 
-            return RedirectToAction(nameof(Details), new { id = id });
+            try
+            {
+                await _httpClient.UpdateItemProperty<QuestionsSetViewModel>(id,
+                    new KeyValuePair<string, string>("difficulty", requestedDifficultyId.ToString()));
+
+                TempData["successAlert"] = "Poprawnie zaktualizowano skalę trudności";
+                return RedirectToAction(nameof(Details), new { id = id });
+            }
+            catch(Exception e)
+            {
+                TempData["errorAlert"] = "Nieudana próba zmiany skali trudności." +
+                    $"Odpowiedź serwera: '{e.Message}";
+                return RedirectToAction(nameof(Details), new { id = id });
+            }
         }
         #endregion
     }

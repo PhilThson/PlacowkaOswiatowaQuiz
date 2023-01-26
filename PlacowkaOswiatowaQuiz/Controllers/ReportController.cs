@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PlacowkaOswiatowaQuiz.Helpers;
+using PlacowkaOswiatowaQuiz.Helpers.Options;
 using PlacowkaOswiatowaQuiz.Interfaces;
 using PlacowkaOswiatowaQuiz.Services;
+using PlacowkaOswiatowaQuiz.Shared.DTOs;
 using PlacowkaOswiatowaQuiz.Shared.ViewModels;
 
 namespace PlacowkaOswiatowaQuiz.Controllers
@@ -8,22 +11,22 @@ namespace PlacowkaOswiatowaQuiz.Controllers
     public class ReportController : Controller
     {
         #region Pola prywatne
-        private readonly IDiagnosisService _diagnosisService;
-        private readonly IQuestionsSetService _questionsSetService;
+        private readonly IHttpClientService _httpClient;
+        private readonly IReportService _reportService;
         #endregion
 
         #region Konstruktor
-        public ReportController(IDiagnosisService diagnosisService,
-            IQuestionsSetService questionsSetService)
+        public ReportController(IHttpClientService httpClient,
+            IReportService reportService)
         {
-            _diagnosisService = diagnosisService;
-            _questionsSetService = questionsSetService;
+            _httpClient = httpClient;
+            _reportService = reportService;
         }
         #endregion
 
         #region Akcje
 
-        #region Wyświetlanie regionu przycisków
+        #region Wyświetlanie regionu przycisków generowania raportu
         public IActionResult DiagnosisReportPartial([FromQuery] int diagnosisId, 
             [FromQuery] int reportId)
         {
@@ -41,14 +44,20 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         [HttpPost("Report/Generate/{diagnosisId}")]
         public async Task<IActionResult> GenerateDiagnosisReport([FromRoute] int diagnosisId)
         {
-            var model = new DiagnosisReportKeyViewModel
-            {
-                DiagnosisId = diagnosisId
-            };
             try
             {
+                if (diagnosisId == default)
+                    throw new DataNotFoundException(
+                        "Nie znaleziono diagnozy o podanym identyfikatorze");
+
+                var model = new DiagnosisReportKeyViewModel
+                {
+                    DiagnosisId = diagnosisId
+                };
+
                 await Task.Delay(2000);
-                var baseReport = await _diagnosisService.CreateDiagnosisReport(diagnosisId);
+
+                var baseReport = await _reportService.CreateDiagnosisReport(diagnosisId);
                 model.ReportId = baseReport.Id;
                 //ViewBag.SaveSuccess = "Poprawnie wygenerowano raport";
                 return PartialView("_GenerateReport", model);
@@ -63,7 +72,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             catch(Exception e)
             {
                 TempData["errorAlert"] = e.Message;
-                return BadRequest("Wystąpił błąd połączenia do serwera.");
+                return BadRequest($"Wystąpił błąd. '{e.Message}");
             }
         }
         #endregion
@@ -73,7 +82,10 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         {
             try
             {
-                var reportDto = await _diagnosisService.GetDiagnosisReportById(reportId);
+                if (reportId == default)
+                    return NotFound();
+
+                var reportDto = await _httpClient.GetItemById<ReportDto>(reportId);
                 if (reportDto == null)
                     return NotFound();
 
@@ -103,9 +115,12 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         {
             try
             {
-                var reportDto = await _diagnosisService.GetDiagnosisReportById(reportId);
-                if (reportDto == null)
+                if (reportId == default)
                     return NotFound();
+
+                var reportDto = await _httpClient.GetItemById<ReportDto>(reportId);
+                //nie jest sorawdzane czy reportDto jest nullem, bo jeżeli API nie
+                //znajdzie, to zwróci NotFound co zostanie wychwycone w sekcji catch
 
                 var pdfStream = new MemoryStream();
                 pdfStream.Write(reportDto.Content, 0, reportDto.Content.Length);
@@ -141,7 +156,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         //Ta sama mechanika jest wykorzystywana po stronie API do generowania raportu
         private async Task<DiagnosisToPdfViewModel> GetDiagnosisPdf(int diagnosisId)
         {
-            var diagnosis = await _diagnosisService.GetDiagnosisById(diagnosisId);
+            var diagnosis = await _httpClient.GetItemById<DiagnosisViewModel>(diagnosisId);
 
             var askedQuestionSetsIds = new List<int>();
 
@@ -150,8 +165,9 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                     .Select(r => r.QuestionsSetRating.QuestionsSetId).ToList();
 
             var questionsSets =
-                await _questionsSetService.GetQuestionsSetsByIds(askedQuestionSetsIds) ??
-                new List<QuestionsSetViewModel>();
+                await _httpClient.GetAllItems<QuestionsSetViewModel>(
+                    ("askedQuestionSetsIds", string.Join(',', askedQuestionSetsIds))) ??
+                    new List<QuestionsSetViewModel>();
 
             var masteredQSIds = diagnosis.Results.Where(d => d.RatingLevel > 4)
                 .Select(r => r.QuestionsSetRating.QuestionsSetId).ToList();
