@@ -180,7 +180,6 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 //DifficultyId jest wymagane na formularzu
                 var availableQuestionsSets = await _httpClient.GetAllItems<QuestionsSetViewModel>(
                     ("difficultyId", diagnosisVM.DifficultyId.Value.ToString())) ??
-                //await _questionsSetService.GetAllQuestionsSets(diagnosisVM.DifficultyId) ??
                     new List<QuestionsSetViewModel>();
 
                 if (!availableQuestionsSets.Any())
@@ -255,8 +254,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             var questionsSets =
                 await _httpClient.GetAllItems<QuestionsSetViewModel>(
                     ("askedQuestionSetsIds", string.Join(',', askedQuestionSetsIds))) ??
-                //await _questionsSetService.GetQuestionsSetsByIds(askedQuestionSetsIds) ??
-                new List<QuestionsSetViewModel>();
+                    new List<QuestionsSetViewModel>();
 
             var diagnosisSummary = (DiagnosisSummaryViewModel)diagnosis;
             diagnosisSummary.QuestionsSets = questionsSets;
