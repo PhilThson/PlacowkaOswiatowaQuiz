@@ -142,7 +142,6 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         }
         #endregion
 
-
         #region Podgląd raportu
         
         public async Task<IActionResult> Preview(int diagnosisId)

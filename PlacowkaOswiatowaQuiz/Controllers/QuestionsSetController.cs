@@ -176,7 +176,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             {
                 var ratings = new List<RatingViewModel>();
                 ratings = await _httpClient.GetAllItems<RatingViewModel>(
-                    (nameof(questionsSetId), questionsSetId.ToString()));
+                    (nameof(questionsSetId), questionsSetId));
 
                 return Ok(ratings);
             }
@@ -222,7 +222,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             try
             {
                 var updated = await _httpClient.UpdateItemProperty<QuestionsSetViewModel>(
-                    id, new KeyValuePair<string, string>("skill", skill));
+                    id, new KeyValuePair<string, string>(nameof(skill), skill));
 
                 TempData["successAlert"] = "Poprawnie zaktualizowano umiejętności";
                 return RedirectToAction(nameof(Details), new { id = id });

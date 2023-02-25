@@ -40,25 +40,18 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         #endregion
 
         #region Zapis wyniku wybranej oceny zestawu pytań
+        //Przerobione na endpoint do obsługi jQuery AJAX
         [HttpPost]
-        public async Task<PartialViewResult> SaveResult(ResultViewModel resultVM)
+        public async Task<IActionResult> SaveResult(ResultViewModel resultVM)
         {
-            if (ModelState.ContainsKey("QuestionsSetRating.RatingDescription"))
-            {
-                //Manualne usunięcie walidacji niewykorzystywanej właściwości ViewModel'u
-                //tzn. jest ComboBox z ocenami zestawu pytań do wyboru (a nie tworzenia)
-                ModelState["QuestionsSetRating.RatingDescription"].Errors.Clear();
-                ModelState["QuestionsSetRating.RatingDescription"].ValidationState =
-                    ModelValidationState.Valid;
-            }
-
             if (!ModelState.IsValid)
-                return PartialView("_Result", resultVM);
+                return BadRequest("Błąd formularza");
 
             try
             {
                 var createResultDto = new CreateResultDto
                 {
+                    Id = resultVM.Id,
                     DiagnosisId = resultVM.DiagnosisId,
                     RatingId = resultVM.QuestionsSetRating.Id,
                     RatingLevel = resultVM.RatingLevel.Value,
@@ -66,14 +59,13 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 };
 
                 await _httpClient.AddItem(createResultDto);
-                ViewBag.SaveSuccess = "Poprawnie zapisno ocenę.";
-                return PartialView("_Result", resultVM);
+
+                return Ok("Poprawnie zapisano rezultat");
             }
             catch (Exception e)
             {
-                TempData["errorAlert"] = $"Nie udało się zapisać oceny" +
-                    $"\nOdpowiedź serwera: '{e.Message}'";
-                return PartialView("_Result", resultVM);
+                return BadRequest($"Nie udało się zapisać oceny" +
+                    $"\nOdpowiedź serwera: '{e.Message}'");
             }
         }
         #endregion
@@ -101,7 +93,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 else
                 {
                     var questionsSets = await _httpClient.GetAllItems<QuestionsSetViewModel>(
-                        ("difficultyId", diagnosis.Difficulty.Id.ToString()));
+                        ("difficultyId", diagnosis.Difficulty.Id));
 
                     //Lista identyfikatorów zestawów pytań, których modele będą pobrane 
                     //asynchronicznie na etapie przełączania zestawów na formularzu diagnozy
@@ -127,6 +119,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             }
         }
 
+        //pobranie części dot. zestawu pytań
         public async Task<IActionResult> QuestionsSetPartial([FromQuery] int questionsSetId)
         {
             try
@@ -143,6 +136,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             }
         }
 
+        //pobranie części dot. oceny zestawu pytań
         public async Task<IActionResult> ResultPartial([FromQuery] int diagnosisId,
             [FromQuery] int questionsSetId)
         {
@@ -150,8 +144,8 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             try
             {
                 result = await _httpClient.GetItemById<ResultViewModel>(null,
-                    (nameof(diagnosisId), diagnosisId.ToString()),
-                    (nameof(questionsSetId), questionsSetId.ToString()));
+                    (nameof(diagnosisId), diagnosisId),
+                    (nameof(questionsSetId), questionsSetId));
                     
                 return PartialView("_Result", result);
             }
@@ -179,7 +173,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             {
                 //DifficultyId jest wymagane na formularzu
                 var availableQuestionsSets = await _httpClient.GetAllItems<QuestionsSetViewModel>(
-                    ("difficultyId", diagnosisVM.DifficultyId.Value.ToString())) ??
+                    ("difficultyId", diagnosisVM.DifficultyId.Value)) ??
                     new List<QuestionsSetViewModel>();
 
                 if (!availableQuestionsSets.Any())
@@ -188,11 +182,11 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                         "Proszę dodać zestawy pytań i ponownie utworzyć formularz diagnozy.");
 
                 var emptyQuestionsSetsIds = availableQuestionsSets
-                    .Where(qs => qs.Questions.Count() < 1)
+                    .Where(qs => !qs.Questions.Any())
                     .Select(qs => qs.Id)
                     .ToList();
 
-                if (emptyQuestionsSetsIds.Count > 0)
+                if (emptyQuestionsSetsIds.Any())
                     throw new DataValidationException(
                         "Jeden z zestawów pytań dostępnych dla diagnozy, " +
                         "nie posiada pytań składowych. Proszę uzupełnić pytania " +
@@ -251,10 +245,13 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 askedQuestionSetsIds = diagnosis.Results
                     .Select(r => r.QuestionsSetRating.QuestionsSetId).ToList();
 
-            var questionsSets =
-                await _httpClient.GetAllItems<QuestionsSetViewModel>(
-                    ("askedQuestionSetsIds", string.Join(',', askedQuestionSetsIds))) ??
+            var questionsSets = new List<QuestionsSetViewModel>();
+            if (askedQuestionSetsIds.Any())
+            {
+                questionsSets = await _httpClient.GetAllItems<QuestionsSetViewModel>(
+                    (nameof(askedQuestionSetsIds), string.Join(',', askedQuestionSetsIds))) ??
                     new List<QuestionsSetViewModel>();
+            }
 
             var diagnosisSummary = (DiagnosisSummaryViewModel)diagnosis;
             diagnosisSummary.QuestionsSets = questionsSets;

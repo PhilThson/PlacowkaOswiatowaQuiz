@@ -33,7 +33,7 @@ namespace PlacowkaOswiatowaQuiz.Services
         #region Metody
 
         #region Pobranie wszystkich rekordów
-        public async Task<List<T>> GetAllItems<T>(params (string, string)[] queryParams)
+        public async Task<List<T>> GetAllItems<T>(params (string, object)[] queryParams)
         {
             var url = GetUrl(typeof(T), queryParams);
 
@@ -48,7 +48,7 @@ namespace PlacowkaOswiatowaQuiz.Services
 
         #region Pobieranie rekordu po identyfikatorze
         public async Task<T> GetItemById<T>(object? id,
-            params (string, string)[] queryParams)
+            params (string, object)[] queryParams)
         {
             var url = GetUrl(typeof(T), queryParams, id);
 
@@ -78,7 +78,7 @@ namespace PlacowkaOswiatowaQuiz.Services
         #endregion
 
         #region Dodawanie rekordu
-        public async Task<object> AddItem<T>(T item, params (string, string)[] queryParams)
+        public async Task<object> AddItem<T>(T item, params (string, object)[] queryParams)
         {
             var url = GetUrl(typeof(T), queryParams);
 
@@ -99,7 +99,7 @@ namespace PlacowkaOswiatowaQuiz.Services
         #endregion
 
         #region Aktualizacja rekordu
-        public async Task UpdateItem<T>(T item, params (string, string)[] queryParams)
+        public async Task UpdateItem<T>(T item, params (string, object)[] queryParams)
         {
             var url = GetUrl(typeof(T), queryParams);
             var dataToSend = new StringContent(JsonConvert.SerializeObject(item),
@@ -135,7 +135,7 @@ namespace PlacowkaOswiatowaQuiz.Services
         #region Metody prywatne
 
         private string GetUrl(Type objectType,
-            (string, string)[]? queryParams = null, object? id = null)
+            (string, object)[]? queryParams = null, object? id = null)
         {
             if (!_endpoints.TryGetValue(objectType, out string endpoint))
                 throw new DataNotFoundException(
@@ -172,7 +172,7 @@ namespace PlacowkaOswiatowaQuiz.Services
                 { typeof(ReportDto), _apiSettings.Reports },
             };
 
-        private string ResolveQueryParams((string, string)[] queryParams)
+        private StringBuilder ResolveQueryParams((string, object)[] queryParams)
         {
             var queryBuilder = new StringBuilder("?");
 
@@ -182,7 +182,7 @@ namespace PlacowkaOswiatowaQuiz.Services
                 if (i != queryParams.Length - 1)
                     queryBuilder.Append('&');
             }
-            return queryBuilder.ToString();
+            return queryBuilder;
         }
 
         #endregion

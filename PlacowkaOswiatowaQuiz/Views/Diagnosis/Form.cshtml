@@ -88,11 +88,12 @@
 
 @section Scripts {
 
+<partial name="_ValidationScriptsPartial" />
 <script src="~/js/LoadDiagnosisPartials.js"></script>
 <script>
 
     //załadowanie (z drzewa DOM) identyfikatorów zestawów pytań wchodzących
-    //w skład formualrza diagnozy
+    //w skład formularza diagnozy
 
     var questionsSetsIds = [];
     $('input[name="questionsSetIdItem"]').each(function () {
@@ -109,6 +110,9 @@
     $(document).ready(function () {
         var requestedQuestionsSetId = questionsSetsIds[index].id;
         $('#previousQS').prop('disabled', true);
+        if (questionsSetsIds.length <= 1) {
+            $('#nextQS').prop('disabled', true);
+        }
         loadDiagnosisPartials(requestedQuestionsSetId, @Model.Id);
         var isForEdit = @Model.IsForEdit.ToString().ToLower();
         if (isForEdit == true) {
@@ -126,11 +130,8 @@
         $('#previousQS').prop('disabled', false);
         index--;
         var requestedQuestionsSetId = questionsSetsIds[index].id;
-        if (requestedQuestionsSetId == @Model.QuestionsSetsIds.First()) {
+        if (index == 0) {
             $('#previousQS').prop('disabled', true);
-        }
-        if (requestedQuestionsSetId == @Model.QuestionsSetsIds.Last()) {
-            $('#nextQS').prop('disabled', true);
         }
         loadDiagnosisPartials(requestedQuestionsSetId, @Model.Id);
     });
@@ -142,10 +143,7 @@
         $('#previousQS').prop('disabled', false);
         index++;
         var requestedQuestionsSetId = questionsSetsIds[index].id;
-        if (requestedQuestionsSetId == @Model.QuestionsSetsIds.First()) {
-            $('#previousQS').prop('disabled', true);
-        }
-        if (requestedQuestionsSetId == @Model.QuestionsSetsIds.Last()) {
+        if (index == questionsSetsIds.length - 1) {
             $('#nextQS').prop('disabled', true);
         }
         loadDiagnosisPartials(requestedQuestionsSetId, @Model.Id);

@@ -5,12 +5,13 @@
         <b>Ocena zestawu pytań</b>
     </legend>
     <form method="post" asp-controller="Diagnosis" asp-action="SaveResult" id="partialResultForm">
+        <input type="hidden" asp-for="@Model.Id" />
         <input type="hidden" asp-for="@Model.DiagnosisId" />
         <div class="container-fluid">
             <div class="row mb-3 form-group">
                 @*<label asp-for="@Model.QuestionsSetRating" class="form-label col-md-10"></label>*@
                 <div class="col-sm-8">
-                    <select asp-for="@Model.QuestionsSetRating.Id" class="form-select" id="ratingsDropdown"
+                    <select asp-for="@Model.QuestionsSetRating" class="form-select" id="ratingsDropdown"
                             currentRatingId="@Model.QuestionsSetRating?.Id">
                         <option disabled selected>Wybierz ocenę...</option>
                     </select>
@@ -20,10 +21,11 @@
             <div class="row mb-3 form-group">
                 @Html.LabelFor(m => m.RatingLevel,
                     htmlAttributes: new { @class = "control-label col-md-10" })
-                <div class="col-md-2">
+                <div class="col-md-6">
                     @Html.DropDownListFor(m => m.RatingLevel,
-                        new SelectList(Enumerable.Range(1, 6).Select(i => (byte)i), "--Wybierz poziom--"),
-                        htmlAttributes: new { @class = "form-control form-control-lg" })
+                        new SelectList(Enumerable.Range(1, 6).Select(i => (byte)i)),
+                        optionLabel: "Wybierz poziom...",
+                        htmlAttributes: new { @class = "form-select" })
                     @Html.ValidationMessageFor(m => m.RatingLevel, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -31,7 +33,7 @@
                 <label asp-for="@Model.Notes" class="col-sm-2 col-form-label"></label>
                 <div class="col-sm-10">
                     <textarea asp-for="@Model.Notes" type="text" class="form-control"
-                                placeholder="Notatki..." rows="3"></textarea>
+                              placeholder="Notatki..." rows="3"></textarea>
                 </div>
             </div>
             <div id="divAlertArea">
@@ -44,41 +46,7 @@
     </form>
 </fieldset>
 
-<script>
-
-    $(document).ready(function () {
-        var currentRatingId = $("#ratingsDropdown").attr('currentRatingId');
-
-        $('input[name="questionsSetRating"]')
-            .each(function (i, rating) {
-                if (rating.id != currentRatingId)
-                    $("#ratingsDropdown").append(
-                        "<option value=" + rating.id + ">" +
-                        rating.value + "</option>");
-                else
-                    $("#ratingsDropdown").append(
-                        "<option selected value=" + rating.id + ">" +
-                        rating.value + "</option>");
-            });
-    });
-
-    $("#saveResult").click(function () {
-        $.ajax({
-            type: "POST",
-            url: "/Diagnosis/SaveResult",
-            data: $("form").serialize()
-        })
-        .done(function (result, status) {
-            $("#partialResult").html(result);
-            var saveSuccessMessage = $('#saveSuccess').val();
-            if (saveSuccessMessage != null) {
-                toastr.success(saveSuccessMessage, null,
-                    { timeOut: 5000, positionClass: "toast-bottom-right" });
-            }
-        });
-    });
-
-</script>
+<script src="~/js/ManageResultPartial.js"></script>
 
 <style>
 

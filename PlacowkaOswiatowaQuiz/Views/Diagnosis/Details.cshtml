@@ -70,7 +70,7 @@
     </div>
 
     <div class="accordion">
-        @if (Model.QuestionsSets?.Count() > 0)
+        @if (Model.QuestionsSets?.Any() == true)
         {
             @for (int i = 0; i < Model.QuestionsSets.Count(); i++)
             {
@@ -115,14 +115,24 @@
     <div id="generateReport">
     </div>
 
+    <div class="d-grid gap-2 col-6 mx-auto">
+        <a href="@Url.Action("Index", "Diagnosis")" type="button" class="btn btn-link">
+            Powrót do listy
+        </a>
+    </div>
+
 </fieldset>
+
+@section Scripts {
 
 <script>
 
     //po załadowaniu strony, wywołanie funkcji ładującej widok przycisków raportu
-    $(document).ready(function() {
-        var reportId = @Model.ReportId.GetValueOrDefault();
-        loadGenerateReport(@Model.Id, reportId);
+    $(document).ready(function () {
+        if (@Model.QuestionsSets?.Any().ToString().ToLower() == true) {
+            var reportId = @Model.ReportId.GetValueOrDefault();
+            loadGenerateReport(@Model.Id, reportId);
+        }
     });
 
     //w callbacku do załadowania widoku przycisków wywołanie funkcji ustawiającej
@@ -136,3 +146,5 @@
     };
 
 </script>
+
+}

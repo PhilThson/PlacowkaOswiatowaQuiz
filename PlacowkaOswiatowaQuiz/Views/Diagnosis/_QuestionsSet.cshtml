@@ -10,6 +10,8 @@
             <partial name="~/Views/UIComponents/_bootstrapAlert.cshtml" />
         </div>
         <input id="questionsSetId" hidden value="@Model.Id" />
+        @*wylistowanie ocen zestawu pytań do wykorzystania przez partial view
+            wyniku zestawu pytań*@
         <div id="questionsSetRatings" style="visibility:hidden">
             @foreach (var rating in Model.QuestionsSetRatings)
             {
