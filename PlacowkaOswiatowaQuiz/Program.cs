@@ -1,3 +1,4 @@
+using PlacowkaOswiatowaQuiz.Controllers;
 using PlacowkaOswiatowaQuiz.Helpers.Options;
 using PlacowkaOswiatowaQuiz.Interfaces;
 using PlacowkaOswiatowaQuiz.Services;
@@ -7,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IHttpClientService, HttpClientService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddSingleton(builder.Configuration
         .GetSection("QuizApiSettings").Get<QuizApiSettings>());
@@ -25,6 +27,21 @@ builder.Services.AddHttpClient(
         client.DefaultRequestHeaders.Clear();
     });
 
+builder.Services.AddHttpClient<IUserService, UserService>(
+    (provider, client) =>
+    {
+        var apiUrl = provider.GetRequiredService<QuizApiUrl>();
+        client.BaseAddress = new Uri(apiUrl.Host + '/');
+        client.Timeout = TimeSpan.FromSeconds(90);
+    });
+
+builder.Services.AddHttpClient<IHttpClientService, HttpClientService>((provider, client) =>
+{
+    var apiSettings = provider.GetRequiredService<QuizApiSettings>();
+    var apiUrl = provider.GetRequiredService<QuizApiUrl>();
+    client.BaseAddress = new Uri(apiUrl.Host + '/' + apiSettings.MainController + '/');
+});
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
@@ -33,7 +50,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();

@@ -153,6 +153,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             {
                 //Tutaj jeżeli nie znaleziono, (api zwraca NotFound),
                 //to poprostu wynik nie jest uzupełniany
+                //trzeba osobno obsłużyć problem z połączeniem do api
                 return PartialView("_Result", result);
             }
         }
