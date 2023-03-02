@@ -35,12 +35,12 @@ builder.Services.AddHttpClient<IUserService, UserService>(
         client.Timeout = TimeSpan.FromSeconds(90);
     });
 
-builder.Services.AddHttpClient<IHttpClientService, HttpClientService>((provider, client) =>
-{
-    var apiSettings = provider.GetRequiredService<QuizApiSettings>();
-    var apiUrl = provider.GetRequiredService<QuizApiUrl>();
-    client.BaseAddress = new Uri(apiUrl.Host + '/' + apiSettings.MainController + '/');
-});
+//builder.Services.AddHttpClient<IHttpClientService, HttpClientService>((provider, client) =>
+//{
+//    var apiSettings = provider.GetRequiredService<QuizApiSettings>();
+//    var apiUrl = provider.GetRequiredService<QuizApiUrl>();
+//    client.BaseAddress = new Uri(apiUrl.Host + '/' + apiSettings.MainController + '/');
+//});
 
 var app = builder.Build();
 

@@ -13,10 +13,13 @@ namespace PlacowkaOswiatowaQuiz.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IHttpClientService _httpClientService;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService,
+            IHttpClientService httpClientService)
         {
             _userService = userService;
+            _httpClientService = httpClientService;
         }
 
         public async Task<IActionResult> Index()
@@ -29,6 +32,23 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         {
             var response = await _userService.AuthenticateWithUserToken(token);
             return Ok(response);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Login(string email, string password)
+        {
+            //Post do enpointu logowania
+
+
+            //return Ok("Super!");
+            return BadRequest("Źle!");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            //Odpytanie endpointu do wylogowania
+            return NoContent();
         }
     }
 }

@@ -18,7 +18,8 @@ $(document).ready(function () {
     setValidation();
 });
 
-$("#saveResult").click(function () {
+$("#saveResult").click(function (e) {
+    e.preventDefault();
     var validationResult = $("#partialResultForm").valid();
     if (validationResult == false) {
         return;

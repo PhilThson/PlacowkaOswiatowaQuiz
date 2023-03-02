@@ -1,0 +1,75 @@
+﻿@*@inject SignInManager<IdentityUser> SignInManager
+    SignInManager.IsSignedIn(User)*@
+
+@model LoginViewModel
+
+@if (Context.Request.Cookies.ContainsKey("Cookies"))
+{
+    <form asp-action="Logout" asp-controller="User" method="post" style="padding-right:100px">
+        @Html.AntiForgeryToken()
+        <button type="submit" class="btn btn-info">Logout</button>
+    </form>
+}
+else
+{
+    <div class="btn-group dropstart" style="padding-right:100px">
+        <button class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown"
+                data-bs-auto-close="outside" id="logMenuDropdown" data-bs-offset="100,150">
+            Logowanie
+            <span class="caret"></span>
+        </button>
+
+        <form asp-action="Login" asp-controller="User"
+              method="post" class="dropdown-menu p-4" id="loginForm">
+            @Html.AntiForgeryToken()
+            <div class="form-group mb-3">
+                <label asp-for="@Model.Email" class="control-label"></label>
+                <input asp-for="@Model.Email" class="form-control" type="text" required />
+                <span asp-validation-for="@Model.Email" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="@Model.Password" class="control-label"></label>
+                <input asp-for="@Model.Password" class="form-control" type="password" required />
+                <span asp-validation-for="@Model.Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <a href="#" type="button" class="btn btn-primary" id="loginButton">Login</a>
+            </div>
+        </form>
+    </div>
+}
+
+<script>
+
+    $(document).ready(function () {
+        setValidation();
+    });
+
+    $("#loginButton").click(function () {
+        var isFormValid = $("#loginForm").valid();
+        if (isFormValid == false) {
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: "/User/Login",
+            data: $("#loginForm").serialize()
+        })
+            .done(function (result, status) {
+                toastr.success(result, null,
+                    { timeOut: 5000, positionClass: "toast-bottom-right" });
+            })
+            .fail(function (result, status) {
+                toastr.error(result.responseText, null,
+                    { timeOut: 7000, positionClass: "toast-bottom-right" });
+            });
+    });
+
+    var setValidation = function () {
+        console.log("Invoking setValidation of LoginForm");
+        $("#loginForm").removeData("validator");
+        $("#loginForm").removeData("unobtrusiveValidation");
+        $.validator.unobtrusive.parse("#loginForm");
+    }
+
+</script>

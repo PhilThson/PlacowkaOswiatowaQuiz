@@ -9,7 +9,6 @@
         <input type="hidden" asp-for="@Model.DiagnosisId" />
         <div class="container-fluid">
             <div class="row mb-3 form-group">
-                @*<label asp-for="@Model.QuestionsSetRating" class="form-label col-md-10"></label>*@
                 <div class="col-sm-8">
                     <select asp-for="@Model.QuestionsSetRating" class="form-select" id="ratingsDropdown"
                             currentRatingId="@Model.QuestionsSetRating?.Id">
@@ -40,7 +39,7 @@
                 <partial name="~/Views/UIComponents/_bootstrapAlert.cshtml" />
             </div>
             <div class="d-grid col-4 mx-auto">
-                <a class="btn btn-success" id="saveResult">Zapisz ocenę</a>
+                <a href="#" class="btn btn-success" id="saveResult">Zapisz ocenę</a>
             </div>
         </div>
     </form>
