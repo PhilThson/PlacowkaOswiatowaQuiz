@@ -71,9 +71,7 @@
                         </li>
                     </ul>
                 </div>
-                <div class="ml-auto">
-                    @await Html.PartialAsync("_LoginPartial")
-                </div>
+                @await Html.PartialAsync("_LoginPartial", new LoginViewModel())
             </div>
         </nav>
     </header>

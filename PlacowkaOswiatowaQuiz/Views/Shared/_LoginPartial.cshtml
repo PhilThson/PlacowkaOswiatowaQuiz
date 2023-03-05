@@ -1,27 +1,26 @@
-﻿@*@inject SignInManager<IdentityUser> SignInManager
-    SignInManager.IsSignedIn(User)*@
-
-@model LoginViewModel
+﻿@model LoginViewModel
 
 @if (Context.Request.Cookies.ContainsKey("Cookies"))
 {
-    <form asp-action="Logout" asp-controller="User" method="post" style="padding-right:100px">
-        @Html.AntiForgeryToken()
-        <button type="submit" class="btn btn-info">Logout</button>
-    </form>
+    <div class="d-flex">
+        <span>Witaj user!</span>
+        <form style="padding-right:150px" id="logoutForm">
+            <a href="#" type="button" class="btn btn-info" id="logoutButton">Wyloguj</a>
+        </form>
+    </div>
 }
 else
 {
-    <div class="btn-group dropstart" style="padding-right:100px">
-        <button class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown"
-                data-bs-auto-close="outside" id="logMenuDropdown" data-bs-offset="100,150">
+<div class="d-flex">
+    <div class="dropdown" style="padding-right:150px">
+        <button class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown" type="button"
+                data-bs-auto-close="outside" id="logMenuDropdown" data-bs-offset="10,20">
             Logowanie
-            <span class="caret"></span>
+            @*<span class="caret"></span>*@
         </button>
+        @*AntiForgeryToken jest dodawany automatycznie*@
 
-        <form asp-action="Login" asp-controller="User"
-              method="post" class="dropdown-menu p-4" id="loginForm">
-            @Html.AntiForgeryToken()
+        <form class="dropdown-menu p-4" id="loginForm">
             <div class="form-group mb-3">
                 <label asp-for="@Model.Email" class="control-label"></label>
                 <input asp-for="@Model.Email" class="form-control" type="text" required />
@@ -33,10 +32,20 @@ else
                 <span asp-validation-for="@Model.Password" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <a href="#" type="button" class="btn btn-primary" id="loginButton">Login</a>
+                <a href="#" type="button" class="btn btn-primary" id="loginButton">
+                    Zaloguj
+                </a>
+                <a asp-controller="User" asp-action="Register" type="button"
+                   class="btn btn-outline-primary">
+                    Zarejestruj
+                </a>
+                <a href="#" type="button" id="dataButton" class="btn btn-link">
+                    Data
+                </a>
             </div>
         </form>
     </div>
+</div>
 }
 
 <script>
@@ -55,6 +64,44 @@ else
             url: "/User/Login",
             data: $("#loginForm").serialize()
         })
+        .done(function (result, status) {
+            toastr.success(result, null,
+                { timeOut: 5000, positionClass: "toast-bottom-right" });
+        })
+        .fail(function (result, status) {
+            toastr.error(result.responseText, null,
+                { timeOut: 7000, positionClass: "toast-bottom-right" });
+        });
+    });
+
+    var setValidation = function () {
+        console.log("Invoking setValidation of LoginForm");
+        $("#loginForm").removeData("validator");
+        $("#loginForm").removeData("unobtrusiveValidation");
+        $.validator.unobtrusive.parse("#loginForm");
+    }
+
+    $("#logoutButton").click(function () {
+        $.ajax({
+            type: "POST",
+            url: "/User/Logout",
+            data: $("#logoutForm").serialize()
+        })
+        .done(function (result, status) {
+            toastr.success(result, null,
+                { timeOut: 5000, positionClass: "toast-bottom-right" });
+        })
+        .fail(function (result, status) {
+            toastr.error(result.responseText, null,
+                { timeOut: 7000, positionClass: "toast-bottom-right" });
+        });
+    });
+
+    $("#dataButton").click(function () {
+        $.ajax({
+            type: "GET",
+            url: "/User/Data"
+        })
             .done(function (result, status) {
                 toastr.success(result, null,
                     { timeOut: 5000, positionClass: "toast-bottom-right" });
@@ -64,12 +111,5 @@ else
                     { timeOut: 7000, positionClass: "toast-bottom-right" });
             });
     });
-
-    var setValidation = function () {
-        console.log("Invoking setValidation of LoginForm");
-        $("#loginForm").removeData("validator");
-        $("#loginForm").removeData("unobtrusiveValidation");
-        $.validator.unobtrusive.parse("#loginForm");
-    }
 
 </script>

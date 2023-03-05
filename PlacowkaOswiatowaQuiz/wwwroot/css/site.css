@@ -160,7 +160,13 @@ fieldset {
         font-size: 12px;
     }
 
-/*Nadpisanie stylów bootstrapowych*/
+/* Nadpisanie stylów bootstrapowych */
+
+input.form-control:focus,
+.form-select:focus {
+    box-shadow: none;
+}
+
 .btn-info {
     background-color: #B5C1C4;
     border-color: #B5C1C4;
@@ -168,9 +174,22 @@ fieldset {
 
     .btn-info:hover {
         background-color: #99A3A5;
-        border-color: #99A3A5;
+        border-color: #B5C1C4;
     }
 
+    .btn-info:focus {
+        box-shadow: none;
+    }
+
+    .btn-check:hover + .btn-info, .btn-info:focus {
+        box-shadow: none;
+        background-color: #99A3A5;
+    }
+
+    .btn-check:focus + .btn-info, .btn-info:checked {
+        box-shadow: none;
+        border-color: #B5C1C4;
+    }
 
 .accordion-button {
     position: relative;

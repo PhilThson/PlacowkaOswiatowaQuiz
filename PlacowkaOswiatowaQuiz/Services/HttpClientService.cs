@@ -169,7 +169,7 @@ namespace PlacowkaOswiatowaQuiz.Services
                 { typeof(RatingViewModel), _apiSettings.Ratings },
                 { typeof(ResultViewModel), _apiSettings.Results },
                 { typeof(CreateResultDto), _apiSettings.Results },
-                { typeof(ReportDto), _apiSettings.Reports },
+                { typeof(ReportDto), _apiSettings.Reports }
             };
 
         private StringBuilder ResolveQueryParams((string, object)[] queryParams)
