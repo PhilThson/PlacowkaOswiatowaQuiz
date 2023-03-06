@@ -22,19 +22,8 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             _userService = userService;
         }
 
-        public async Task<IActionResult> Index()
-        {
-            var token = await _userService.GetUserToken();
-            return Ok(token);
-        }
-
-        public async Task<IActionResult> Authenticate([FromQuery] string token)
-        {
-            var response = await _userService.AuthenticateWithUserToken(token);
-            return Ok(response);
-        }
-
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel loginViewModel)
         {
             if (!ModelState.IsValid)
@@ -42,13 +31,6 @@ namespace PlacowkaOswiatowaQuiz.Controllers
 
             try
             {
-                //porównywanie dwóch hashy po stringu nie zadziała, bo jest dodawana sól
-                //var userByEmail = await _userService.GetByEmail(loginViewModel.Email);
-
-                //if (!SecurePasswordHasher.Verify(loginViewModel.Password, userByEmail.PasswordHash))
-                //{
-                //    throw new DataValidationException("Niepoprawne hasło");
-                //}
                 var user = new SimpleUserDto
                 {
                     Email = loginViewModel.Email,
@@ -73,6 +55,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel register)
         {
             if (!ModelState.IsValid)
@@ -105,9 +88,11 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
-            //Odpytanie endpointu do wylogowania
             try
             {
+                //odpytanie endpointu do wylogowania,
+
+                //wyczyszczenie sesji
 
                 return NoContent();
             }

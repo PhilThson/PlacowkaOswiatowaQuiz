@@ -1,9 +1,9 @@
 ﻿@model LoginViewModel
 
-@if (Context.Request.Cookies.ContainsKey("Cookies"))
+@if (Context.Session.Keys.Contains("quiz-user"))
 {
     <div class="d-flex">
-        <span>Witaj user!</span>
+        <span>@Context.Session.GetString("quiz-user")</span>
         <form style="padding-right:150px" id="logoutForm">
             <a href="#" type="button" class="btn btn-info" id="logoutButton">Wyloguj</a>
         </form>
@@ -14,13 +14,13 @@ else
 <div class="d-flex">
     <div class="dropdown" style="padding-right:150px">
         <button class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown" type="button"
-                data-bs-auto-close="outside" id="logMenuDropdown" data-bs-offset="10,20">
+                data-bs-auto-close="outside" id="logMenuDropdown">
             Logowanie
-            @*<span class="caret"></span>*@
         </button>
-        @*AntiForgeryToken jest dodawany automatycznie*@
-
-        <form class="dropdown-menu p-4" id="loginForm">
+        @* AntiForgeryToken jest dodawany automatycznie,
+            ale przy zapytaniach ajax nie bedzie zawarty *@
+        <form asp-controller="User" asp-action="Login"
+              class="dropdown-menu p-4" id="loginForm">
             <div class="form-group mb-3">
                 <label asp-for="@Model.Email" class="control-label"></label>
                 <input asp-for="@Model.Email" class="form-control" type="text" required />
@@ -54,11 +54,13 @@ else
         setValidation();
     });
 
-    $("#loginButton").click(function () {
+    $("#loginButton").click(function (event) {
+        event.preventDefault();
         var isFormValid = $("#loginForm").valid();
         if (isFormValid == false) {
             return;
         }
+
         $.ajax({
             type: "POST",
             url: "/User/Login",
@@ -67,15 +69,22 @@ else
         .done(function (result, status) {
             toastr.success(result, null,
                 { timeOut: 5000, positionClass: "toast-bottom-right" });
+
+            setTimeout(function () {
+                location.reload();
+            }, 5000); 
         })
         .fail(function (result, status) {
+            if (result.responseText == "") {
+                result.responseText =
+                    "Wystąpił atak XSRF - błąd walidacji tokenu AntiForgery";
+            }
             toastr.error(result.responseText, null,
                 { timeOut: 7000, positionClass: "toast-bottom-right" });
         });
     });
 
     var setValidation = function () {
-        console.log("Invoking setValidation of LoginForm");
         $("#loginForm").removeData("validator");
         $("#loginForm").removeData("unobtrusiveValidation");
         $.validator.unobtrusive.parse("#loginForm");

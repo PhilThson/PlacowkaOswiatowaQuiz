@@ -18,6 +18,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton(builder.Configuration
         .GetSection("QuizApiSettings")
         .Get<QuizApiSettings>());
+
 builder.Services.AddSingleton(builder.Configuration
         .GetSection("QuizApiUrl")
         .Get<QuizApiUrl>());
@@ -28,11 +29,13 @@ builder.Services.AddHttpClient(
     {
         var apiSettings = provider.GetRequiredService<QuizApiSettings>();
         var apiUrl = provider.GetRequiredService<QuizApiUrl>();
-        client.BaseAddress = new Uri(apiUrl.Host + '/' +
-            apiSettings.MainController + '/');
+        client.BaseAddress =
+            new Uri(apiUrl.Host + '/' + apiSettings.MainController + '/');
+
         client.Timeout = TimeSpan.FromSeconds(30);
         client.DefaultRequestHeaders.Clear();
-    });
+    })
+    .AddHttpMessageHandler<HttpClientMiddleware>();
 
 builder.Services.AddHttpClient<IUserService, UserService>(
     (provider, client) =>
@@ -41,18 +44,14 @@ builder.Services.AddHttpClient<IUserService, UserService>(
         var apiUrl = provider.GetRequiredService<QuizApiUrl>();
         client.BaseAddress =
             new Uri(apiUrl.Host + '/' + nameof(apiSettings.User) + '/');
+
         client.Timeout = TimeSpan.FromSeconds(90);
     })
     .AddHttpMessageHandler<HttpClientMiddleware>();
 
+// dodanie obsługi sesji
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession();
-//builder.Services.AddHttpClient<IHttpClientService, HttpClientService>((provider, client) =>
-//{
-//    var apiSettings = provider.GetRequiredService<QuizApiSettings>();
-//    var apiUrl = provider.GetRequiredService<QuizApiUrl>();
-//    client.BaseAddress = new Uri(apiUrl.Host + '/' + apiSettings.MainController + '/');
-//});
 
 var app = builder.Build();
 
