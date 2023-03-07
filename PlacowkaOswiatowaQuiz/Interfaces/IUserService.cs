@@ -9,6 +9,7 @@ namespace PlacowkaOswiatowaQuiz.Interfaces
 		Task<SimpleUserDto> GetByEmail(string email);
 		Task Register(CreateUserDto createUser);
 		Task<string> GetData();
+		Task Logout();
     }
 }
 

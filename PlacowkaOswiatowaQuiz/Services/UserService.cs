@@ -67,6 +67,14 @@ namespace PlacowkaOswiatowaQuiz.Services
                 throw new HttpRequestException(content);
             return content;
         }
+
+        public async Task Logout()
+        {
+            var response = await _httpClient.PostAsync(_apiSettings.User.Logout, null);
+            var content = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode)
+                throw new HttpRequestException(content);
+        }
     }
 }
 

@@ -31,6 +31,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
 
             try
             {
+                //Wszystkie właściwości są wymagane
                 var user = new SimpleUserDto
                 {
                     Email = loginViewModel.Email,
@@ -39,6 +40,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
 
                 var cookie = await _userService.Login(user);
                 HttpContext.Session.SetString("quiz-user", cookie.First());
+                HttpContext.Session.SetString("user-email", user.Email);
 
                 return Ok("Zalogowano!");
             }
@@ -74,6 +76,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
 
                 await _userService.Register(createUser);
 
+                TempData["successAlert"] = "Pomyślnie dodano użytkownika";
                 return RedirectToAction("Index", "Home");
             }
             catch (Exception e)
@@ -86,15 +89,23 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
             try
             {
+                //Walidacja
+                if (!HttpContext.Session.Keys.Contains("quiz-user"))
+                    throw new DataValidationException(
+                        "Nie znaleziono zalogowanego użytkownika");
+
                 //odpytanie endpointu do wylogowania,
+                await _userService.Logout();
 
                 //wyczyszczenie sesji
+                HttpContext.Session.Clear();
 
-                return NoContent();
+                return Ok("Wylogowano");
             }
             catch (Exception e)
             {

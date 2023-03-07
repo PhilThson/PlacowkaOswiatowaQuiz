@@ -23,5 +23,6 @@
         public string Login { get; set; }
         public string ByEmail { get; set; }
         public string Data { get; set; }
+        public string Logout { get; set; }
     }
 }
