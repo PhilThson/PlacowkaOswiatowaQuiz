@@ -63,7 +63,7 @@ else
 <script>
 
     $(document).ready(function () {
-        setValidation();
+        setLoginValidation();
     });
 
     $("#loginButton").click(function (event) {
@@ -136,7 +136,7 @@ else
         });
     });
 
-    var setValidation = function () {
+    var setLoginValidation = function () {
         $("#loginForm").removeData("validator");
         $("#loginForm").removeData("unobtrusiveValidation");
         $.validator.unobtrusive.parse("#loginForm");

@@ -23,10 +23,10 @@
     <div id="divAlertArea">
         <partial name="~/Views/UIComponents/_bootstrapAlert.cshtml" />
     </div>
-    <div asp-validation-summary="All" class="text-danger container-flex md-2 mb-3">
-        <span>Popraw następujące błędy i spróbuj ponownie:</span>
-    </div>
-    <form method="post" asp-controller="Question" asp-action="Edit" id="questionForm">
+    <form asp-action="Edit" method="post" id="questionForm">
+        <div asp-validation-summary="All" class="text-danger container-flex md-2 mb-3">
+            <span>Popraw następujące błędy i spróbuj ponownie:</span>
+        </div>
         <input type="hidden" asp-for="@Model.Id" />
         <input type="hidden" asp-for="@Model.IsFromQuestionsSet" />
         <div class="container-fluid">
@@ -47,7 +47,7 @@
             <div class="row mb-3">
                 <label asp-for="@Model.QuestionsSetId" class="col-sm-4 col-form-label"></label>
                 <div class="col-sm-10">
-                    <select asp-for="@Model.QuestionsSetId" class="form-control" id="questionsSetDropdown"
+                    <select asp-for="@Model.QuestionsSetId" class="form-select" id="questionsSetDropdown"
                             currentQuestionsSetId="@Model?.QuestionsSetId">
                         <option disabled selected>Wybierz zestaw pytań po opisie umiejętności...</option>
                     </select>
@@ -73,22 +73,27 @@
         $.ajax({
             type: "GET",
             url: "/QuestionsSet/GetAllQuestionsSets",
-            data: "{}",
-            success: function (data) {
-                $.each(data, function (i, questionsSet) {
-                    if (questionsSet.id != incomingQuestionsSetId) {
-                        $("#questionsSetDropdown").append(
-                            "<option value=" + questionsSet.id + ">" +
-                            questionsSet.skillDescription + "</option>");
-                    }
-                    else {
-                        $("#questionsSetDropdown").append(
-                            "<option selected value=" + questionsSet.id + ">" +
-                            questionsSet.skillDescription + "</option>");
-                    }
-                });
-            }
+            data: {}
+        })
+        .done(function (data) {
+            $.each(data, function (i, questionsSet) {
+                if (questionsSet.id != incomingQuestionsSetId) {
+                    $("#questionsSetDropdown").append(
+                        "<option value=" + questionsSet.id + ">" +
+                        questionsSet.skillDescription + "</option>");
+                }
+                else {
+                    $("#questionsSetDropdown").append(
+                        "<option selected value=" + questionsSet.id + ">" +
+                        questionsSet.skillDescription + "</option>");
+                }
+            });
+        })
+        .fail(function (result) {
+            toastr.error(result.responseText, null,
+                { timeOut: 7000, positionClass: "toast-bottom-right" });
         });
+
         var isFromQuestionsSet = @Model.IsFromQuestionsSet.ToString().ToLower();
         if (isFromQuestionsSet == true) {
             $("#navigateBack").html("Powrót do zestawu pytań");
@@ -99,6 +104,8 @@
         else {
             $("#navigateBack").html("Powrót do listy pytań");
         }
+
+        setValidation();
     });
 
     $("#navigateBack").click(function (event) {
@@ -116,10 +123,21 @@
     //zestawu pytań, należy usnąć atrybut disabled, bo tak oznaczona właściwość
     //formularza NIE zostanie zserializowana, co powoduje błąd walidacji
 
-    $("#submitButton").click(function () {
+    $("#submitButton").click(function (event) {
+        event.preventDefault();
+        var validationResult = $("#questionForm").valid();
+        if (validationResult == false) {
+            return;
+        }
         $("#questionsSetDropdown").prop("disabled", false);
         $("#questionForm").submit();
     });
+
+    var setValidation = function () {
+        $("#questionForm").removeData("validator");
+        $("#questionForm").removeData("unobtrusiveValidation");
+        $.validator.unobtrusive.parse("#questionForm");
+    }
 
 </script>
 

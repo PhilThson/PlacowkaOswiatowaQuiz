@@ -17,21 +17,12 @@ namespace PlacowkaOswiatowaQuiz.Controllers
     public class QuestionController : Controller
     {
         #region Pola prywatne
-        private readonly QuizApiUrl _apiUrl;
-        private readonly QuizApiSettings _apiSettings;
-        private readonly IHttpClientFactory _httpClientFactory;
         private readonly IHttpClientService _httpClient;
         #endregion
 
         #region Konstruktor
-        public QuestionController(QuizApiSettings apiSettings,
-            IHttpClientFactory httpClientFactory,
-            QuizApiUrl apiUrl,
-            IHttpClientService httpClient)
+        public QuestionController(IHttpClientService httpClient)
         {
-            _apiSettings = apiSettings;
-            _httpClientFactory = httpClientFactory;
-            _apiUrl = apiUrl;
             _httpClient = httpClient;
         }
         #endregion
@@ -55,7 +46,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         }
         #endregion
 
-        #region Edycja pytania
+        #region Edycja/Tworzenie pytania
         [HttpGet]
         public async Task<IActionResult> Edit(int id, int questionsSetId)
         {
@@ -85,12 +76,9 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(QuestionViewModel questionVM)
         {
-            if (questionVM.QuestionsSetId == default(int))
-                ModelState.AddModelError(string.Empty,
-                    "Należy wskazać w skład którego zestawu wejdzie pytanie");
-            
             if (!ModelState.IsValid)
                 return View(questionVM);
+
             try
             {
                 if (questionVM.Id == default(int))

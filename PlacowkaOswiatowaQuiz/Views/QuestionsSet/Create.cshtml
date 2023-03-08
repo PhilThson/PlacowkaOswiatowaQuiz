@@ -8,10 +8,10 @@
 <div id="divAlertArea">
     <partial name="~/Views/UIComponents/_bootstrapAlert.cshtml" />
 </div>
-<div asp-validation-summary="All" class="text-danger container-flex md-2">
-    <span>Popraw następujące błędy i spróbuj ponownie:</span>
-</div>
-<form method="post" enctype="multipart/form-data">
+<form asp-action="Create" method="post" enctype="multipart/form-data" id="createQSForm">
+    <div asp-validation-summary="All" class="text-danger container-flex md-2">
+        <span>Popraw następujące błędy i spróbuj ponownie:</span>
+    </div>
     <div class="form-floating mb-3">
         <input asp-for="@Model.SkillDescription" type="text" class="form-control"
                placeholder="Uczeń potrafi czytać">
@@ -40,17 +40,17 @@
         <div id="Ratings" class="container">
             @if(Model?.QuestionsSetRatings?.Count() > 0)
              {
-                    @for(int i = 0; i < Model.QuestionsSetRatings.Count(); i++)
-                    {
-                        <div id="rating_@i" class="mb-2 d-flex g-3">
-                            <input type="text" class="form-control"
-                                    name="QuestionsSetRatings[@i]"
-                                    value="@Model.QuestionsSetRatings[i]" />
-                            <a href="#" class="btn btn-link" onclick="deleteRating(@i)">
-                                Usuń
-                            </a>
-                        </div>
-                    }
+                @for(int i = 0; i < Model.QuestionsSetRatings.Count(); i++)
+                {
+                    <div id="rating_@i" class="mb-2 d-flex g-3">
+                        <input type="text" class="form-control"
+                                name="QuestionsSetRatings[@i]"
+                                value="@Model.QuestionsSetRatings[i]" />
+                        <a href="#" class="btn btn-link" onclick="deleteRating(@i)">
+                            Usuń
+                        </a>
+                    </div>
+                }
              }
         </div>
         <div class="d-grid gap-2 col-4">
@@ -99,7 +99,7 @@
             '<input type="text" class="form-control"' +
             ' name="QuestionsSetRatings[' + i + ']"/>' +
             '<a href="#" class="btn btn-link"' +
-            ' onclick="DeleteRating(' + i + ')"' + '>Usuń</a>' +
+            ' onclick="deleteRating(' + i + ')"' + '>Usuń</a>' +
             '</div>');
         i++;
     }

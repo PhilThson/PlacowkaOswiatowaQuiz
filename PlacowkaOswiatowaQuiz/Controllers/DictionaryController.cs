@@ -50,7 +50,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             }
             catch(HttpRequestException e)
             {
-                TempData["errorAlert"] = $"Nieudało się pobrać obszarów. {e.Message}";
+                TempData["errorAlert"] = $"Nie udało się pobrać obszarów. {e.Message}";
                 return View(areas);
             }
         }
@@ -120,7 +120,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             }
             catch(HttpRequestException e)
             {
-                TempData["errorAlert"] = $"Nieudało się pobrać skal trudności. {e.Message}";
+                TempData["errorAlert"] = $"Nie udało się pobrać skal trudności. {e.Message}";
                 return View(difficulties);
             }
         }

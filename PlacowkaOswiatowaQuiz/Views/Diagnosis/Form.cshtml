@@ -46,13 +46,12 @@
                 @Model.Difficulty.Description (@Model.Difficulty.Name)
             </label>
         </div>
-        <div class="row" id="partialQuestionsSet">
+        <div class="row" id="partialQuestionsSet" tabindex="0">
         </div>
         <br />
         <div class="row" id="partialResult">
         </div>
         <div class="container overflow-hidden text-center mt-3">
-            @*<div class="d-grid d-flex gap-2 justify-content-between mx-auto">*@
             <div class="row g-2">
                 <div class="col">
                     <button class="btn btn-secondary me-md-2" type="button"
@@ -133,6 +132,7 @@
             $('#previousQS').prop('disabled', true);
         }
         loadDiagnosisPartials(requestedQuestionsSetId, @Model.Id);
+        $("#partialQuestionsSet").focus();
     });
 
     //pobranie następnego zestawu pytań
@@ -146,6 +146,7 @@
             $('#nextQS').prop('disabled', true);
         }
         loadDiagnosisPartials(requestedQuestionsSetId, @Model.Id);
+        $("#partialQuestionsSet").focus();
     });
 
     //obsługa zakończenia diagnozy

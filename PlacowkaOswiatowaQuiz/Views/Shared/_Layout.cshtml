@@ -91,7 +91,7 @@
     <script src="~/lib/sweetalert/sweetalert.min.js"></script>
     <script src="~/lib/sweetalert/sweetalert2.js"></script>
     <script src="~/js/toastr.js"></script>
-    <partial name="_ValidationScriptsPartial" />
+    @await Html.PartialAsync("_ValidationScriptsPartial")
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
