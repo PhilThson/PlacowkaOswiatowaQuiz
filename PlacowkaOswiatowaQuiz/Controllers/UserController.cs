@@ -10,9 +10,11 @@ using PlacowkaOswiatowaQuiz.Interfaces;
 using PlacowkaOswiatowaQuiz.Shared.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using PlacowkaOswiatowaQuiz.Helpers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PlacowkaOswiatowaQuiz.Controllers
 {
+    [AllowAnonymous]
     public class UserController : Controller
     {
         private readonly IUserService _userService;
@@ -39,10 +41,21 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 };
 
                 var cookie = await _userService.Login(user);
-                HttpContext.Session.SetString("quiz-user", cookie.First());
-                HttpContext.Session.SetString("user-email", user.Email);
+                HttpContext.Session.SetString(Constants.QuizUserKey, cookie.First());
+                HttpContext.Session.SetString(Constants.UserEmailKey, user.Email);
 
-                return Ok("Zalogowano!");
+                string returnUrl = "/";
+                if (HttpContext.Session.Keys.Contains(Constants.ReturnUrlKey))
+                {
+                    returnUrl = HttpContext.Session.GetString(Constants.ReturnUrlKey);
+                    HttpContext.Session.Remove(Constants.ReturnUrlKey);
+                }
+
+                return Ok(new
+                {
+                    message = "Zalogowano!",
+                    returnUrl = returnUrl
+                });
             }
             catch (Exception e)
             {
@@ -95,7 +108,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             try
             {
                 //Walidacja
-                if (!HttpContext.Session.Keys.Contains("quiz-user"))
+                if (!HttpContext.Session.Keys.Contains(Constants.QuizUserKey))
                     throw new DataValidationException(
                         "Nie znaleziono zalogowanego użytkownika");
 

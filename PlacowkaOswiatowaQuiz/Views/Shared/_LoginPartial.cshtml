@@ -1,13 +1,13 @@
 ﻿@model LoginViewModel
 
-@if (Context.Session.Keys.Contains("quiz-user"))
+@if (Context.Session.Keys.Contains(Constants.QuizUserKey))
 {
     <ul class="navbar-nav" style="padding-right:150px">
         <li class="nav-item dropdown">
             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
                role="button" aria-haspopup="true" aria-expanded="false"
                id="logoutDropdown">
-                @Context.Session.GetString("user-email")
+                @Context.Session.GetString(Constants.UserEmailKey)
             </a>
             <div class="dropdown-menu dropdown-menu-right text-center"
                  aria-labelledby="logoutDropdown">
@@ -79,12 +79,15 @@ else
             data: $("#loginForm").serialize()
         })
         .done(function (result, status) {
-            toastr.success(result, null,
-                { timeOut: 5000, positionClass: "toast-bottom-right" });
+            toastr.success(result.message, null,
+                { timeOut: 3500, positionClass: "toast-bottom-right" });
 
+            if (result.returnUrl == "") {
+                result.returnUrl = "/";
+            }
             setTimeout(function () {
-                location.reload();
-            }, 5000);
+                location.href = result.returnUrl;
+            }, 3000);
         })
         .fail(function (result, status) {
             if (result.responseText == "") {
@@ -105,11 +108,11 @@ else
         })
         .done(function (result, status) {
             toastr.success(result, null,
-                { timeOut: 5000, positionClass: "toast-bottom-right" });
+                { timeOut: 3000, positionClass: "toast-bottom-right" });
 
             setTimeout(function () {
                 location.href = "/";
-            }, 5000);
+            }, 3000);
         })
         .fail(function (result, status) {
             if (result.responseText == "") {

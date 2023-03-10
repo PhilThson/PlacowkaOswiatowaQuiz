@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using PlacowkaOswiatowaQuiz.Helpers;
 using PlacowkaOswiatowaQuiz.Interfaces;
 using PlacowkaOswiatowaQuiz.Models;
 using PlacowkaOswiatowaQuiz.Services;
@@ -7,6 +9,7 @@ using System.Diagnostics;
 
 namespace PlacowkaOswiatowaQuiz.Controllers
 {
+    [AllowAnonymous]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -18,6 +21,14 @@ namespace PlacowkaOswiatowaQuiz.Controllers
 
         public IActionResult Index()
         {
+            if (HttpContext.Session.Keys.Contains(Constants.ErrorMessageKey))
+            {
+                TempData["errorAlert"] =
+                    HttpContext.Session.GetString(Constants.ErrorMessageKey);
+
+                HttpContext.Session.Remove(Constants.ErrorMessageKey);
+            }
+
             return View();
         }
 
@@ -25,6 +36,6 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }  
+        } 
     }
 }

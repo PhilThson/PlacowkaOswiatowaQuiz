@@ -18,7 +18,7 @@ namespace PlacowkaOswiatowaQuiz.Helpers
         {
             var httpContext = _accessor.HttpContext;
 
-            var quizUser = httpContext?.Session.GetString("quiz-user");
+            var quizUser = httpContext?.Session.GetString(Constants.QuizUserKey);
 
             if (!string.IsNullOrEmpty(quizUser))
                 request.Headers.Add("Cookie", quizUser);

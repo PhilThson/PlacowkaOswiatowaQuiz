@@ -1,12 +1,17 @@
 using PlacowkaOswiatowaQuiz.Controllers;
 using PlacowkaOswiatowaQuiz.Helpers;
+using PlacowkaOswiatowaQuiz.Helpers.Filters;
 using PlacowkaOswiatowaQuiz.Helpers.Options;
 using PlacowkaOswiatowaQuiz.Interfaces;
 using PlacowkaOswiatowaQuiz.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(o =>
+{
+    o.Filters.Add(typeof(UserLoggedInFilter));
+});
+
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IHttpClientService, HttpClientService>();
 builder.Services.AddScoped<IUserService, UserService>();
