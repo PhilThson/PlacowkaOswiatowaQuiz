@@ -7,6 +7,8 @@ using PlacowkaOswiatowaQuiz.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//Dodaje AntiForgeryToken do formularzy:
+//<form method="post">...
 builder.Services.AddControllersWithViews(o =>
 {
     o.Filters.Add(typeof(UserLoggedInFilter));
@@ -35,7 +37,7 @@ builder.Services.AddHttpClient(
         var apiSettings = provider.GetRequiredService<QuizApiSettings>();
         var apiUrl = provider.GetRequiredService<QuizApiUrl>();
         client.BaseAddress =
-            new Uri(apiUrl.Host + '/' + apiSettings.MainController + '/');
+            new Uri(apiUrl.Host + '/' + nameof(apiSettings.Data) + '/');
 
         client.Timeout = TimeSpan.FromSeconds(30);
         client.DefaultRequestHeaders.Clear();
@@ -56,7 +58,12 @@ builder.Services.AddHttpClient<IUserService, UserService>(
 
 // dodanie obsługi sesji
 builder.Services.AddDistributedMemoryCache();
-builder.Services.AddSession();
+builder.Services.AddSession(o =>
+{
+    o.Cookie.Name = ".PlacowkaOswiatowa.Session";
+    o.IdleTimeout = TimeSpan.FromMinutes(30);
+
+});
 
 var app = builder.Build();
 

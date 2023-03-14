@@ -12,12 +12,12 @@ namespace PlacowkaOswiatowaQuiz.Services
 	public class UserService : IUserService
 	{
 		private readonly HttpClient _httpClient;
-        private readonly QuizApiSettings _apiSettings;
+        private readonly User _userController;
 
         public UserService(HttpClient httpClient, QuizApiSettings apiSettings)
         {
             _httpClient = httpClient;
-            _apiSettings = apiSettings;
+            _userController = apiSettings.User;
         }
 
         public async Task<IEnumerable<string>> Login(SimpleUserDto simpleUser)
@@ -26,7 +26,7 @@ namespace PlacowkaOswiatowaQuiz.Services
                 Encoding.UTF8, "application/json");
 
             var response =
-                await _httpClient.PostAsync(_apiSettings.User.Login, dataToSend);
+                await _httpClient.PostAsync(_userController.Login, dataToSend);
 
             var content = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)
@@ -36,10 +36,10 @@ namespace PlacowkaOswiatowaQuiz.Services
             return cookie;
         }
 
-        public async Task<SimpleUserDto> GetByEmail(string email)
+        public async Task<SimpleUserDto?> GetByEmail(string email)
         {
             var response = await _httpClient.GetAsync(
-                _apiSettings.User.ByEmail + "?email=" + email);
+                _userController.ByEmail + "?email=" + email);
             response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)
@@ -53,7 +53,7 @@ namespace PlacowkaOswiatowaQuiz.Services
             var dataToSend = new StringContent(JsonConvert.SerializeObject(createUser),
                 Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PostAsync("", dataToSend);
+            var response = await _httpClient.PostAsync(string.Empty, dataToSend);
             var content = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)
                 throw new HttpRequestException(content);
@@ -61,16 +61,17 @@ namespace PlacowkaOswiatowaQuiz.Services
 
         public async Task<string> GetData()
         {
-            var response = await _httpClient.GetAsync(_apiSettings.User.Data);
+            var response = await _httpClient.GetAsync(_userController.Data);
             var content = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)
                 throw new HttpRequestException(content);
+
             return content;
         }
 
         public async Task Logout()
         {
-            var response = await _httpClient.PostAsync(_apiSettings.User.Logout, null);
+            var response = await _httpClient.PostAsync(_userController.Logout, null);
             var content = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)
                 throw new HttpRequestException(content);

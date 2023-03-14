@@ -14,7 +14,7 @@ namespace PlacowkaOswiatowaQuiz.Services
 	{
         #region Pola prywatne
         private readonly HttpClient _client;
-        private readonly QuizApiSettings _apiSettings;
+        private readonly Data _dataController;
         private readonly IDictionary<Type, string> _endpoints;
         #endregion
 
@@ -25,7 +25,7 @@ namespace PlacowkaOswiatowaQuiz.Services
             IHttpClientFactory httpClientFactory)
         {
             _client = httpClientFactory.CreateClient(apiUrl.ClientName);
-            _apiSettings = apiSettings;
+            _dataController = apiSettings.Data;
             _endpoints = GetEndpoints();
         }
         #endregion
@@ -90,7 +90,7 @@ namespace PlacowkaOswiatowaQuiz.Services
             if (!response.IsSuccessStatusCode)
                 throw new HttpRequestException(content);
 
-            if (!int.TryParse(response.Headers.Location.Segments.Last(), out int objectId))
+            if (!int.TryParse(response.Headers.Location?.Segments.Last(), out int objectId))
                 throw new DataNotFoundException(
                     "Nie udało się odczytać identyfikatora utworzonego obiektu");
 
@@ -155,21 +155,21 @@ namespace PlacowkaOswiatowaQuiz.Services
         private Dictionary<Type, string> GetEndpoints() =>
             new Dictionary<Type, string>
             {
-                { typeof(EmployeeViewModel), _apiSettings.Employees },
-                { typeof(StudentViewModel), _apiSettings.Students },
-                { typeof(QuestionsSetViewModel), _apiSettings.QuestionsSets },
-                { typeof(CreateQuestionsSetDto), _apiSettings.QuestionsSets },
-                { typeof(QuestionViewModel), _apiSettings.Questions },
-                { typeof(DiagnosisViewModel), _apiSettings.Diagnosis },
-                { typeof(CreateDiagnosisDto), _apiSettings.Diagnosis },
-                { typeof(AreaViewModel), _apiSettings.Areas },
-                { typeof(DifficultyViewModel), _apiSettings.Difficulties },
-                { typeof(AttachmentViewModel), _apiSettings.Attachments },
-                { typeof(AttachmentFileViewModel), _apiSettings.Attachments },
-                { typeof(RatingViewModel), _apiSettings.Ratings },
-                { typeof(ResultViewModel), _apiSettings.Results },
-                { typeof(CreateResultDto), _apiSettings.Results },
-                { typeof(ReportDto), _apiSettings.Reports }
+                { typeof(EmployeeViewModel), _dataController.Employees },
+                { typeof(StudentViewModel), _dataController.Students },
+                { typeof(QuestionsSetViewModel), _dataController.QuestionsSets },
+                { typeof(CreateQuestionsSetDto), _dataController.QuestionsSets },
+                { typeof(QuestionViewModel), _dataController.Questions },
+                { typeof(DiagnosisViewModel), _dataController.Diagnosis },
+                { typeof(CreateDiagnosisDto), _dataController.Diagnosis },
+                { typeof(AreaViewModel), _dataController.Areas },
+                { typeof(DifficultyViewModel), _dataController.Difficulties },
+                { typeof(AttachmentViewModel), _dataController.Attachments },
+                { typeof(AttachmentFileViewModel), _dataController.Attachments },
+                { typeof(RatingViewModel), _dataController.Ratings },
+                { typeof(ResultViewModel), _dataController.Results },
+                { typeof(CreateResultDto), _dataController.Results },
+                { typeof(ReportDto), _dataController.Reports }
             };
 
         private StringBuilder ResolveQueryParams((string, object)[] queryParams)

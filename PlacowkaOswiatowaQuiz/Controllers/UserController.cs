@@ -41,13 +41,16 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                 };
 
                 var cookie = await _userService.Login(user);
+                //zwracana jest kolekcja ciągów znakowych, gdyby został przekroczony
+                //dopuszczalny rozmiar pojedynczej wartości klucza sesji
                 HttpContext.Session.SetString(Constants.QuizUserKey, cookie.First());
                 HttpContext.Session.SetString(Constants.UserEmailKey, user.Email);
 
                 string returnUrl = "/";
                 if (HttpContext.Session.Keys.Contains(Constants.ReturnUrlKey))
                 {
-                    returnUrl = HttpContext.Session.GetString(Constants.ReturnUrlKey);
+                    returnUrl = HttpContext.Session.GetString(Constants.ReturnUrlKey) ??
+                        returnUrl;
                     HttpContext.Session.Remove(Constants.ReturnUrlKey);
                 }
 
@@ -107,15 +110,12 @@ namespace PlacowkaOswiatowaQuiz.Controllers
         {
             try
             {
-                //Walidacja
                 if (!HttpContext.Session.Keys.Contains(Constants.QuizUserKey))
                     throw new DataValidationException(
                         "Nie znaleziono zalogowanego użytkownika");
 
-                //odpytanie endpointu do wylogowania,
                 await _userService.Logout();
 
-                //wyczyszczenie sesji
                 HttpContext.Session.Clear();
 
                 return Ok("Wylogowano");

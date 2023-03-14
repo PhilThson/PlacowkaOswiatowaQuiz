@@ -31,7 +31,7 @@ namespace PlacowkaOswiatowaQuiz.Services
             var httpClient = _httpClientFactory.CreateClient(_apiUrl.ClientName);
             httpClient.Timeout = TimeSpan.FromSeconds(70);
             var response = await httpClient.PostAsync(
-                $"{_apiSettings.Reports}/{diagnosisId}", null);
+                $"{_apiSettings.Data.Reports}/{diagnosisId}", null);
 
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<BaseReportDto>();
