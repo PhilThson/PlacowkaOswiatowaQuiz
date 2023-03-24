@@ -1,11 +1,10 @@
-﻿using System;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace PlacowkaOswiatowaQuiz.Helpers.Filters
 {
-	public class UserLoggedInAttribute : TypeFilterAttribute
+    public class UserLoggedInAttribute : TypeFilterAttribute
 	{
 		public UserLoggedInAttribute() : base(typeof(UserLoggedInFilter))
 		{
@@ -27,11 +26,8 @@ namespace PlacowkaOswiatowaQuiz.Helpers.Filters
                 &&  !context.HttpContext.Session.Keys.Contains(Constants.QuizUserKey))
             {
                 string returnUrl = context.HttpContext.Request.Path.Value ?? "/";
-                context.HttpContext.Session.SetString(
-                    Constants.ErrorMessageKey, _message);
-
-                context.HttpContext.Session.SetString(
-                    Constants.ReturnUrlKey, returnUrl);
+                context.HttpContext.Session.SetString(Constants.ErrorMessageKey, _message);
+                context.HttpContext.Session.SetString(Constants.ReturnUrlKey, returnUrl);
 
                 context.Result = new RedirectToRouteResult(
                     new RouteValueDictionary(new

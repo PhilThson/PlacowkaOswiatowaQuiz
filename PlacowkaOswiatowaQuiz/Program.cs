@@ -1,9 +1,13 @@
-using PlacowkaOswiatowaQuiz.Controllers;
+using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel;
+using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption;
+using Microsoft.AspNetCore.DataProtection;
 using PlacowkaOswiatowaQuiz.Helpers;
 using PlacowkaOswiatowaQuiz.Helpers.Filters;
 using PlacowkaOswiatowaQuiz.Helpers.Options;
 using PlacowkaOswiatowaQuiz.Interfaces;
 using PlacowkaOswiatowaQuiz.Services;
+using System.Security.Cryptography.X509Certificates;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -62,16 +66,33 @@ builder.Services.AddSession(o =>
 {
     o.Cookie.Name = ".PlacowkaOswiatowa.Session";
     o.IdleTimeout = TimeSpan.FromMinutes(30);
+    o.Cookie.IsEssential = true;
+    //o.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    //o.Cookie.SameSite = SameSiteMode.Strict;
 
 });
 
+//builder.Services.AddDataProtection()
+//    .PersistKeysToFileSystem(new DirectoryInfo(@"/keys/"))
+//    .ProtectKeysWithCertificate(
+//        new X509Certificate2("/https/PlacowkaOswiatowaQuiz.pfx", "Str0ngP@ssw0rd2"))
+//    .UnprotectKeysWithAnyCertificate(
+//        new X509Certificate2("/https/PlacowkaOswiatowaQuiz.pfx", "Str0ngP@ssw0rd2"))
+//    .UseCryptographicAlgorithms(
+//        new AuthenticatedEncryptorConfiguration
+//        {
+//            EncryptionAlgorithm = EncryptionAlgorithm.AES_256_CBC,
+//            ValidationAlgorithm = ValidationAlgorithm.HMACSHA256
+//        })
+//    ;
+
 var app = builder.Build();
 
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
-}
+//if (!app.Environment.IsDevelopment())
+//{
+//    app.UseExceptionHandler("/Home/Error");
+//    app.UseHsts();
+//}
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

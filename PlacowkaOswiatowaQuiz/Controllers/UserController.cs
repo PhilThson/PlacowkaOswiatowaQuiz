@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using System.Security.Cryptography;
-using PlacowkaOswiatowaQuiz.Helpers.Options;
+﻿using Microsoft.AspNetCore.Mvc;
 using PlacowkaOswiatowaQuiz.Shared.DTOs;
 using PlacowkaOswiatowaQuiz.Interfaces;
 using PlacowkaOswiatowaQuiz.Shared.ViewModels;
-using Microsoft.AspNetCore.Identity;
 using PlacowkaOswiatowaQuiz.Helpers;
 using Microsoft.AspNetCore.Authorization;
 
@@ -18,10 +11,12 @@ namespace PlacowkaOswiatowaQuiz.Controllers
     public class UserController : Controller
     {
         private readonly IUserService _userService;
+        private readonly ILogger<UserController> _logger;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, ILogger<UserController> logger)
         {
             _userService = userService;
+            _logger = logger;
         }
 
         [HttpPost]
@@ -99,6 +94,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             {
                 TempData["errorAlert"] = $"Nie udało się utworzyć użytkownika." +
                     $"\nOdpowiedź serwera: '{e.Message}'";
+                _logger.LogError(e, "Błąd połączenia z serwerem");
 
                 return View(register);
             } 
@@ -136,6 +132,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             }
             catch (Exception e)
             {
+                _logger.LogError(e, "Błąd połączenia z serwerem");
                 return BadRequest(e.Message);
             }
         }

@@ -7,11 +7,11 @@
     .done(function (data, status) {
         $.each(data, function (i, difficulty) {
             if (difficulty.id != currentDifficultyId)
-                $("#difficultiesDropdown").append(
+                $("#areasDropdown").append(
                     "<option value=" + difficulty.id + ">" +
                     difficulty.description + "</option>");
             else
-                $("#difficultiesDropdown").append(
+                $("#areasDropdown").append(
                     "<option selected value=" + difficulty.id + ">" +
                     difficulty.description + "</option>");
         });
