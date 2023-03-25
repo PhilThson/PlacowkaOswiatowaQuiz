@@ -67,6 +67,7 @@ builder.Services.AddSession(o =>
     o.Cookie.Name = ".PlacowkaOswiatowa.Session";
     o.IdleTimeout = TimeSpan.FromMinutes(30);
     o.Cookie.IsEssential = true;
+    //o.Cookie.HttpOnly = true;
     //o.Cookie.SecurePolicy = CookieSecurePolicy.Always;
     //o.Cookie.SameSite = SameSiteMode.Strict;
 
@@ -87,12 +88,6 @@ builder.Services.AddSession(o =>
 //    ;
 
 var app = builder.Build();
-
-//if (!app.Environment.IsDevelopment())
-//{
-//    app.UseExceptionHandler("/Home/Error");
-//    app.UseHsts();
-//}
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

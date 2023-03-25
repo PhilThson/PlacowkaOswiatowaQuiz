@@ -5,15 +5,15 @@
         url: "/Dictionary/GetAreas"
     })
     .done(function (data, status) {
-        $.each(data, function (i, difficulty) {
-            if (difficulty.id != currentDifficultyId)
+        $.each(data, function (i, area) {
+            if (area.id != currentAreaId)
                 $("#areasDropdown").append(
-                    "<option value=" + difficulty.id + ">" +
-                    difficulty.description + "</option>");
+                    "<option value=" + area.id + ">" +
+                    area.description + "</option>");
             else
                 $("#areasDropdown").append(
-                    "<option selected value=" + difficulty.id + ">" +
-                    difficulty.description + "</option>");
+                    "<option selected value=" + area.id + ">" +
+                    area.description + "</option>");
         });
     })
     .fail(function (result, status) {

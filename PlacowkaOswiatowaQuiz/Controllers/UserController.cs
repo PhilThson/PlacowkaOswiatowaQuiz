@@ -35,10 +35,12 @@ namespace PlacowkaOswiatowaQuiz.Controllers
                     Password = loginViewModel.Password
                 };
 
-                var cookie = await _userService.Login(user);
+                var cookies = await _userService.Login(user);
+                _logger.LogInformation("Ciastko: {cookie}, dla użytkownika: {email}",
+                    cookies.First(), user.Email);
                 //zwracana jest kolekcja ciągów znakowych, gdyby został przekroczony
                 //dopuszczalny rozmiar pojedynczej wartości klucza sesji
-                HttpContext.Session.SetString(Constants.QuizUserKey, cookie.First());
+                HttpContext.Session.SetString(Constants.QuizUserKey, cookies.First());
                 HttpContext.Session.SetString(Constants.UserEmailKey, user.Email);
 
                 string returnUrl = "/";
@@ -57,6 +59,7 @@ namespace PlacowkaOswiatowaQuiz.Controllers
             }
             catch (Exception e)
             {
+                _logger.LogError(e, "Błąd logowania użytkownika");
                 return BadRequest($"Wystąpił błąd: '{e.Message}'");
             }
         }

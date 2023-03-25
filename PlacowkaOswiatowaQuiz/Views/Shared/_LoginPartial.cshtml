@@ -29,8 +29,7 @@ else
                 Logowanie
             </a>
             <div class="dropdown-menu dropdown-menu-right mx-3" aria-labelledby="navBarDropdown">
-                @* AntiForgeryToken jest dodawany automatycznie przy dodaniu asp-action=,
-                    ale przy zapytaniach ajax nie bedzie zawarty *@
+                @* AntiForgeryToken jest dodawany automatycznie przy dodaniu formularza asp-action=... *@
                 <form asp-controller="User" asp-action="Login" class="px-3" id="loginForm">
                     <div class="form-group mb-3">
                         <label asp-for="@Model.Email" class="control-label"></label>
@@ -50,9 +49,9 @@ else
                             class="btn btn-sm btn-outline-primary">
                             Zarejestruj
                         </a>
-                        @*<a href="#" type="button" id="dataButton" class="btn btn-sm btn-link">
+                        <a href="#" type="button" id="dataButton" class="btn btn-sm btn-link">
                             Test Data
-                        </a>*@
+                        </a>
                     </div>
                 </form>
             </div>
