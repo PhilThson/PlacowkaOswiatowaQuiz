@@ -29,7 +29,7 @@ namespace PlacowkaOswiatowaQuiz.Services
         public async Task<BaseReportDto> CreateDiagnosisReport(int diagnosisId)
         {
             var httpClient = _httpClientFactory.CreateClient(_apiUrl.ClientName);
-            httpClient.Timeout = TimeSpan.FromSeconds(70);
+            httpClient.Timeout = TimeSpan.FromSeconds(90);
             var response = await httpClient.PostAsync(
                 $"{_apiSettings.Data.Reports}/{diagnosisId}", null);
 
