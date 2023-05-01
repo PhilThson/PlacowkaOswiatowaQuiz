@@ -1,0 +1,16 @@
+﻿@model IEnumerable<RatingViewModel>
+
+@for (int i = 0; i < Model.Count(); i++)
+{
+    <div class="row g-3 align-items-center form-floating">
+        <form asp-controller="QuestionsSet" asp-action="EditRating" method="post" class="d-flex">
+            <input type="hidden" asp-for="@Model.ElementAt(i).Id" value="@Model.ElementAt(i).Id" />
+            <input type="hidden" asp-for="@Model.ElementAt(i).QuestionsSetId" value="@Model.ElementAt(i).QuestionsSetId" />
+            <input asp-for="@Model.ElementAt(i).RatingDescription" class="form-control" />
+            <span asp-validation-for="@Model.ElementAt(i).RatingDescription" class="text-danger"></span>
+
+            <button class="btn btn-sm btn-info" type="submit">Zapisz</button>
+
+        </form>
+    </div>
+}

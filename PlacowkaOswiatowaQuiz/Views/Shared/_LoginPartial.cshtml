@@ -1,0 +1,147 @@
+﻿@model LoginViewModel
+
+@if (Context.Session.Keys.Contains(Constants.QuizUserKey))
+{
+    <ul class="navbar-nav" style="padding-right:150px">
+        <li class="nav-item dropdown">
+            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
+               role="button" aria-haspopup="true" aria-expanded="false"
+               id="logoutDropdown">
+                @Context.Session.GetString(Constants.UserEmailKey)
+            </a>
+            <div class="dropdown-menu dropdown-menu-right text-center"
+                 aria-labelledby="logoutDropdown">
+                <form asp-controller="User" asp-action="Logout" id="logoutForm">
+                    <a href="#" type="button" class="btn btn-link" id="logoutButton">
+                        Wyloguj
+                    </a>
+                </form>
+            </div>
+        </li>
+    </ul>
+}
+else
+{
+    <ul class="navbar-nav" style="padding-right:200px">
+        <li class="nav-item dropdown">
+            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
+               role="button" aria-haspopup="true" aria-expanded="false" id="navBarDropdown">
+                Logowanie
+            </a>
+            <div class="dropdown-menu dropdown-menu-right mx-3" aria-labelledby="navBarDropdown">
+                @* AntiForgeryToken jest dodawany automatycznie przy dodaniu formularza asp-action=... *@
+                <form asp-controller="User" asp-action="Login" class="px-3" id="loginForm">
+                    <div class="form-group mb-3">
+                        <label asp-for="@Model.Email" class="control-label"></label>
+                        <input asp-for="@Model.Email" class="form-control" type="text" required />
+                        <span asp-validation-for="@Model.Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label asp-for="@Model.Password" class="control-label"></label>
+                        <input asp-for="@Model.Password" class="form-control" type="password" required />
+                        <span asp-validation-for="@Model.Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-group d-grid gap-2 d-md-flex">
+                        <a href="#" type="button" class="btn btn-sm btn-primary" id="loginButton">
+                            Zaloguj
+                        </a>
+                        <a asp-controller="User" asp-action="Register" type="button"
+                            class="btn btn-sm btn-outline-primary">
+                            Zarejestruj
+                        </a>
+                        @*<a href="#" type="button" id="dataButton" class="btn btn-sm btn-link">
+                            Test
+                        </a>*@
+                    </div>
+                </form>
+            </div>
+        </li>
+    </ul>
+}
+
+<script>
+
+    $(document).ready(function () {
+        setLoginValidation();
+    });
+
+    $("#loginButton").click(function (event) {
+        event.preventDefault();
+        var isFormValid = $("#loginForm").valid();
+        if (isFormValid == false) {
+            return;
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/User/Login",
+            data: $("#loginForm").serialize()
+        })
+        .done(function (result, status) {
+            toastr.success(result.message, null,
+                { timeOut: 3500, positionClass: "toast-bottom-right" });
+
+            if (result.returnUrl == "") {
+                result.returnUrl = "/";
+            }
+            setTimeout(function () {
+                location.href = result.returnUrl;
+            }, 3000);
+        })
+        .fail(function (result, status) {
+            if (result.responseText == "") {
+                result.responseText =
+                    "Wystąpił atak XSRF - błąd walidacji tokenu AntiForgery";
+            }
+            toastr.error(result.responseText, null,
+                { timeOut: 7000, positionClass: "toast-bottom-right" });
+        });
+    });
+
+    $("#logoutButton").click(function (event) {
+        event.preventDefault();
+        $.ajax({
+            type: "POST",
+            url: "/User/Logout",
+            data: $("#logoutForm").serialize()
+        })
+        .done(function (result, status) {
+            toastr.success(result, null,
+                { timeOut: 3000, positionClass: "toast-bottom-right" });
+
+            setTimeout(function () {
+                location.href = "/";
+            }, 3000);
+        })
+        .fail(function (result, status) {
+            if (result.responseText == "") {
+                result.responseText =
+                    "Wystąpił atak XSRF - błąd walidacji tokenu AntiForgery";
+            }
+            toastr.error(result.responseText, null,
+                { timeOut: 7000, positionClass: "toast-bottom-right" });
+        });
+    });
+
+    $("#dataButton").click(function () {
+        $.ajax({
+            type: "GET",
+            url: "/User/Data"
+        })
+        .done(function (result, status) {
+            toastr.success(result, null,
+                { timeOut: 5000, positionClass: "toast-bottom-right" });
+        })
+        .fail(function (result, status) {
+            toastr.error(result.responseText, null,
+                { timeOut: 7000, positionClass: "toast-bottom-right" });
+        });
+    });
+
+    var setLoginValidation = function () {
+        $("#loginForm").removeData("validator");
+        $("#loginForm").removeData("unobtrusiveValidation");
+        $.validator.unobtrusive.parse("#loginForm");
+    }
+
+</script>

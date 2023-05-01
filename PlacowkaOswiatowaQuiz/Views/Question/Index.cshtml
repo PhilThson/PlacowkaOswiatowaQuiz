@@ -1,0 +1,64 @@
+﻿@model IEnumerable<QuestionViewModel>
+@{ViewData["Title"] = "Pytania";}
+
+<div class="panel-heading">
+    <div class="row">
+        <div class="col-md-7">
+            <h5><b>Lista pytań</b></h5>
+        </div>
+        <div class="col-md-12">
+            <div id="divAlertArea">
+                <partial name="~/Views/UIComponents/_bootstrapAlert.cshtml" />
+            </div>
+            <div class="d-flex justify-content-md-end">
+                <a class="btn btn-primary" asp-controller="Question" asp-action="Edit">
+                    Dodaj pytanie
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="panel-body scroll panel-height">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.Id)</th>
+                <th>@Html.DisplayNameFor(model => model.Content)</th>
+                <th>@Html.DisplayNameFor(model => model.Description)</th>
+                <th>@Html.DisplayNameFor(model => model.QuestionsSetId)</th>
+                <th style="font-weight:normal;">Akcje</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @foreach (var question in Model)
+            {
+                <tr id="tr_@question.Id">
+                    <td>@Html.DisplayFor(item => question.Id)</td>
+                    <td>@Html.DisplayFor(item => question.Content)</td>
+                    <td>@Html.DisplayFor(item => question.Description)</td>
+                    <td>@Html.DisplayFor(item => question.QuestionsSetId)</td>
+                    <td>
+                        <div>
+                            <a class="btn btn-sm btn-info" asp-controller="Question"
+                               asp-action="Edit" asp-route-id="@question.Id">
+                                Edytuj
+                            </a>
+                            <a class="btn btn-sm btn-danger" onclick="DeleteItem('Question', '@question.Id')">
+                                Usuń
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script src="~/js/DeleteItem.js"></script>
+}

@@ -1,0 +1,31 @@
+﻿@model IEnumerable<EmployeeViewModel>
+@{ViewData["Title"] = "Pracownicy";}
+
+<div id="divAlertArea">
+    <partial name="~/Views/UIComponents/_bootstrapAlert.cshtml" />
+</div>
+<div class="row pb-3">
+    @foreach (var employee in Model)
+    {
+        <div class="col-lg-4">
+            <div class="container p-2">
+                <div class="col-12 p-1 m-1" style="border:1px solid #008cba; border-radius:5px;">
+                    @*<div class="card">*@
+                    <div>
+                        <div class="pl-1">
+                            <p class="card-title h5 text-primary">@employee.FirstName @employee.LastName</p>
+                            <p class="card-title">e-mail: <b>@employee.Email</b></p>
+                        </div>
+                        @*<div class="pl-1">
+                                <p>Zarobki: <b>@string.Format("{0:#.00}", Convert.ToDecimal(employee.Salary))</b> PLN</p>
+                            </div>*@
+                        <div class="pl-1">
+                            <p>Data urodzenia: <b>@employee.DateOfBirth.Value.ToString("yyyy-MM-dd")</b></p>
+                        </div>
+                    </div>
+                    @*</div>*@
+                </div>
+            </div>
+        </div>
+    }
+</div>

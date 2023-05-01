@@ -1,0 +1,65 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>b59b1ad9-f710-43de-b658-4a3ea2164342</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PlacowkaOswiatowaQuiz.Shared\PlacowkaOswiatowaQuiz.Shared.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Views\QuestionsSet\" />
+    <Folder Include="Views\UIComponents\" />
+    <Folder Include="Views\Dictionary\" />
+    <Folder Include="wwwroot\lib\sweetalert\" />
+    <Folder Include="Services\" />
+    <Folder Include="Interfaces\" />
+    <Folder Include="Helpers\Extensions\" />
+    <Folder Include="wwwroot\images\" />
+    <Folder Include="Views\User\" />
+    <Folder Include="Helpers\Filters\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Newtonsoft.Json" />
+    <None Remove="Views\QuestionsSet\" />
+    <None Remove="Views\UIComponents\" />
+    <None Remove="Views\Dictionary\" />
+    <None Remove="Views\Diagnosis\" />
+    <None Remove="Services\" />
+    <None Remove="Interfaces\" />
+    <None Remove="Helpers\Extensions\" />
+    <None Remove="Views\User\" />
+    <None Remove="Helpers\Filters\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.14" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="wwwroot\lib\sweetalert\" />
+    <Content Remove="wwwroot\images\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Update="Views\Shared\_Layout.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\images\duck.gif">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\images\learning.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+</Project>

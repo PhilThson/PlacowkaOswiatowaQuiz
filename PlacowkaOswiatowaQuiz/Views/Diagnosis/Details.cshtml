@@ -1,0 +1,150 @@
+﻿@model DiagnosisSummaryViewModel
+@{
+    ViewData["Title"] = "Diagnoza - podsumowanie";
+}
+
+<fieldset>
+    <legend class="w-auto d-flex justify-content-center heading">
+        <b>Podsumowanie formularza diagnozy o numerze: @Model.Id</b>
+    </legend>
+    <div id="divAlertArea">
+        <partial name="~/Views/UIComponents/_bootstrapAlert.cshtml" />
+    </div>
+    <div class="container-fluid">
+        <div class="row mb-3 mt-3">
+            <p class="fs-5 fw-bold">
+                @Html.DisplayNameFor(m => m.Institution)
+            </p>
+            <label class="col-sm-6 control-label fst-italic">
+                @Model.Institution
+            </label>
+        </div>
+        <div class="row mb-3 mt-3">
+            <p class="fs-5 fw-bold">
+                @Html.DisplayNameFor(m => m.CounselingCenter)
+            </p>
+            <label class="col-sm-6 control-label fst-italic">
+                @Model.CounselingCenter
+            </label>
+        </div>
+        <div class="row mb-3 mt-3">
+            <p class="fs-5 fw-bold">
+                @Html.DisplayNameFor(m => m.SchoolYear)
+            </p>
+            <label class="col-sm-6 control-label fst-italic">
+                @Model.SchoolYear
+            </label>
+        </div>
+        <div class="row mb-3">
+            <p class="fs-5 fw-bold">
+                @Html.DisplayNameFor(m => m.Employee)
+            </p>
+            <label class="col-sm-6 control-label fst-italic">
+                @Model.Employee?.FirstName @Model.Employee?.LastName
+            </label>
+        </div>
+        <div class="row mb-3">
+            <p class="fs-5 fw-bold">
+                @Html.DisplayNameFor(m => m.Student)
+            </p>
+            <label class="col-sm-6 control-label fst-italic">
+                @Model.Student?.FirstName @Model.Student?.LastName
+            </label>
+        </div>
+        <div class="row mb-3">
+            <p class="fs-5 fw-bold">
+                @Html.DisplayNameFor(m => m.Difficulty)
+            </p>
+            <label class="col-sm-6 control-label fst-italic">
+                @Model.Difficulty.Description
+            </label>
+        </div>
+        <div class="row mb-3">
+            <p class="fs-5 fw-bold">
+                @Html.DisplayNameFor(m => m.CreatedDate)
+            </p>
+            <label class="col-sm-6 control-label fst-italic">
+                @Model.CreatedDate.ToString("dd.MM.yyyy") r.
+            </label>
+        </div>
+    </div>
+
+    <div class="accordion">
+        @if (Model.QuestionsSets?.Any() == true)
+        {
+            @for (int i = 0; i < Model.QuestionsSets.Count(); i++)
+            {
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="heading_@Model.QuestionsSets[i].Id">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#panel_@Model.QuestionsSets[i].Id" aria-expanded="true"
+                                aria-controls="panel_@Model.QuestionsSets[i].Id">
+                            <p class="fw-bold">
+                                @Model.QuestionsSets[i].SkillDescription
+                            </p>
+                            &nbsp;&nbsp;&nbsp;
+                            <p class="text-end fw-light">
+                                Obszar:
+                            </p>
+                            &nbsp;
+                            <p class="text-end fw-light fst-italic">
+                                @Model.QuestionsSets[i].Area.Description
+                            </p>
+                        </button>
+                    </h2>
+                    <div id="panel_@Model.QuestionsSets[i].Id" class="accordion-collapse collapse show"
+                         aria-labelledby="heading_@Model.QuestionsSets[i].Id">
+                        <div class="accordion-body">
+                            @await Html.PartialAsync("_ResultSummary", Model.Results[i])
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="d-flex justify-content-center">
+                <p class="fst-italic">
+                    Nie znaleziono zapisanych pytań i odpowiedzi dla wybranej diagnozy
+                </p>
+            </div>
+        }
+
+    </div>
+
+    <div id="generateReport">
+    </div>
+
+    <div class="d-grid gap-2 col-6 mx-auto">
+        <a href="@Url.Action("Index", "Diagnosis")" type="button" class="btn btn-link">
+            Powrót do listy
+        </a>
+    </div>
+
+</fieldset>
+
+@section Scripts {
+
+<script>
+
+    //po załadowaniu strony, wywołanie funkcji ładującej widok przycisków raportu
+    $(document).ready(function () {
+        if (@Model.QuestionsSets?.Any().ToString().ToLower() == true) {
+            var reportId = @Model.ReportId.GetValueOrDefault();
+            loadGenerateReport(@Model.Id, reportId);
+        }
+    });
+
+    //w callbacku do załadowania widoku przycisków wywołanie funkcji ustawiającej
+    //stan przycisków w zależności od dostępności raportu
+
+    var loadGenerateReport = function (diagnosisId, reportId) {
+        $("#generateReport").load("/Report/DiagnosisReportPartial?diagnosisId=" +
+            diagnosisId + "&reportId=" + reportId, function () {
+                checkButtons();
+        });
+    };
+
+</script>
+
+}

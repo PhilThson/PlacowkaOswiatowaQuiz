@@ -1,0 +1,60 @@
+﻿@model IEnumerable<QuestionsSetViewModel>
+@{ViewData["Title"] = "Zestawy pytań";}
+
+<div class="panel panel-hash">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-md-7">
+                <h4><b>Lista Zestawów pytań</b></h4>
+            </div>
+            <div id="divAlertArea">
+                <partial name="~/Views/UIComponents/_bootstrapAlert.cshtml" />
+            </div>
+            <div class="d-flex justify-content-md-end">
+                <a class="btn btn-primary" asp-controller="QuestionsSet" asp-action="Create">
+                    Dodaj nowy zestaw
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body scroll panel-height">
+        <table class="CustomColorTable" border="1">
+            <thead>
+                <tr>
+                    <th>@Html.DisplayNameFor(m => m.Id)</th>
+                    <th>@Html.DisplayNameFor(m => m.SkillDescription)</th>
+                    <th>@Html.DisplayNameFor(m => m.Area)</th>
+                    <th>@Html.DisplayNameFor(m => m.Difficulty)</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var questionsSet in Model)
+                {
+                    <tr id="tr_@questionsSet.Id">
+                        <td>@Html.DisplayFor(modelItem => questionsSet.Id)</td>
+                        <td>@Html.DisplayFor(modelItem => questionsSet.SkillDescription)</td>
+                        <td>@Html.DisplayFor(modelItem => questionsSet.Area.Description)</td>
+                        <td>@Html.DisplayFor(modelItem => questionsSet.Difficulty.Description)</td>
+                        <td>
+                            <a class="btn btn-sm btn-info" asp-controller="QuestionsSet" asp-action="Details"
+                               asp-route-id="@questionsSet.Id">
+                                Szczegóły
+                            </a>
+                        </td>
+                        <td>
+                            <a class="btn btn-sm btn-danger" onclick="DeleteItem('QuestionsSet', '@questionsSet.Id')">
+                                Usuń
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/DeleteItem.js"></script>
+}

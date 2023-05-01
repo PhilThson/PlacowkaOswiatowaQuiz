@@ -1,0 +1,89 @@
+﻿@model QuestionsSetViewModel
+
+<div class="d-flex justify-content-center">
+    <h4 class="fw-bold">Szczegóły zestawu pytań o identyfikatorze: @Model.Id</h4>
+</div>
+<div id="divAlertArea">
+    <partial name="~/Views/UIComponents/_bootstrapAlert.cshtml" />
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <table class="CustomColorTable">
+            <tr>
+                <th>@Html.DisplayNameFor(m => m.SkillDescription)</th>
+                <td>
+                    <form class="d-flex" method="post" asp-action="EditSkill" asp-controller="QuestionsSet">
+                        <input type="hidden" asp-for="@Model.Id" />
+                        <input asp-for="@Model.SkillDescription" class="form-control me-sm-0" type="text"
+                               value="@Model.SkillDescription" name="skill">
+                        <button class="btn btn-info btn-sm" type="submit">
+                            Zapisz
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            <tr>
+                <th>@Html.DisplayNameFor(m => m.Area)</th>
+                <td>
+                    <form id="areaForm" asp-action="EditArea" class="d-flex">
+                        <input type="hidden" asp-for="@Model.Id" />
+                        <input type="hidden" asp-for="@Model.Area.Id" name="currentAreaId" />
+                        <select class="form-select" id="areasDropdown"
+                                currentAreaId="@Model.Area.Id" name="requestedAreaId">
+                        </select>
+                        <button class="btn btn-info btn-sm" type="submit">
+                            Zapisz
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            <tr>
+                <th>@Html.DisplayNameFor(m => m.Difficulty)</th>
+                <td>
+                    <form id="areaForm" asp-action="EditDifficulty" class="d-flex">
+                        <input type="hidden" asp-for="@Model.Id" />
+                        <input type="hidden" asp-for="@Model.Difficulty.Id" name="currentDifficultyId" />
+                        <select class="form-select" id="difficultiesDropdown"
+                                currentDifficultyId="@Model.Difficulty.Id" name="requestedDifficultyId">
+                        </select>
+                        <button class="btn btn-info btn-sm" type="submit">
+                            Zapisz
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            <tr>
+                <th>@Html.DisplayNameFor(m => m.Questions)</th>
+                <td>
+                    @if(Model.Questions?.Count() > 0)
+                    {
+                        @await Html.PartialAsync("_Questions", Model.Questions)
+                    }
+                    <div class="d-flex justify-content-md-end">
+                        <a asp-controller="Question" asp-action="Edit" class="btn btn-sm btn-info"
+                           asp-route-questionsSetId="@Model.Id">Dodaj pytanie</a>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th>@Html.DisplayNameFor(m => m.QuestionsSetRatings)</th>
+                <td>
+                    @await Html.PartialAsync("_Ratings", Model.QuestionsSetRatings)
+                </td>
+            </tr>
+            <tr>
+                <th>@Html.DisplayNameFor(m => m.Attachments)</th>
+                <td>
+                    @if(Model.Attachments?.Count() > 0)
+                    {
+                        @await Html.PartialAsync("_Attachments", Model.Attachments)
+                    }
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/FetchDictionaryData.js"></script>
+}

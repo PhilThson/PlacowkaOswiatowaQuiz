@@ -1,0 +1,117 @@
+﻿@model CreateQuestionsSetViewModel
+
+<div class="row">
+    <div class="col-md-7">
+        <h4><b>Nowy zestaw pytań</b></h4>
+    </div>
+</div>
+<div id="divAlertArea">
+    <partial name="~/Views/UIComponents/_bootstrapAlert.cshtml" />
+</div>
+<form asp-action="Create" method="post" enctype="multipart/form-data" id="createQSForm">
+    <div asp-validation-summary="All" class="text-danger container-flex md-2">
+        <span>Popraw następujące błędy i spróbuj ponownie:</span>
+    </div>
+    <div class="form-floating mb-3">
+        <input asp-for="@Model.SkillDescription" type="text" class="form-control"
+               placeholder="Uczeń potrafi czytać">
+        <label asp-for="@Model.SkillDescription" class="col-form-label"></label>
+    </div>
+    <div class="row mb-3 form-group">
+        <label asp-for="@Model.DifficultyId" class="control-label"></label>
+        <div class="col-sm-8">
+            <select asp-for="@Model.DifficultyId" class="form-select" id="difficultiesDropdown"
+                    currentDifficultyId="@Model?.DifficultyId">
+                <option disabled selected>Wybierz skalę trudności...</option>
+            </select>
+        </div>
+    </div>
+    <div class="row mb-3 form-group">
+        <label asp-for="@Model.AreaId" class="control-label"></label>
+        <div class="col-sm-8">
+            <select asp-for="@Model.AreaId" class="form-select" id="areasDropdown"
+                    currentAreaId="@Model?.AreaId">
+                <option disabled selected>Wybierz obszar...</option>
+            </select>
+        </div>
+    </div>
+    <div class="row mb-3 form-group">
+        <label asp-for="@Model.QuestionsSetRatings" class="col-form-label"></label>
+        <div id="Ratings" class="container">
+            @if(Model?.QuestionsSetRatings?.Count() > 0)
+             {
+                @for(int i = 0; i < Model.QuestionsSetRatings.Count(); i++)
+                {
+                    <div id="rating_@i" class="mb-2 d-flex g-3">
+                        <input type="text" class="form-control"
+                                name="QuestionsSetRatings[@i]"
+                                value="@Model.QuestionsSetRatings[i]" />
+                        <a href="#" class="btn btn-link" onclick="deleteRating(@i)">
+                            Usuń
+                        </a>
+                    </div>
+                }
+             }
+        </div>
+        <div class="d-grid gap-2 col-4">
+            <button class="btn btn-sm btn-primary" type="button" onclick="addRating()">
+                Dodaj ocenę
+            </button>
+        </div>
+    </div>
+    <div class="row mb-3 form-group">
+        <label asp-for="@Model.AttachmentFiles" class="col-form-label"></label>
+        <div class="col-sm-8">
+            <input asp-for="@Model.AttachmentFiles" class="form-control" type="file"
+                   name="AttachmentFiles" id="AttachementFiles" multiple>
+        </div>
+    </div>
+    <div class="d-grid gap-2">
+        <button class="btn btn-success" type="submit">Utwórz</button>
+        <a class="btn btn-outline-secondary" type="button" asp-controller="QuestionsSet"
+           asp-action="Index">Powrót</a>
+    </div>
+</form>
+
+@section Scripts{
+
+<script src="~/js/FetchDictionaryData.js"></script>
+<script>
+
+    //ustawienie wyjściowej wartości liczby ocen zestawu pytań
+    var i = $("#Ratings").children().length;
+
+    //dodawanie oceny
+    var addRating = function() {
+
+        if (i >= 6) {
+            Swal.fire({
+                title: 'Nie można dodać więcej ocen',
+                type: "warning",
+                onAfterClose: () => {
+                    $("#Ratings").focus();
+                }
+            });
+            return;
+        }
+        $("#Ratings").append(
+            '<div id="rating_' + i + '" class="mb-2 d-flex g-3">' +
+            '<input type="text" class="form-control"' +
+            ' name="QuestionsSetRatings[' + i + ']"/>' +
+            '<a href="#" class="btn btn-link"' +
+            ' onclick="deleteRating(' + i + ')"' + '>Usuń</a>' +
+            '</div>');
+        i++;
+    }
+
+    //usuwanie oceny (poprzez usunięcie nadrzędnego diva)
+    var deleteRating = function (ratingId) {
+        $("#rating_" + ratingId).fadeOut(500, function () {
+            $(this).remove();
+        });
+        i--;
+    };
+
+</script>
+
+}

@@ -1,0 +1,175 @@
+﻿@model DiagnosisViewModel
+@{ViewData["Title"] = "Formularz diagnozy";}
+
+<fieldset>
+    <legend class="w-auto">
+        <b>Diagnoza nr: @Model.Id</b>
+    </legend>
+    <div id="divAlertArea">
+        <partial name="~/Views/UIComponents/_bootstrapAlert.cshtml" />
+    </div>
+    <div class="container-fluid">
+        <div id="questionsSetsIdsList" style="visibility:hidden">
+            @for (int i = 0; i < Model.QuestionsSetsIds.Count(); i++)
+            {
+                <input type="hidden" id="@Model.QuestionsSetsIds[i]"
+                       name="questionsSetIdItem" />
+            }
+        </div>
+        <div class="row mb-3">
+            @Html.DisplayNameFor(m => m.Institution)
+            <label class="col-sm-10 control-label fst-italic">
+                @Model.Institution
+            </label>
+        </div>
+        <div class="row mb-3">
+            @Html.DisplayNameFor(m => m.SchoolYear)
+            <label class="col-sm-6 control-label fst-italic">
+                @Model.SchoolYear
+            </label>
+        </div>
+        <div class="row mb-3">
+            @Html.DisplayNameFor(m => m.Employee)
+            <label class="col-sm-6 control-label fst-italic">
+                @Model.Employee.FirstName @Model.Employee.LastName
+            </label>
+        </div>
+        <div class="row mb-3">
+            @Html.DisplayNameFor(m => m.Student)
+            <label asp-for="@Model.Student" class="col-sm-6 control-label fst-italic">
+                @Model.Student.FirstName @Model.Student.LastName
+            </label>
+        </div>
+        <div class="row mb-3">
+            @Html.DisplayNameFor(m => m.Difficulty)
+            <label class="col-sm-6 control-label fst-italic">
+                @Model.Difficulty.Description (@Model.Difficulty.Name)
+            </label>
+        </div>
+        <div class="row" id="partialQuestionsSet" tabindex="0">
+        </div>
+        <br />
+        <div class="row" id="partialResult">
+        </div>
+        <div class="container overflow-hidden text-center mt-3">
+            <div class="row g-2">
+                <div class="col">
+                    <button class="btn btn-secondary me-md-2" type="button"
+                            id="previousQS">
+                        Poprzedni zestaw pytań
+                    </button>
+                </div>
+                <div class="col">
+                    <button class="btn btn-secondary ms-md-3" type="button"
+                            id="nextQS">
+                        Następny zestaw pytań
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <a href="#" class="btn btn-outline-primary js-end-diagnosis"
+                   type="button" data-diagnosis-id="@Model.Id">
+                    Zakończ diagnozę
+                </a>
+            </div>
+            <div class="row">
+                <a class="btn btn-outline-primary" id="back-to-details"
+                   asp-controller="Diagnosis" asp-action="Details"
+                   asp-route-diagnosisId="@Model.Id">
+                    Przejdź do podsumowania
+                </a>
+            </div>
+        </div>
+    </div>
+</fieldset>
+
+@section Scripts {
+
+<script src="~/js/LoadDiagnosisPartials.js"></script>
+<script>
+
+    //załadowanie (z drzewa DOM) identyfikatorów zestawów pytań wchodzących
+    //w skład formularza diagnozy
+
+    var questionsSetsIds = [];
+    $('input[name="questionsSetIdItem"]').each(function () {
+        questionsSetsIds.push({ id: this.id });
+    });
+
+    //indeks obecnego zestawu pytań z tablicy identyfikatorów zestawów pytań
+
+    var index = 0;
+
+    //załadowanie pierwszego zestawu pytań wraz z odpowiedziami
+    //po pobraniu strony
+
+    $(document).ready(function () {
+        var requestedQuestionsSetId = questionsSetsIds[index].id;
+        $('#previousQS').prop('disabled', true);
+        if (questionsSetsIds.length <= 1) {
+            $('#nextQS').prop('disabled', true);
+        }
+        loadDiagnosisPartials(requestedQuestionsSetId, @Model.Id);
+        var isForEdit = @Model.IsForEdit.ToString().ToLower();
+        if (isForEdit == true) {
+            $(".js-end-diagnosis").hide();
+        }
+        else {
+            $("#back-to-details").hide();
+        }
+    });
+
+    //pobranie poprzedniego zestawu pytań
+
+    $("#previousQS").on("click", function () {
+        $('#nextQS').prop('disabled', false);
+        $('#previousQS').prop('disabled', false);
+        index--;
+        var requestedQuestionsSetId = questionsSetsIds[index].id;
+        if (index == 0) {
+            $('#previousQS').prop('disabled', true);
+        }
+        loadDiagnosisPartials(requestedQuestionsSetId, @Model.Id);
+        $("#partialQuestionsSet").focus();
+    });
+
+    //pobranie następnego zestawu pytań
+
+    $("#nextQS").on("click", function () {
+        $('#nextQS').prop('disabled', false);
+        $('#previousQS').prop('disabled', false);
+        index++;
+        var requestedQuestionsSetId = questionsSetsIds[index].id;
+        if (index == questionsSetsIds.length - 1) {
+            $('#nextQS').prop('disabled', true);
+        }
+        loadDiagnosisPartials(requestedQuestionsSetId, @Model.Id);
+        $("#partialQuestionsSet").focus();
+    });
+
+    //obsługa zakończenia diagnozy
+
+    $(".js-end-diagnosis").click(function (e) {
+        e.preventDefault();
+        var button = $(e.target);
+        var diagnosisId = button.attr("data-diagnosis-id");
+        Swal.fire({
+            title: 'Czy na pewno zakończyć diagnozę?',
+            type: 'warning',
+            showCancelButton: true,
+            cancelButtonText: 'Anuluj',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Zakończ'
+        }).then((result) => {
+            if (result.value == true) {
+                location.href = "/Diagnosis/Details/" + diagnosisId;
+            }
+        });
+    });
+
+</script>
+
+}

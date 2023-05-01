@@ -1,0 +1,36 @@
+﻿@if (TempData["successAlert"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert"
+                aria-label="Close"></button>
+        <div>@TempData["successAlert"]</div>
+    </div>
+}
+
+@if (TempData["errorAlert"] != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert"
+                aria-label="Close"></button>
+        <div>@TempData["errorAlert"]</div>
+    </div>
+}
+
+@if (TempData["infoAlert"] != null)
+{
+    <div class="alert alert-primary alert-dismissible fade show" role="alert">
+        <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert"
+                aria-label="Close"></button>
+        <div>@TempData["infoAlert"]</div>
+    </div>
+}
+
+@*Tutaj przekładka, ze wzgłędu na brak dziedziczenia elementów tymczasowych
+    ViewBag/ViewData/TempData przez dzieci widoku głównego (Nie przesyłają się
+    dane z kontrolera do PartialView), a chcem przesłać informacje do 
+    wyświetlenia w powiadomieniu typu Toastr*@
+
+@if (ViewBag.SaveSuccess != null)
+{
+    <input type="hidden" id="saveSuccess" value="@ViewBag.SaveSuccess" />
+}

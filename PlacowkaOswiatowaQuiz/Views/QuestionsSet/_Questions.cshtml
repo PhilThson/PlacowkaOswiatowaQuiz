@@ -1,0 +1,38 @@
+﻿@model IEnumerable<QuestionViewModel>
+
+<div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(m => m.Content)</th>
+                <th>@Html.DisplayNameFor(m => m.Description)</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var question in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(item => question.Content)</td>
+                    <td>@Html.DisplayFor(item => question.Description)</td>
+                    <td>
+                        <a href="#" class="btn btn-sm btn-info"
+                           onclick="editQuestion('@question.Id', '@question.QuestionsSetId')">
+                            Edytuj
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+
+    function editQuestion(questionId, questionsSetId) {
+        location.href = "/Question/Edit?id=" + questionId +
+            "&questionsSetId=" + questionsSetId;
+    };
+
+</script>

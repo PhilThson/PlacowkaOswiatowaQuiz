@@ -1,0 +1,26 @@
+﻿@model IEnumerable<StudentViewModel>
+@{ViewData["Title"] = "Uczniowie";}
+
+<div id="divAlertArea">
+    <partial name="~/Views/UIComponents/_bootstrapAlert.cshtml" />
+</div>
+<div class="row pb-3">
+    @foreach (var student in Model)
+    {
+        <div class="col-lg-3 col-md-6">
+            <div class="row p-2">
+                <div class="col-12 p-1" style="border:1px solid #008cba; border-radius:5px;">
+                    <div>
+                        <div class="pl-1">
+                            <p class="card-title h5 text-primary">@student.FirstName @student.LastName</p>
+                            <p class="card-title">PESEL: <b>@student.PersonalNumber</b></p>
+                        </div>
+                        <div class="pl-1">
+                            <p>Data urodzenia: <b>@student.DateOfBirth.Value.ToString("yyyy-MM-dd")</b></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

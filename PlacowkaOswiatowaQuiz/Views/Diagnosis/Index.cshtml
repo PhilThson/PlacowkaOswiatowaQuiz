@@ -1,0 +1,59 @@
+﻿@model IEnumerable<DiagnosisViewModel>
+@{ViewData["Title"] = "Diagnozy";}
+
+<div class="panel panel-hash">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-md-7">
+                <h4><b>Lista utworzonych diagnoz</b></h4>
+            </div>
+            <div id="divAlertArea">
+                <partial name="~/Views/UIComponents/_bootstrapAlert.cshtml" />
+            </div>
+            <div class="d-flex justify-content-md-end">
+                <a class="btn btn-primary" asp-controller="Diagnosis" asp-action="Create">
+                    Utwórz nowy formularz
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body scroll panel-height">
+        <table class="CustomColorTable" border="1">
+            <thead>
+                <tr>
+                    <th>@Html.DisplayNameFor(m => m.Id)</th>
+                    <th>@Html.DisplayNameFor(m => m.Employee)</th>
+                    <th>@Html.DisplayNameFor(m => m.Student)</th>
+                    <th>@Html.DisplayNameFor(m => m.SchoolYear)</th>
+                    <th>Opcje</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var diagnosis in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => diagnosis.Id)</td>
+                        <td>@diagnosis.Employee.FirstName @diagnosis.Employee.LastName</td>
+                        <td>@diagnosis.Student.FirstName @diagnosis.Student.LastName</td>
+                        <td>@Html.DisplayFor(modelItem => diagnosis.SchoolYear)</td>
+                        <td>
+                            <div class="d-flex justify-content-center">
+                                <a class="btn btn-sm btn-info me-2" asp-controller="Diagnosis"
+                                   asp-action="Details" asp-route-diagnosisId="@diagnosis.Id">
+                                    Szczegóły
+                                </a>
+                                @{
+                                    var disabled = diagnosis.ReportId.HasValue ? "disabled" : "";
+                                }
+                                <a class="btn btn-sm btn-secondary @disabled" asp-controller="Diagnosis"
+                                   asp-action="Form" asp-route-diagnosisId="@diagnosis.Id">
+                                    Edytuj
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
