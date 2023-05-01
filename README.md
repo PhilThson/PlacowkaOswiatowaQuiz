@@ -1,4 +1,4 @@
-# PlacowkaOswiatowaQuiz
+# Placówka Oświatowa - Diagnoza
 
 Web Application supporting diagnosis in children with special developmental and educational needs.
 
