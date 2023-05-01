@@ -1,15 +1,13 @@
-﻿using System;
-using System.Security.Cryptography;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.Text;
 using PlacowkaOswiatowaQuiz.Interfaces;
 using PlacowkaOswiatowaQuiz.Shared.DTOs;
 using PlacowkaOswiatowaQuiz.Helpers.Options;
-using Newtonsoft.Json.Linq;
+using PlacowkaOswiatowaQuiz.Helpers;
 
 namespace PlacowkaOswiatowaQuiz.Services
 {
-	public class UserService : IUserService
+    public class UserService : IUserService
 	{
 		private readonly HttpClient _httpClient;
         private readonly User _userController;
@@ -22,7 +20,8 @@ namespace PlacowkaOswiatowaQuiz.Services
 
         public async Task<IEnumerable<string>> Login(SimpleUserDto simpleUser)
         {
-            var dataToSend = new StringContent(JsonConvert.SerializeObject(simpleUser),
+            var encryptedUser = SecurePasswordHasher.Encrypt(simpleUser);
+            var dataToSend = new StringContent(JsonConvert.SerializeObject(encryptedUser),
                 Encoding.UTF8, "application/json");
 
             var response =

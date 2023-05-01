@@ -10,11 +10,11 @@ namespace PlacowkaOswiatowaQuiz.Helpers.Extensions
         public static bool IsImage(this IFormFile postedFile)
         {
             if (postedFile.ContentType.ToLower() != "image/jpg" &&
-                        postedFile.ContentType.ToLower() != "image/jpeg" &&
-                        postedFile.ContentType.ToLower() != "image/pjpeg" &&
-                        postedFile.ContentType.ToLower() != "image/gif" &&
-                        postedFile.ContentType.ToLower() != "image/x-png" &&
-                        postedFile.ContentType.ToLower() != "image/png")
+                postedFile.ContentType.ToLower() != "image/jpeg" &&
+                postedFile.ContentType.ToLower() != "image/pjpeg" &&
+                postedFile.ContentType.ToLower() != "image/gif" &&
+                postedFile.ContentType.ToLower() != "image/x-png" &&
+                postedFile.ContentType.ToLower() != "image/png")
             {
                 return false;
             }
